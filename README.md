@@ -20,7 +20,7 @@ Students receive personalized learning paths, instant feedback, and step-by-step
 - Pearson Wu — UI/UX design, web development
 - James Yang
 - Annie Ye
-- Dora XX
+- Dora Ai
 
 ## Getting Started
 These instructions are for team members who havent work on web dev before
