@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   UploadIcon,
@@ -6,39 +8,19 @@ import {
   SmallArmIcon,
   LargeArmIcon,
 } from "@/components/icons";
+import { useLanguage } from "@/components/language/LanguageProvider";
 
-const STEPS = [
-  {
-    icon: UploadIcon,
-    title: "Upload a photo",
-    body: "Snap or find a photo of your robotic arm — hobby kit, custom build, or industrial arm.",
-  },
-  {
-    icon: ChatIcon,
-    title: "Answer a few questions",
-    body: "RoboPrompt figures out what it can from the photo, and only asks about what it can't.",
-  },
-  {
-    icon: DocumentIcon,
-    title: "Get your plan",
-    body: "A concrete architecture, build plan, and test plan for controlling your arm's end-effector.",
-  },
-];
-
-const CATEGORIES = [
-  {
-    icon: SmallArmIcon,
-    name: "Small & servo-driven",
-    body: "Hobby kits and custom builds — Arduino, ESP32, or similar microcontrollers.",
-  },
-  {
-    icon: LargeArmIcon,
-    name: "Large & industrial",
-    body: "Brushless motors and reducers, usually paired with Jetson or ROS2.",
-  },
-];
+const STEP_ICONS = [UploadIcon, ChatIcon, DocumentIcon] as const;
+const CATEGORY_ICONS = [SmallArmIcon, LargeArmIcon] as const;
 
 export default function Home() {
+  const { t } = useLanguage();
+  const steps = t.home.steps.map((step, index) => ({ ...step, icon: STEP_ICONS[index] }));
+  const categories = t.home.categories.map((category, index) => ({
+    ...category,
+    icon: CATEGORY_ICONS[index],
+  }));
+
   return (
     <main className="flex flex-1 flex-col">
       <section className="relative overflow-hidden px-4 pt-24 pb-20 text-center sm:pt-32 sm:pb-28">
@@ -47,26 +29,26 @@ export default function Home() {
         </div>
         <div className="mx-auto flex max-w-2xl flex-col items-center gap-6">
           <span className="rounded-full border border-black/10 px-3 py-1 text-xs font-medium text-black/60 dark:border-white/15 dark:text-white/60">
-            AI-powered robotics assistant
+            {t.home.eyebrow}
           </span>
           <h1 className="text-5xl font-semibold tracking-tight sm:text-6xl md:text-7xl">
             RoboPrompt
           </h1>
           <p className="max-w-xl text-lg text-black/60 sm:text-xl dark:text-white/60">
-            Turn a photo of a robotic arm into a working control plan.
+            {t.home.tagline}
           </p>
           <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/try"
               className="rounded-full bg-blue-600 px-7 py-3.5 text-base font-medium text-white shadow-lg shadow-blue-600/25 transition-all hover:bg-blue-500 hover:shadow-blue-500/30"
             >
-              Try it now
+              {t.home.primaryCta}
             </Link>
             <Link
               href="/about"
               className="rounded-full border border-black/15 px-7 py-3.5 text-base font-medium transition-colors hover:border-black/30 dark:border-white/15 dark:hover:border-white/30"
             >
-              How it works
+              {t.home.secondaryCta}
             </Link>
           </div>
         </div>
@@ -74,7 +56,7 @@ export default function Home() {
 
       <section className="mx-auto w-full max-w-4xl px-4 py-16">
         <div className="grid gap-6 sm:grid-cols-3">
-          {STEPS.map((step) => (
+          {steps.map((step) => (
             <div
               key={step.title}
               className="flex flex-col gap-3 rounded-2xl border border-black/10 p-6 dark:border-white/10"
@@ -90,13 +72,12 @@ export default function Home() {
       </section>
 
       <section className="mx-auto w-full max-w-4xl px-4 py-16">
-        <h2 className="text-center text-2xl font-semibold">Built for any robot arm</h2>
+        <h2 className="text-center text-2xl font-semibold">{t.home.robotHeading}</h2>
         <p className="mx-auto mt-2 max-w-xl text-center text-sm text-black/60 dark:text-white/60">
-          RoboPrompt asks the right questions for your hardware and generates a plan
-          you can actually build from — no matter the scale.
+          {t.home.robotBody}
         </p>
         <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {CATEGORIES.map((category) => (
+          {categories.map((category) => (
             <div
               key={category.name}
               className="flex items-start gap-4 rounded-2xl border border-black/10 p-6 dark:border-white/10"
@@ -114,15 +95,13 @@ export default function Home() {
       </section>
 
       <section className="mx-auto w-full max-w-2xl px-4 py-20 text-center">
-        <h2 className="text-2xl font-semibold sm:text-3xl">Ready to see your plan?</h2>
-        <p className="mt-2 text-sm text-black/60 dark:text-white/60">
-          Upload a photo and get started in minutes.
-        </p>
+        <h2 className="text-2xl font-semibold sm:text-3xl">{t.home.finalHeading}</h2>
+        <p className="mt-2 text-sm text-black/60 dark:text-white/60">{t.home.finalBody}</p>
         <Link
           href="/try"
           className="mt-6 inline-block rounded-full bg-blue-600 px-7 py-3.5 text-base font-medium text-white shadow-lg shadow-blue-600/25 transition-all hover:bg-blue-500 hover:shadow-blue-500/30"
         >
-          Try it now
+          {t.home.primaryCta}
         </Link>
       </section>
     </main>

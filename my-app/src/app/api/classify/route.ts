@@ -10,6 +10,7 @@ import {
   MAX_TOKENS,
   MODEL_ID,
 } from "@/lib/constants";
+import { DEFAULT_LANGUAGE, LANGUAGE_LABELS, isLanguageCode } from "@/lib/languages";
 import type { ChatContentBlock, ChatMessage } from "@/types/chat";
 
 export const runtime = "nodejs";
@@ -24,6 +25,8 @@ export async function POST(req: NextRequest) {
   }
 
   const files = formData.getAll("file").filter((f): f is File => f instanceof File);
+  const languageValue = formData.get("language");
+  const language = isLanguageCode(languageValue) ? languageValue : DEFAULT_LANGUAGE;
   if (files.length === 0) {
     return NextResponse.json({ error: "Missing 'file' field" }, { status: 400 });
   }
@@ -86,7 +89,7 @@ export async function POST(req: NextRequest) {
   let systemPrompt: string;
   try {
     client = getAnthropicClient();
-    systemPrompt = getSystemPrompt();
+    systemPrompt = `${getSystemPrompt()}\n\nRespond in ${LANGUAGE_LABELS[language]}.`;
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Server misconfigured" },

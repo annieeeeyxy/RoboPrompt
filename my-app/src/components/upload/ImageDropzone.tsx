@@ -28,9 +28,15 @@ async function compressImage(file: File): Promise<Blob> {
 export function ImageDropzone({
   onImagesReady,
   disabled,
+  preparingLabel = "Preparing photos...",
+  title = "Drop photos of your robot arm here",
+  hint,
 }: {
   onImagesReady: (blobs: Blob[], previewUrls: string[]) => void;
   disabled?: boolean;
+  preparingLabel?: string;
+  title?: string;
+  hint?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -86,10 +92,10 @@ export function ImageDropzone({
         }}
       />
       <p className="text-lg font-medium">
-        {isPreparing ? "Preparing photos…" : "Drop photos of your robot arm here"}
+        {isPreparing ? preparingLabel : title}
       </p>
       <p className="text-sm text-black/50 dark:text-white/50">
-        or click to choose one or more files — JPEG, PNG, or WebP (up to {MAX_IMAGE_FILES})
+        {hint ?? `or click to choose one or more files - JPEG, PNG, or WebP (up to ${MAX_IMAGE_FILES})`}
       </p>
     </div>
   );

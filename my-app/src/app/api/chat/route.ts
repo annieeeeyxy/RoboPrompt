@@ -4,6 +4,7 @@ import { getAnthropicClient, toAnthropicMessages } from "@/lib/anthropic";
 import { getSystemPrompt } from "@/lib/systemPrompt";
 import { streamToSSEResponse } from "@/lib/sse";
 import { MAX_TOKENS, MODEL_ID } from "@/lib/constants";
+import { DEFAULT_LANGUAGE, LANGUAGE_LABELS, isLanguageCode } from "@/lib/languages";
 import type { ChatMessage } from "@/types/chat";
 
 export const runtime = "nodejs";
@@ -26,6 +27,7 @@ const ChatMessageSchema = z.object({
 const RequestSchema = z.object({
   history: z.array(ChatMessageSchema),
   message: z.string().min(1),
+  language: z.string().optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -44,12 +46,13 @@ export async function POST(req: NextRequest) {
     ...body.history,
     { role: "user", content: [{ type: "text", text: body.message }] },
   ];
+  const language = isLanguageCode(body.language) ? body.language : DEFAULT_LANGUAGE;
 
   let client: ReturnType<typeof getAnthropicClient>;
   let systemPrompt: string;
   try {
     client = getAnthropicClient();
-    systemPrompt = getSystemPrompt();
+    systemPrompt = `${getSystemPrompt()}\n\nRespond in ${LANGUAGE_LABELS[language]}.`;
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Server misconfigured" },

@@ -7,7 +7,9 @@ import { ChatInput } from "@/components/chat/ChatInput";
 import { GeneratePlanButton } from "@/components/chat/GeneratePlanButton";
 import { PlanView } from "@/components/plan/PlanView";
 import { ErrorBanner } from "@/components/ui/ErrorBanner";
+import { useLanguage } from "@/components/language/LanguageProvider";
 import { useAgentStream } from "@/hooks/useAgentStream";
+import { MAX_IMAGE_FILES } from "@/lib/constants";
 import type { ChatMessage, DisplayMessage } from "@/types/chat";
 
 type Phase = "upload" | "interview" | "plan";
@@ -22,6 +24,7 @@ function blobToBase64(blob: Blob): Promise<string> {
 }
 
 export default function TryPage() {
+  const { language, t } = useLanguage();
   const [phase, setPhase] = useState<Phase>("upload");
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const [displayMessages, setDisplayMessages] = useState<DisplayMessage[]>([]);
@@ -36,10 +39,7 @@ export default function TryPage() {
       setDisplayMessages([
         {
           role: "user",
-          text:
-            blobs.length > 1
-              ? `Uploaded ${blobs.length} photos of my robot arm.`
-              : "Uploaded a photo of my robot arm.",
+          text: blobs.length > 1 ? t.try.uploadedMultiple(blobs.length) : t.try.uploadedSingle,
           imageUrls: previewUrls,
         },
       ]);
@@ -57,16 +57,14 @@ export default function TryPage() {
           ),
           {
             type: "text",
-            text:
-              blobs.length > 1
-                ? "Here are photos of my robotic arm. Please analyze them and help me figure out how to control it."
-                : "Here is a photo of my robotic arm. Please analyze it and help me figure out how to control it.",
+            text: blobs.length > 1 ? t.try.initialMultiple : t.try.initialSingle,
           },
         ],
       };
 
       const formData = new FormData();
       blobs.forEach((blob, i) => formData.append("file", blob, `arm-${i}.jpg`));
+      formData.append("language", language);
 
       try {
         const result = await agent.send("/api/classify", { method: "POST", body: formData });
@@ -84,7 +82,7 @@ export default function TryPage() {
         // agent.error already holds the message; stay on the interview screen so it renders
       }
     },
-    [agent]
+    [agent, language, t.try]
   );
 
   const sendChatMessage = useCallback(
@@ -94,7 +92,7 @@ export default function TryPage() {
         const result = await agent.send("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ history, message: text }),
+          body: JSON.stringify({ history, message: text, language }),
         });
         const userMessage: ChatMessage = { role: "user", content: [{ type: "text", text }] };
         const assistantMessage: ChatMessage = {
@@ -111,14 +109,12 @@ export default function TryPage() {
         // agent.error already holds the message
       }
     },
-    [agent, history]
+    [agent, history, language]
   );
 
   const handleGeneratePlanNow = useCallback(() => {
-    void sendChatMessage(
-      "Please generate the final architecture, build, and test plan now based on everything you know so far."
-    );
-  }, [sendChatMessage]);
+    void sendChatMessage(t.try.generatePlanNow);
+  }, [sendChatMessage, t]);
 
   const handleStartOver = useCallback(() => {
     setPhase("upload");
@@ -133,12 +129,18 @@ export default function TryPage() {
       {phase === "upload" && (
         <>
           <header className="text-center">
-            <h1 className="text-2xl font-semibold">Upload your robot arm</h1>
+            <h1 className="text-2xl font-semibold">{t.try.uploadHeading}</h1>
             <p className="mt-1 text-sm text-black/50 dark:text-white/50">
-              We&apos;ll analyze it and ask what we can&apos;t tell from the photo.
+              {t.try.uploadBody}
             </p>
           </header>
-          <ImageDropzone onImagesReady={handleImagesReady} disabled={agent.isStreaming} />
+          <ImageDropzone
+            onImagesReady={handleImagesReady}
+            disabled={agent.isStreaming}
+            preparingLabel={t.try.preparing}
+            title={t.try.dropzoneTitle}
+            hint={t.try.dropzoneHint(MAX_IMAGE_FILES)}
+          />
         </>
       )}
 
@@ -150,7 +152,12 @@ export default function TryPage() {
             isStreaming={agent.isStreaming}
           />
           {agent.error && <ErrorBanner message={agent.error} />}
-          <ChatInput onSend={sendChatMessage} disabled={agent.isStreaming} />
+          <ChatInput
+            onSend={sendChatMessage}
+            disabled={agent.isStreaming}
+            placeholder={t.try.inputPlaceholder}
+            sendLabel={t.try.send}
+          />
           {assistantTurnCount >= 3 && (
             <GeneratePlanButton onClick={handleGeneratePlanNow} disabled={agent.isStreaming} />
           )}

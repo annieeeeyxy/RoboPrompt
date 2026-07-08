@@ -5,9 +5,13 @@ import { useState } from "react";
 export function ChatInput({
   onSend,
   disabled,
+  placeholder = "Type your answer...",
+  sendLabel = "Send",
 }: {
   onSend: (text: string) => void;
   disabled?: boolean;
+  placeholder?: string;
+  sendLabel?: string;
 }) {
   const [value, setValue] = useState("");
 
@@ -29,7 +33,7 @@ export function ChatInput({
             submit();
           }
         }}
-        placeholder="Type your answer…"
+        placeholder={placeholder}
         rows={1}
         disabled={disabled}
         className="flex-1 resize-none rounded-xl border border-black/15 bg-transparent px-4 py-3 text-sm outline-none focus:border-blue-500 disabled:opacity-50 dark:border-white/15"
@@ -39,7 +43,7 @@ export function ChatInput({
         disabled={disabled || !value.trim()}
         className="rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white disabled:opacity-40"
       >
-        Send
+        {sendLabel}
       </button>
     </div>
   );
