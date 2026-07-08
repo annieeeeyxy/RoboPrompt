@@ -30,27 +30,43 @@ export default function TryPage() {
 
   const assistantTurnCount = displayMessages.filter((m) => m.role === "assistant").length;
 
-  const handleImageReady = useCallback(
-    async (blob: Blob, previewUrl: string) => {
+  const handleImagesReady = useCallback(
+    async (blobs: Blob[], previewUrls: string[]) => {
       setPhase("interview");
       setDisplayMessages([
-        { role: "user", text: "Uploaded a photo of my robot arm.", imageUrl: previewUrl },
+        {
+          role: "user",
+          text:
+            blobs.length > 1
+              ? `Uploaded ${blobs.length} photos of my robot arm.`
+              : "Uploaded a photo of my robot arm.",
+          imageUrls: previewUrls,
+        },
       ]);
 
-      const base64 = await blobToBase64(blob);
+      const base64s = await Promise.all(blobs.map(blobToBase64));
       const initialMessage: ChatMessage = {
         role: "user",
         content: [
-          { type: "image", mediaType: "image/jpeg", base64 },
+          ...base64s.map(
+            (base64): ChatMessage["content"][number] => ({
+              type: "image",
+              mediaType: "image/jpeg",
+              base64,
+            })
+          ),
           {
             type: "text",
-            text: "Here is a photo of my robotic arm. Please analyze it and help me figure out how to control it.",
+            text:
+              blobs.length > 1
+                ? "Here are photos of my robotic arm. Please analyze them and help me figure out how to control it."
+                : "Here is a photo of my robotic arm. Please analyze it and help me figure out how to control it.",
           },
         ],
       };
 
       const formData = new FormData();
-      formData.append("file", blob, "arm.jpg");
+      blobs.forEach((blob, i) => formData.append("file", blob, `arm-${i}.jpg`));
 
       try {
         const result = await agent.send("/api/classify", { method: "POST", body: formData });
@@ -122,7 +138,7 @@ export default function TryPage() {
               We&apos;ll analyze it and ask what we can&apos;t tell from the photo.
             </p>
           </header>
-          <ImageDropzone onImageReady={handleImageReady} disabled={agent.isStreaming} />
+          <ImageDropzone onImagesReady={handleImagesReady} disabled={agent.isStreaming} />
         </>
       )}
 

@@ -23,5 +23,5 @@ export type SSEEvent =
 export type DisplayMessage = {
   role: ChatRole;
   text: string;
-  imageUrl?: string;
+  imageUrls?: string[];
 };

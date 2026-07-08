@@ -6,10 +6,11 @@ import { processImage, UnsupportedImageError } from "@/lib/image";
 import {
   ALLOWED_IMAGE_MIME_TYPES,
   MAX_IMAGE_BYTES,
+  MAX_IMAGE_FILES,
   MAX_TOKENS,
   MODEL_ID,
 } from "@/lib/constants";
-import type { ChatMessage } from "@/types/chat";
+import type { ChatContentBlock, ChatMessage } from "@/types/chat";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
@@ -22,29 +23,39 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Expected multipart/form-data" }, { status: 400 });
   }
 
-  const file = formData.get("file");
-  if (!(file instanceof File)) {
+  const files = formData.getAll("file").filter((f): f is File => f instanceof File);
+  if (files.length === 0) {
     return NextResponse.json({ error: "Missing 'file' field" }, { status: 400 });
   }
-  if (!ALLOWED_IMAGE_MIME_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_MIME_TYPES)[number])) {
+  if (files.length > MAX_IMAGE_FILES) {
     return NextResponse.json(
-      { error: `Unsupported file type: ${file.type || "unknown"}` },
+      { error: `Too many files — upload at most ${MAX_IMAGE_FILES}.` },
       { status: 400 }
     );
   }
-  if (file.size > MAX_IMAGE_BYTES) {
-    return NextResponse.json({ error: "File too large" }, { status: 400 });
+  for (const file of files) {
+    if (!ALLOWED_IMAGE_MIME_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_MIME_TYPES)[number])) {
+      return NextResponse.json(
+        { error: `Unsupported file type: ${file.type || "unknown"}` },
+        { status: 400 }
+      );
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      return NextResponse.json({ error: "File too large" }, { status: 400 });
+    }
   }
 
-  const rawBuffer = Buffer.from(await file.arrayBuffer());
-
-  let image: { base64: string; mediaType: "image/jpeg" };
+  const imageBlocks: ChatContentBlock[] = [];
   try {
-    image = await processImage(rawBuffer);
+    for (const file of files) {
+      const rawBuffer = Buffer.from(await file.arrayBuffer());
+      const image = await processImage(rawBuffer);
+      imageBlocks.push({ type: "image", mediaType: image.mediaType, base64: image.base64 });
+    }
   } catch (err) {
     if (err instanceof UnsupportedImageError) {
       return NextResponse.json(
-        { error: "Could not read this image. Try a JPEG, PNG, or WebP file." },
+        { error: "Could not read one of these images. Try a JPEG, PNG, or WebP file." },
         { status: 400 }
       );
     }
@@ -54,10 +65,13 @@ export async function POST(req: NextRequest) {
   const initialMessage: ChatMessage = {
     role: "user",
     content: [
-      { type: "image", mediaType: image.mediaType, base64: image.base64 },
+      ...imageBlocks,
       {
         type: "text",
-        text: "Here is a photo of my robotic arm. Please analyze it and help me figure out how to control it.",
+        text:
+          imageBlocks.length > 1
+            ? "Here are photos of my robotic arm. Please analyze them and help me figure out how to control it."
+            : "Here is a photo of my robotic arm. Please analyze it and help me figure out how to control it.",
       },
     ],
   };

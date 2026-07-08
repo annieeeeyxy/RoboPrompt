@@ -37,3 +37,6 @@ A running log of what happened on RoboPrompt, day by day.
   with GitHub and email links and a WeChat QR code.
 - Redesigned the home page: bigger hero with a background glow, icon-based
   step cards, a "Built for any robot arm" section, and a closing CTA.
+- Fixed a 500 error on photo upload in production — `sharp`'s native binary
+  wasn't bundled correctly for Vercel; fixed via `serverExternalPackages`.
+- Added support for uploading multiple photos of the same arm at once.

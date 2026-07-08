@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { MAX_IMAGE_FILES } from "@/lib/constants";
 
 const MAX_EDGE = 2000;
 const JPEG_QUALITY = 0.85;
@@ -25,28 +26,33 @@ async function compressImage(file: File): Promise<Blob> {
 }
 
 export function ImageDropzone({
-  onImageReady,
+  onImagesReady,
   disabled,
 }: {
-  onImageReady: (blob: Blob, previewUrl: string) => void;
+  onImagesReady: (blobs: Blob[], previewUrls: string[]) => void;
   disabled?: boolean;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isPreparing, setIsPreparing] = useState(false);
 
-  const handleFile = useCallback(
-    async (file: File) => {
-      if (!file.type.startsWith("image/")) return;
+  const handleFiles = useCallback(
+    async (fileList: FileList | File[]) => {
+      const files = Array.from(fileList)
+        .filter((file) => file.type.startsWith("image/"))
+        .slice(0, MAX_IMAGE_FILES);
+      if (files.length === 0) return;
+
       setIsPreparing(true);
       try {
-        const blob = await compressImage(file);
-        onImageReady(blob, URL.createObjectURL(blob));
+        const blobs = await Promise.all(files.map(compressImage));
+        const previewUrls = blobs.map((blob) => URL.createObjectURL(blob));
+        onImagesReady(blobs, previewUrls);
       } finally {
         setIsPreparing(false);
       }
     },
-    [onImageReady]
+    [onImagesReady]
   );
 
   return (
@@ -60,8 +66,7 @@ export function ImageDropzone({
         e.preventDefault();
         setIsDragging(false);
         if (disabled) return;
-        const file = e.dataTransfer.files[0];
-        if (file) void handleFile(file);
+        if (e.dataTransfer.files.length) void handleFiles(e.dataTransfer.files);
       }}
       onClick={() => !disabled && inputRef.current?.click()}
       className={`flex min-h-64 cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-8 text-center transition-colors ${
@@ -74,17 +79,17 @@ export function ImageDropzone({
         ref={inputRef}
         type="file"
         accept="image/jpeg,image/png,image/webp"
+        multiple
         className="hidden"
         onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) void handleFile(file);
+          if (e.target.files?.length) void handleFiles(e.target.files);
         }}
       />
       <p className="text-lg font-medium">
-        {isPreparing ? "Preparing photo…" : "Drop a photo of your robot arm here"}
+        {isPreparing ? "Preparing photos…" : "Drop photos of your robot arm here"}
       </p>
       <p className="text-sm text-black/50 dark:text-white/50">
-        or click to choose a file — JPEG, PNG, or WebP
+        or click to choose one or more files — JPEG, PNG, or WebP (up to {MAX_IMAGE_FILES})
       </p>
     </div>
   );

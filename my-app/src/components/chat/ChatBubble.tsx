@@ -11,13 +11,18 @@ export function ChatBubble({ message }: { message: DisplayMessage }) {
             : "bg-black/5 text-foreground dark:bg-white/10"
         }`}
       >
-        {message.imageUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={message.imageUrl}
-            alt="Uploaded robot arm"
-            className="mb-2 max-h-48 rounded-lg object-contain"
-          />
+        {message.imageUrls && message.imageUrls.length > 0 && (
+          <div className="mb-2 flex flex-wrap gap-2">
+            {message.imageUrls.map((url, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={i}
+                src={url}
+                alt="Uploaded robot arm"
+                className="h-24 w-24 rounded-lg object-cover"
+              />
+            ))}
+          </div>
         )}
         {message.text}
       </div>
