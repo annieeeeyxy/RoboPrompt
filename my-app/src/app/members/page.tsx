@@ -1,26 +1,6 @@
 import Image from "next/image";
-
-type Member = {
-  name: string;
-  role: string;
-  bio?: string;
-  photo?: string;
-};
-
-// Add more entries here if others join the project later.
-const MEMBERS: Member[] = [
-  {
-    name: "Annie Ye",
-    role: "Creator & Developer",
-    bio: "Building RoboPrompt end to end — product, system prompt design, and the web app.",
-    photo: "/annie.png",
-  },
-  {
-    name: "Dora Ai",
-    role: "Team Member",
-    photo: "/dora.png",
-  },
-];
+import Link from "next/link";
+import { MEMBERS, type Member } from "@/content/members";
 
 function Avatar({ member }: { member: Member }) {
   if (member.photo) {
@@ -56,20 +36,22 @@ export default function MembersPage() {
 
       <ul className="grid gap-4 sm:grid-cols-2">
         {MEMBERS.map((member) => (
-          <li
-            key={member.name}
-            className="flex flex-col gap-3 rounded-2xl border border-black/10 p-5 dark:border-white/10"
-          >
-            <div className="flex items-center gap-3">
-              <Avatar member={member} />
-              <div>
-                <p className="font-medium">{member.name}</p>
-                <p className="text-xs text-black/50 dark:text-white/50">{member.role}</p>
+          <li key={member.slug}>
+            <Link
+              href={`/members/${member.slug}`}
+              className="flex h-full flex-col gap-3 rounded-2xl border border-black/10 p-5 transition-colors hover:border-black/25 dark:border-white/10 dark:hover:border-white/25"
+            >
+              <div className="flex items-center gap-3">
+                <Avatar member={member} />
+                <div>
+                  <p className="font-medium">{member.name}</p>
+                  <p className="text-xs text-black/50 dark:text-white/50">{member.role}</p>
+                </div>
               </div>
-            </div>
-            {member.bio && (
-              <p className="text-sm text-black/60 dark:text-white/60">{member.bio}</p>
-            )}
+              {member.bio && (
+                <p className="text-sm text-black/60 dark:text-white/60">{member.bio}</p>
+              )}
+            </Link>
           </li>
         ))}
       </ul>

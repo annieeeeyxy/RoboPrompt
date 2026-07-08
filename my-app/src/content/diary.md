@@ -32,3 +32,6 @@ A running log of what happened on RoboPrompt, day by day.
 - Deployed to Vercel at robo-prompt.vercel.app.
 - Added this project diary page, seeded from git history.
 - Added Dora Ai to the Members page.
+- Added a commit-activity chart to the diary page.
+- Turned each Members card into its own profile page (`/members/[slug]`)
+  with GitHub and email links and a WeChat QR code.
