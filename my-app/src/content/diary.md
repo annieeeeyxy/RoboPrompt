@@ -31,3 +31,4 @@ A running log of what happened on RoboPrompt, day by day.
 - Added a profile photo to the Members page.
 - Deployed to Vercel at robo-prompt.vercel.app.
 - Added this project diary page, seeded from git history.
+- Added Dora Ai to the Members page.
