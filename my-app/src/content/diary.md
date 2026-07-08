@@ -35,3 +35,5 @@ A running log of what happened on RoboPrompt, day by day.
 - Added a commit-activity chart to the diary page.
 - Turned each Members card into its own profile page (`/members/[slug]`)
   with GitHub and email links and a WeChat QR code.
+- Redesigned the home page: bigger hero with a background glow, icon-based
+  step cards, a "Built for any robot arm" section, and a closing CTA.
