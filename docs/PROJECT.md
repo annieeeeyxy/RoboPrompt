@@ -1,4 +1,4 @@
-# RoboCoder — Project Document
+# RoboPrompt — Project Document
 
 > A smart robotics code assistant. Upload your robot, answer a few questions,
 > and get safe, working control code for your exact hardware.
@@ -15,7 +15,7 @@ Generic AI tools can write code, but they guess. They don't know what motor you
 have, what board you're using, or what the robot is supposed to do. The result
 is code that looks right but doesn't actually run your robot — or worse, damages it.
 
-**RoboCoder** is a website that acts like a smart robotics assistant, not just a
+**RoboPrompt** is a website that acts like a smart robotics assistant, not just a
 code generator. The user uploads a photo, CAD file, or simple design of their
 robot. The AI then:
 
@@ -27,7 +27,7 @@ robot. The AI then:
 6. Generates safe control code that matches the real hardware — with pin
    definitions, safety limits, calibration steps, and comments
 
-The key idea: **understand first, then generate.** RoboCoder checks what it
+The key idea: **understand first, then generate.** RoboPrompt checks what it
 knows, asks about what it doesn't, and only then writes code.
 
 ---
@@ -61,11 +61,11 @@ Step 4  →  Choose the Goal
            - Manual control
 
 Step 5  →  Review Summary
-           RoboCoder shows a plain-language summary of everything it understood
+           RoboPrompt shows a plain-language summary of everything it understood
            before generating anything.
 
 Step 6  →  Get Code
-           RoboCoder generates the code with comments, safety limits, and setup
+           RoboPrompt generates the code with comments, safety limits, and setup
            instructions. The user can copy, download, or ask for changes.
 ```
 
@@ -144,7 +144,7 @@ always passes through understanding → gap-check → goal → structured prompt
 
 ## 5. AI / Robotics Research References
 
-These are areas and projects the team can read about for background and credibility:
+These are areas and projects worth reading about for background and credibility:
 
 **Robot understanding (vision + CAD)**
 - Object detection / segmentation for identifying parts (YOLO, Segment Anything)
@@ -171,68 +171,7 @@ These are areas and projects the team can read about for background and credibil
 
 ---
 
-## 6. Team Task Division (4 People)
-
-> Roles are grouped so people can work in parallel with minimal conflicts.
-> (Current team has 5 members — the 5th can float / own docs + presentation, or
-> pair with whichever track needs help.)
-
-### Person A — Frontend & UX
-- Upload page, analysis view, question forms, goal selector, code viewer
-- Overall look, layout, and user flow
-- Owns: `src/app/*`, `src/components/*`
-
-### Person B — Perception & Matching (AI understanding)
-- Image/CAD analysis, robot-type detection, reference matching
-- Prompt for the vision model
-- Owns: `src/lib/analyze/*`, `src/lib/match/*`
-
-### Person C — Prompt Builder & Code Generation
-- Gap detection logic, structured prompt builder, code-gen call, safety post-processing
-- Owns: `src/lib/prompt/*`, `src/lib/codegen/*`, `src/lib/safety/*`
-
-### Person D — Backend, API & Integration
-- API routes, connecting frontend to AI services, file handling, glue code
-- Data types shared across the app
-- Owns: `src/app/api/*`, `src/lib/types.ts`, integration
-
-**Shared / rotating:** documentation, presentation, testing, demo prep.
-
----
-
-## 7. Five-Minute Presentation Structure
-
-| Time | Section | Content |
-|---|---|---|
-| 0:00–0:30 | **Hook / Problem** | "Building the robot is the easy part. Coding it is where people get stuck." |
-| 0:30–1:15 | **Our Solution** | Introduce RoboCoder — a smart assistant, not just a code generator. |
-| 1:15–2:15 | **How It Works** | Walk the 6-step flow: understand → match → ask → goal → prompt → safe code. |
-| 2:15–3:30 | **Live Demo** | Upload a robot arm photo → AI describes it → answer 2 questions → get code. |
-| 3:30–4:15 | **Why It's Different** | "Understand first, then generate" + built-in safety limits. |
-| 4:15–4:45 | **Tech & Research** | Vision models, ROS/URDF, structured prompting, safety guardrails. |
-| 4:45–5:00 | **Team & Next Steps** | Who did what + what's next (more robots, real hardware testing). |
-
-**Presentation tip:** the demo is the star. Even a simple, partly-mocked demo of
-"photo in → understanding → code out" is more convincing than slides.
-
----
-
-## 8. Project Name
-
-**Primary choice: `RoboCoder`**
-Simple, clear, and instantly says what it does.
-
-Backup names:
-- **ArmSmith** — leans into robotic arms
-- **BotForge** — "forging" code for your bot
-- **ServoSense** — smart + servo-focused
-- **CodePilot for Robots** — familiar framing
-
----
-
-## Appendix: How this fits the existing project
-
-The current repo is branded **AI Robotics Trainer** (a learning platform with AI
-coaches). RoboCoder can live inside it as the flagship **"Code Assistant"**
-feature — the trainer teaches robotics, and RoboCoder is the tool that turns a
-student's robot into working code. Same audience, same mission.
+## 6. Next Steps
+- More robot types and reference kits
+- Real hardware testing
+- Polish the presentation/demo flow

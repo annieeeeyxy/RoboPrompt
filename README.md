@@ -1,11 +1,11 @@
-# GCET Project
+# RoboPrompt
 
-> AI Robotics Trainer is a platform for students and teachers to collaborate on robotics competitions with AI coaches.
+> RoboPrompt is a platform for students and teachers to collaborate on robotics competitions with AI coaches.
 
 ## Overview
-AI Robotics Trainer is an AI-powered learning platform designed to make robotics education more personalized, interactive, and accessible. The platform combines intelligent coaching, structured robotics curricula, and team collaboration tools for students and mentors.
+RoboPrompt is an AI-powered learning platform designed to make robotics education more personalized, interactive, and accessible. The platform combines intelligent coaching, structured robotics curricula, and team collaboration tools for students and mentors.
 
-Instead of being a simple chatbot, AI Robotics Trainer provides a team of specialized AI coaches that support:
+Instead of being a simple chatbot, RoboPrompt provides a team of specialized AI coaches that support:
 - programming fundamentals
 - mechanical design
 - electronics and sensors
@@ -15,15 +15,7 @@ Instead of being a simple chatbot, AI Robotics Trainer provides a team of specia
 
 Students receive personalized learning paths, instant feedback, and step-by-step explanations. Coaches get tools to manage teams, review progress, and generate training plans.
 
-## Team Members
-- Matt Beitler
-- Pearson Wu — UI/UX design, web development
-- James Yang
-- Annie Ye
-- Dora Ai
-
 ## Getting Started
-These instructions are for team members who havent work on web dev before
 ### How to use GIT
 https://rogerdudler.github.io/git-guide/
 ### Prerequisites
@@ -38,8 +30,8 @@ https://rogerdudler.github.io/git-guide/
 
 If you do not already have the repository locally:
 ```bash
-git clone https://github.com/BeitM/GCET
-cd GCET
+git clone https://github.com/annieeeeyxy/RoboPrompt.git
+cd RoboPrompt
 ```
 If you already have the project folder, just open it in your terminal and continue.
 
