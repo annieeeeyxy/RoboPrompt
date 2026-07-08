@@ -5,7 +5,7 @@ import { ImageDropzone } from "@/components/upload/ImageDropzone";
 import { FormView } from "@/components/form/FormView";
 import { PlanView } from "@/components/plan/PlanView";
 import { ErrorBanner } from "@/components/ui/ErrorBanner";
-import { Spinner } from "@/components/ui/Spinner";
+import { ThinkingIndicator } from "@/components/ui/ThinkingIndicator";
 import { useAgentStream, type FormRequest, type SendResult } from "@/hooks/useAgentStream";
 import type { ChatMessage } from "@/types/chat";
 
@@ -190,7 +190,11 @@ export default function TryPage() {
               We&apos;ll analyze it and ask what we can&apos;t tell from the photo.
             </p>
           </header>
-          <ImageDropzone onImagesReady={handleImagesReady} disabled={agent.isStreaming} />
+          {agent.isStreaming ? (
+            <ThinkingIndicator label="Analyzing your photo…" />
+          ) : (
+            <ImageDropzone onImagesReady={handleImagesReady} disabled={agent.isStreaming} />
+          )}
           {agent.error && <ErrorBanner message={agent.error} />}
         </>
       )}
@@ -199,11 +203,11 @@ export default function TryPage() {
         <div className="flex flex-1 flex-col gap-5">
           {agent.error && <ErrorBanner message={agent.error} />}
 
-          {agent.isStreaming && !currentForm && (
-            <div className="flex justify-center py-10">
-              <Spinner />
-            </div>
+          {agent.isStreaming && agent.phase === "plan" && (
+            <PlanView markdown={agent.text} isStreaming onStartOver={handleStartOver} />
           )}
+
+          {agent.isStreaming && agent.phase === "interview" && <ThinkingIndicator />}
 
           {!agent.isStreaming && currentForm && (
             <FormView
@@ -224,11 +228,10 @@ export default function TryPage() {
             />
           )}
 
-          {formCount >= 2 && currentForm && (
+          {!agent.isStreaming && formCount >= 2 && currentForm && (
             <button
               onClick={() => void handleGeneratePlanNow()}
-              disabled={agent.isStreaming}
-              className="self-center rounded-full border border-black/15 px-4 py-2 text-xs font-medium text-black/60 hover:border-black/30 hover:text-black disabled:opacity-40 dark:border-white/15 dark:text-white/60 dark:hover:border-white/30 dark:hover:text-white"
+              className="self-center rounded-full border border-black/15 px-4 py-2 text-xs font-medium text-black/60 hover:border-black/30 hover:text-black dark:border-white/15 dark:text-white/60 dark:hover:border-white/30 dark:hover:text-white"
             >
               Generate my plan now
             </button>
