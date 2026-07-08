@@ -1,145 +1,58 @@
-'use client';
+import Link from "next/link";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import clsx from 'clsx';
+const STEPS = [
+  {
+    title: "Upload a photo",
+    body: "Snap or find a photo of your robotic arm — hobby kit, custom build, or industrial arm.",
+  },
+  {
+    title: "Answer a few questions",
+    body: "RoboPrompt figures out what it can from the photo, and only asks about what it can't.",
+  },
+  {
+    title: "Get your plan",
+    body: "A concrete architecture, build plan, and test plan for controlling your arm's end-effector.",
+  },
+];
 
-export default function Login() {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-
-    // Basic validation
-    if (!email || !password) {
-      setError('Please fill in all fields');
-      return;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError('Please enter a valid email address');
-      return;
-    }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
-
-    setLoading(true);
-    // Simulate login delay
-    setTimeout(() => {
-      setLoading(false);
-      // In a real app, you'd authenticate here
-      router.push('/landing');
-    }, 800);
-  };
-
+export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-gray-800 flex flex-col items-center justify-center px-4 py-8">
-      {/* Login Container */}
-      <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-2">
-            🤖 AI Robotics Trainer
-          </h1>
-          <p className="text-gray-400">Sign in to your account</p>
-        </div>
+    <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col items-center gap-16 px-4 py-16 text-center">
+      <section className="flex flex-col items-center gap-5">
+        <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">RoboPrompt</h1>
+        <p className="max-w-xl text-lg text-black/60 dark:text-white/60">
+          Turn a photo of a robotic arm into a working control plan.
+        </p>
+        <Link
+          href="/try"
+          className="mt-2 rounded-full bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-500"
+        >
+          Try it now
+        </Link>
+      </section>
 
-        {/* Login Card */}
-        <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          
-          <div className="relative bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 rounded-2xl p-8 shadow-xl">
-            
-            {/* Error Message */}
-            {error && (
-              <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-lg">
-                <p className="text-red-400 text-sm">{error}</p>
-              </div>
-            )}
-
-            {/* Form */}
-            <form onSubmit={handleLogin} className="space-y-6">
-              {/* Email Field */}
-              <div>
-                <label className="block text-white font-medium mb-2">Email Address</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  disabled={loading}
-                  className={clsx(
-                    'w-full bg-gray-900 border rounded-lg px-4 py-3 text-white placeholder-gray-500',
-                    'focus:outline-none focus:ring-1 transition-all',
-                    loading ? 'opacity-50 cursor-not-allowed' : 'border-gray-700 focus:border-blue-500 focus:ring-blue-500'
-                  )}
-                />
-              </div>
-
-              {/* Password Field */}
-              <div>
-                <label className="block text-white font-medium mb-2">Password</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  disabled={loading}
-                  className={clsx(
-                    'w-full bg-gray-900 border rounded-lg px-4 py-3 text-white placeholder-gray-500',
-                    'focus:outline-none focus:ring-1 transition-all',
-                    loading ? 'opacity-50 cursor-not-allowed' : 'border-gray-700 focus:border-blue-500 focus:ring-blue-500'
-                  )}
-                />
-              </div>
-
-              {/* Login Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className={clsx(
-                  'w-full font-semibold py-3 px-6 rounded-lg transition-all duration-300',
-                  'flex items-center justify-center gap-2',
-                  loading 
-                    ? 'bg-blue-600/50 cursor-not-allowed' 
-                    : 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400'
-                )}
-              >
-                {loading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    Signing in...
-                  </>
-                ) : (
-                  'Sign In'
-                )}
-              </button>
-            </form>
-
-            {/* Demo Credentials */}
-            <div className="mt-6 pt-6 border-t border-gray-700">
-              <p className="text-gray-400 text-xs mb-3">Demo Credentials:</p>
-              <p className="text-gray-500 text-xs mb-1"><span className="text-gray-400">Email:</span> demo@robotics.com</p>
-              <p className="text-gray-500 text-xs"><span className="text-gray-400">Password:</span> password123</p>
-            </div>
+      <section className="grid w-full gap-6 text-left sm:grid-cols-3">
+        {STEPS.map((step, i) => (
+          <div
+            key={step.title}
+            className="flex flex-col gap-2 rounded-2xl border border-black/10 p-5 dark:border-white/10"
+          >
+            <span className="text-xs font-medium text-black/40 dark:text-white/40">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <h2 className="font-medium">{step.title}</h2>
+            <p className="text-sm text-black/60 dark:text-white/60">{step.body}</p>
           </div>
-        </div>
+        ))}
+      </section>
 
-        {/* Footer */}
-        <div className="mt-8 text-center">
-          <p className="text-gray-500 text-sm">
-            Powered by AI robotics coaching system
-          </p>
-        </div>
-      </div>
-    </div>
+      <section className="max-w-xl text-sm text-black/60 dark:text-white/60">
+        <p>
+          Whether it&apos;s a small servo-driven desktop arm or a large brushless-motor
+          industrial arm running ROS2, RoboPrompt asks the right questions for your
+          hardware and generates a plan you can actually build from.
+        </p>
+      </section>
+    </main>
   );
 }

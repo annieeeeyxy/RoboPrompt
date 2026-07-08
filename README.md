@@ -1,19 +1,14 @@
 # RoboPrompt
 
-> RoboPrompt is a platform for students and teachers to collaborate on robotics competitions with AI coaches.
+> RoboPrompt turns a photo of a robotic arm into a working control plan.
 
 ## Overview
-RoboPrompt is an AI-powered learning platform designed to make robotics education more personalized, interactive, and accessible. The platform combines intelligent coaching, structured robotics curricula, and team collaboration tools for students and mentors.
-
-Instead of being a simple chatbot, RoboPrompt provides a team of specialized AI coaches that support:
-- programming fundamentals
-- mechanical design
-- electronics and sensors
-- autonomous algorithms
-- competition strategy
-- team coordination
-
-Students receive personalized learning paths, instant feedback, and step-by-step explanations. Coaches get tools to manage teams, review progress, and generate training plans.
+RoboPrompt is an AI assistant for designing robotic arm control systems. Upload
+a photo of a robot arm, and it analyzes the hardware, classifies the arm
+(small servo/microcontroller-driven vs. large brushless+reducer/ROS2-class),
+asks only the follow-up questions it can't answer from the image, and
+produces an architecture + build plan + test plan for controlling that arm's
+end-effector — including a generated web control panel.
 
 ## Getting Started
 ### How to use GIT
@@ -39,6 +34,13 @@ If you already have the project folder, just open it in your terminal and contin
 ```bash
 cd my-app
 pnpm install
+```
+
+### Set up your Anthropic API key
+Copy `.env.example` to `.env.local` and set `ANTHROPIC_API_KEY` (get one at
+https://console.anthropic.com/settings/keys).
+```bash
+cp .env.example .env.local
 ```
 
 ### Start dev server
