@@ -41,3 +41,14 @@ A running log of what happened on RoboPrompt, day by day.
   wasn't bundled correctly for Vercel; fixed via `serverExternalPackages`.
 - Added support for uploading multiple photos of the same arm at once.
 - Removed the WeChat QR code from Annie's Members profile page.
+- Tracked down the real cause of the upload 500: pnpm's default symlinked
+  node_modules layout broke Vercel's deployment packaging, and a version
+  mismatch between our `sharp` and Next's own internal `sharp` created a
+  libvips conflict. Fixed by switching to `nodeLinker: hoisted` and aligning
+  our sharp version to Next's (0.34.5) — upload works in production now.
+- Reworked the `/try` interview flow from a free-text chat into an actual
+  form: the agent now calls a structured `ask_form` tool (short prompt +
+  typed fields — text/select/textarea) instead of writing prose questions,
+  and the frontend renders real form fields instead of chat bubbles. Kept
+  the final plan as a streamed markdown document. Verified the full
+  classify → gap-fill form → summary form → plan flow via the live API.

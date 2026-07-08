@@ -3,6 +3,7 @@ import { getAnthropicClient, toAnthropicMessages } from "@/lib/anthropic";
 import { getSystemPrompt } from "@/lib/systemPrompt";
 import { streamToSSEResponse } from "@/lib/sse";
 import { processImage, UnsupportedImageError, ImageProcessingUnavailableError } from "@/lib/image";
+import { ASK_FORM_TOOL } from "@/lib/tools";
 import {
   ALLOWED_IMAGE_MIME_TYPES,
   MAX_IMAGE_BYTES,
@@ -98,6 +99,7 @@ export async function POST(req: NextRequest) {
     model: MODEL_ID,
     max_tokens: MAX_TOKENS,
     system: systemPrompt,
+    tools: [ASK_FORM_TOOL],
     messages: toAnthropicMessages([initialMessage]),
   });
 

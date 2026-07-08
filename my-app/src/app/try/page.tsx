@@ -2,13 +2,12 @@
 
 import { useCallback, useState } from "react";
 import { ImageDropzone } from "@/components/upload/ImageDropzone";
-import { ChatThread } from "@/components/chat/ChatThread";
-import { ChatInput } from "@/components/chat/ChatInput";
-import { GeneratePlanButton } from "@/components/chat/GeneratePlanButton";
+import { FormView } from "@/components/form/FormView";
 import { PlanView } from "@/components/plan/PlanView";
 import { ErrorBanner } from "@/components/ui/ErrorBanner";
-import { useAgentStream } from "@/hooks/useAgentStream";
-import type { ChatMessage, DisplayMessage } from "@/types/chat";
+import { Spinner } from "@/components/ui/Spinner";
+import { useAgentStream, type FormRequest, type SendResult } from "@/hooks/useAgentStream";
+import type { ChatMessage } from "@/types/chat";
 
 type Phase = "upload" | "interview" | "plan";
 
@@ -24,26 +23,52 @@ function blobToBase64(blob: Blob): Promise<string> {
 export default function TryPage() {
   const [phase, setPhase] = useState<Phase>("upload");
   const [history, setHistory] = useState<ChatMessage[]>([]);
-  const [displayMessages, setDisplayMessages] = useState<DisplayMessage[]>([]);
+  const [currentForm, setCurrentForm] = useState<FormRequest | null>(null);
+  const [fallbackText, setFallbackText] = useState<string | null>(null);
+  const [formCount, setFormCount] = useState(0);
   const [planMarkdown, setPlanMarkdown] = useState("");
   const agent = useAgentStream();
 
-  const assistantTurnCount = displayMessages.filter((m) => m.role === "assistant").length;
+  const applyResult = useCallback((result: SendResult, priorMessages: ChatMessage[]) => {
+    if (result.kind === "form") {
+      const assistantMessage: ChatMessage = {
+        role: "assistant",
+        content: [
+          {
+            type: "tool_use",
+            id: result.form.toolUseId,
+            name: "ask_form",
+            input: { prompt: result.form.prompt, fields: result.form.fields },
+          },
+        ],
+      };
+      setHistory([...priorMessages, assistantMessage]);
+      setCurrentForm(result.form);
+      setFallbackText(null);
+      setFormCount((n) => n + 1);
+      setPhase("interview");
+      return;
+    }
+
+    const assistantMessage: ChatMessage = {
+      role: "assistant",
+      content: [{ type: "text", text: result.text }],
+    };
+    setHistory([...priorMessages, assistantMessage]);
+    if (result.phase === "plan") {
+      setPlanMarkdown(result.text);
+      setCurrentForm(null);
+      setPhase("plan");
+    } else {
+      // Defensive fallback: the model replied with prose instead of calling ask_form.
+      setCurrentForm(null);
+      setFallbackText(result.text);
+      setPhase("interview");
+    }
+  }, []);
 
   const handleImagesReady = useCallback(
-    async (blobs: Blob[], previewUrls: string[]) => {
-      setPhase("interview");
-      setDisplayMessages([
-        {
-          role: "user",
-          text:
-            blobs.length > 1
-              ? `Uploaded ${blobs.length} photos of my robot arm.`
-              : "Uploaded a photo of my robot arm.",
-          imageUrls: previewUrls,
-        },
-      ]);
-
+    async (blobs: Blob[]) => {
       const base64s = await Promise.all(blobs.map(blobToBase64));
       const initialMessage: ChatMessage = {
         role: "user",
@@ -70,66 +95,93 @@ export default function TryPage() {
 
       try {
         const result = await agent.send("/api/classify", { method: "POST", body: formData });
-        const assistantMessage: ChatMessage = {
-          role: "assistant",
-          content: [{ type: "text", text: result.text }],
-        };
-        setHistory([initialMessage, assistantMessage]);
-        setDisplayMessages((prev) => [...prev, { role: "assistant", text: result.text }]);
-        if (result.phase === "plan") {
-          setPlanMarkdown(result.text);
-          setPhase("plan");
-        }
+        applyResult(result, [initialMessage]);
       } catch {
-        // agent.error already holds the message; stay on the interview screen so it renders
+        // agent.error already holds the message
       }
     },
-    [agent]
+    [agent, applyResult]
   );
 
-  const sendChatMessage = useCallback(
+  const submitFormAnswer = useCallback(
+    async (values: Record<string, string>) => {
+      if (!currentForm) return;
+      const userMessage: ChatMessage = {
+        role: "user",
+        content: [
+          { type: "tool_result", toolUseId: currentForm.toolUseId, content: JSON.stringify(values) },
+        ],
+      };
+      try {
+        const result = await agent.send("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            history,
+            formAnswer: { toolUseId: currentForm.toolUseId, values },
+          }),
+        });
+        applyResult(result, [...history, userMessage]);
+      } catch {
+        // agent.error already holds the message
+      }
+    },
+    [agent, applyResult, currentForm, history]
+  );
+
+  const submitFallbackReply = useCallback(
     async (text: string) => {
-      setDisplayMessages((prev) => [...prev, { role: "user", text }]);
+      const userMessage: ChatMessage = { role: "user", content: [{ type: "text", text }] };
       try {
         const result = await agent.send("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ history, message: text }),
         });
-        const userMessage: ChatMessage = { role: "user", content: [{ type: "text", text }] };
-        const assistantMessage: ChatMessage = {
-          role: "assistant",
-          content: [{ type: "text", text: result.text }],
-        };
-        setHistory((prev) => [...prev, userMessage, assistantMessage]);
-        setDisplayMessages((prev) => [...prev, { role: "assistant", text: result.text }]);
-        if (result.phase === "plan") {
-          setPlanMarkdown(result.text);
-          setPhase("plan");
-        }
+        applyResult(result, [...history, userMessage]);
       } catch {
         // agent.error already holds the message
       }
     },
-    [agent, history]
+    [agent, applyResult, history]
   );
 
-  const handleGeneratePlanNow = useCallback(() => {
-    void sendChatMessage(
-      "Please generate the final architecture, build, and test plan now based on everything you know so far."
-    );
-  }, [sendChatMessage]);
+  const handleGeneratePlanNow = useCallback(async () => {
+    if (!currentForm) return;
+    const userMessage: ChatMessage = {
+      role: "user",
+      content: [
+        {
+          type: "tool_result",
+          toolUseId: currentForm.toolUseId,
+          content: "USER_REQUESTED_EARLY_GENERATION",
+        },
+      ],
+    };
+    try {
+      const result = await agent.send("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ history, earlyGeneration: { toolUseId: currentForm.toolUseId } }),
+      });
+      applyResult(result, [...history, userMessage]);
+    } catch {
+      // agent.error already holds the message
+    }
+  }, [agent, applyResult, currentForm, history]);
 
   const handleStartOver = useCallback(() => {
     setPhase("upload");
     setHistory([]);
-    setDisplayMessages([]);
+    setCurrentForm(null);
+    setFallbackText(null);
+    setFormCount(0);
     setPlanMarkdown("");
     agent.resetPhase();
   }, [agent]);
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-10">
+    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-6 px-4 py-10">
       {phase === "upload" && (
         <>
           <header className="text-center">
@@ -139,20 +191,47 @@ export default function TryPage() {
             </p>
           </header>
           <ImageDropzone onImagesReady={handleImagesReady} disabled={agent.isStreaming} />
+          {agent.error && <ErrorBanner message={agent.error} />}
         </>
       )}
 
       {phase === "interview" && (
-        <div className="flex flex-1 flex-col gap-4">
-          <ChatThread
-            messages={displayMessages}
-            streamingText={agent.text}
-            isStreaming={agent.isStreaming}
-          />
+        <div className="flex flex-1 flex-col gap-5">
           {agent.error && <ErrorBanner message={agent.error} />}
-          <ChatInput onSend={sendChatMessage} disabled={agent.isStreaming} />
-          {assistantTurnCount >= 3 && (
-            <GeneratePlanButton onClick={handleGeneratePlanNow} disabled={agent.isStreaming} />
+
+          {agent.isStreaming && !currentForm && (
+            <div className="flex justify-center py-10">
+              <Spinner />
+            </div>
+          )}
+
+          {!agent.isStreaming && currentForm && (
+            <FormView
+              key={currentForm.toolUseId}
+              prompt={currentForm.prompt}
+              fields={currentForm.fields}
+              onSubmit={submitFormAnswer}
+              disabled={agent.isStreaming}
+            />
+          )}
+
+          {!agent.isStreaming && !currentForm && fallbackText && (
+            <FormView
+              prompt={fallbackText}
+              fields={[{ id: "reply", label: "Your reply", type: "textarea" }]}
+              onSubmit={(values) => void submitFallbackReply(values.reply ?? "")}
+              disabled={agent.isStreaming}
+            />
+          )}
+
+          {formCount >= 2 && currentForm && (
+            <button
+              onClick={() => void handleGeneratePlanNow()}
+              disabled={agent.isStreaming}
+              className="self-center rounded-full border border-black/15 px-4 py-2 text-xs font-medium text-black/60 hover:border-black/30 hover:text-black disabled:opacity-40 dark:border-white/15 dark:text-white/60 dark:hover:border-white/30 dark:hover:text-white"
+            >
+              Generate my plan now
+            </button>
           )}
         </div>
       )}

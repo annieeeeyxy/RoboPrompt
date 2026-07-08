@@ -1,7 +1,13 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import type { SSEEvent } from "@/types/chat";
+import type { FormField, SSEEvent } from "@/types/chat";
+
+export type FormRequest = { toolUseId: string; prompt: string; fields: FormField[] };
+
+export type SendResult =
+  | { kind: "text"; text: string; phase: "interview" | "plan" }
+  | { kind: "form"; form: FormRequest };
 
 export function useAgentStream() {
   const [text, setText] = useState("");
@@ -10,15 +16,13 @@ export function useAgentStream() {
   const [error, setError] = useState<string | null>(null);
 
   const send = useCallback(
-    async (
-      input: RequestInfo,
-      init?: RequestInit
-    ): Promise<{ text: string; phase: "interview" | "plan" }> => {
+    async (input: RequestInfo, init?: RequestInit): Promise<SendResult> => {
       setIsStreaming(true);
       setError(null);
       setText("");
       let finalText = "";
       let resolvedPhase: "interview" | "plan" = "interview";
+      let form: FormRequest | null = null;
       try {
         const res = await fetch(input, init);
         if (!res.ok) {
@@ -48,6 +52,8 @@ export function useAgentStream() {
             } else if (event.type === "phase") {
               resolvedPhase = event.phase;
               setPhase(event.phase);
+            } else if (event.type === "form") {
+              form = { toolUseId: event.toolUseId, prompt: event.prompt, fields: event.fields };
             } else if (event.type === "done") {
               finalText = event.text;
             } else if (event.type === "error") {
@@ -62,7 +68,9 @@ export function useAgentStream() {
       } finally {
         setIsStreaming(false);
       }
-      return { text: finalText, phase: resolvedPhase };
+      return form
+        ? { kind: "form", form }
+        : { kind: "text", text: finalText, phase: resolvedPhase };
     },
     []
   );
