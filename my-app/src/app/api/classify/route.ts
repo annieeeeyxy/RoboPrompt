@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAnthropicClient, toAnthropicMessages } from "@/lib/anthropic";
 import { getSystemPrompt } from "@/lib/systemPrompt";
 import { streamToSSEResponse } from "@/lib/sse";
-import { processImage, UnsupportedImageError } from "@/lib/image";
+import { processImage, UnsupportedImageError, ImageProcessingUnavailableError } from "@/lib/image";
 import {
   ALLOWED_IMAGE_MIME_TYPES,
   MAX_IMAGE_BYTES,
@@ -57,6 +57,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { error: "Could not read one of these images. Try a JPEG, PNG, or WebP file." },
         { status: 400 }
+      );
+    }
+    if (err instanceof ImageProcessingUnavailableError) {
+      return NextResponse.json(
+        { error: `Image processing is unavailable on the server: ${err.message}` },
+        { status: 500 }
       );
     }
     throw err;
