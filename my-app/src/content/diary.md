@@ -40,3 +40,4 @@ A running log of what happened on RoboPrompt, day by day.
 - Fixed a 500 error on photo upload in production — `sharp`'s native binary
   wasn't bundled correctly for Vercel; fixed via `serverExternalPackages`.
 - Added support for uploading multiple photos of the same arm at once.
+- Removed the WeChat QR code from Annie's Members profile page.

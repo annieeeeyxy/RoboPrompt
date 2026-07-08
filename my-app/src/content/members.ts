@@ -19,7 +19,6 @@ export const MEMBERS: Member[] = [
     photo: "/annie.png",
     github: "annieeeeyxy",
     email: "anniexye08@gmail.com",
-    wechatQr: "/annie-wechat.jpg",
   },
   {
     slug: "dora-ai",
