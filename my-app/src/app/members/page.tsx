@@ -1,7 +1,10 @@
+import Image from "next/image";
+
 type Member = {
   name: string;
   role: string;
   bio: string;
+  photo?: string;
 };
 
 // Add more entries here if others join the project later.
@@ -10,8 +13,31 @@ const MEMBERS: Member[] = [
     name: "Annie Ye",
     role: "Creator & Developer",
     bio: "Building RoboPrompt end to end — product, system prompt design, and the web app.",
+    photo: "/annie.png",
   },
 ];
+
+function Avatar({ member }: { member: Member }) {
+  if (member.photo) {
+    return (
+      <Image
+        src={member.photo}
+        alt={member.name}
+        width={40}
+        height={40}
+        className="h-10 w-10 rounded-full object-cover"
+      />
+    );
+  }
+  return (
+    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
+      {member.name
+        .split(" ")
+        .map((part) => part[0])
+        .join("")}
+    </div>
+  );
+}
 
 export default function MembersPage() {
   return (
@@ -30,12 +56,7 @@ export default function MembersPage() {
             className="flex flex-col gap-3 rounded-2xl border border-black/10 p-5 dark:border-white/10"
           >
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
-                {member.name
-                  .split(" ")
-                  .map((part) => part[0])
-                  .join("")}
-              </div>
+              <Avatar member={member} />
               <div>
                 <p className="font-medium">{member.name}</p>
                 <p className="text-xs text-black/50 dark:text-white/50">{member.role}</p>
