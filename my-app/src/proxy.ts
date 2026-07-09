@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { AUTH_COOKIE_NAME, computeSessionToken } from "@/lib/auth";
+import { AUTH_COOKIE_NAME, computeSessionToken, timingSafeEqualStr } from "@/lib/auth";
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const sitePassword = process.env.SITE_PASSWORD;
 
   // No password configured: fail closed in production (nothing should be
@@ -15,7 +15,7 @@ export async function middleware(req: NextRequest) {
   const cookie = req.cookies.get(AUTH_COOKIE_NAME)?.value;
   const expected = await computeSessionToken(sitePassword);
 
-  if (cookie === expected) {
+  if (cookie && timingSafeEqualStr(cookie, expected)) {
     return NextResponse.next();
   }
 

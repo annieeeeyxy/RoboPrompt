@@ -9,6 +9,16 @@ const TEXT_EXTENSIONS = new Set([
 
 const MAX_TEXT_CHARS = 20_000;
 const MAX_ZIP_ENTRIES = 40;
+// entry.async("string") decompresses the WHOLE entry into memory before we
+// can truncate it — a small DEFLATE file can expand ~1000x, so a crafted
+// zip well under MAX_REFERENCE_FILE_BYTES can still OOM the process.
+// (Tried aborting mid-decompression via entry.nodeStream() + destroy() —
+// jszip's internal inflate pipe doesn't tolerate being cut off mid-flight
+// and throws an uncaught "stream.push() after EOF" outside the promise
+// chain. Checking the declared size from the zip's central directory
+// before ever starting decompression avoids that entirely.)
+const MAX_ENTRY_DECOMPRESSED_BYTES = 2 * 1024 * 1024; // 2MB per entry
+const MAX_TOTAL_DECOMPRESSED_BYTES = 8 * 1024 * 1024; // 8MB summed across all entries
 
 function extensionOf(filename: string): string {
   const dot = filename.lastIndexOf(".");
@@ -21,20 +31,49 @@ function truncate(text: string): string {
     : text;
 }
 
+/**
+ * The zip central directory records each entry's uncompressed size, read by
+ * JSZip during loadAsync() without decompressing anything. Not part of
+ * JSZip's public type surface (hence the cast), but it's the standard way
+ * to pre-check size with this library — verified empirically against a
+ * real DEFLATE bomb. Returns null if the field is missing for any reason,
+ * in which case the caller should skip rather than decompress blind.
+ */
+function declaredUncompressedSize(entry: JSZip.JSZipObject): number | null {
+  const size = (entry as unknown as { _data?: { uncompressedSize?: number } })._data
+    ?.uncompressedSize;
+  return typeof size === "number" ? size : null;
+}
+
 async function processZip(buffer: Buffer, filename: string, description: string): Promise<ChatContentBlock> {
   const zip = await JSZip.loadAsync(buffer);
   const entries = Object.values(zip.files).filter((f) => !f.dir);
   const included: string[] = [];
   const skipped: string[] = [];
+  let totalDecompressed = 0;
 
   for (const entry of entries.slice(0, MAX_ZIP_ENTRIES)) {
     const ext = extensionOf(entry.name);
-    if (TEXT_EXTENSIONS.has(ext)) {
-      const content = await entry.async("string");
-      included.push(`--- ${entry.name} ---\n${truncate(content)}`);
-    } else {
+    if (!TEXT_EXTENSIONS.has(ext)) {
       skipped.push(entry.name);
+      continue;
     }
+    const declaredSize = declaredUncompressedSize(entry);
+    if (declaredSize === null) {
+      skipped.push(`${entry.name} (size could not be verified, skipped for safety)`);
+      continue;
+    }
+    if (declaredSize > MAX_ENTRY_DECOMPRESSED_BYTES) {
+      skipped.push(`${entry.name} (too large: ${declaredSize} bytes decompressed)`);
+      continue;
+    }
+    if (totalDecompressed + declaredSize > MAX_TOTAL_DECOMPRESSED_BYTES) {
+      skipped.push(`${entry.name} (over the archive's total size budget)`);
+      continue;
+    }
+    const content = await entry.async("string");
+    totalDecompressed += declaredSize;
+    included.push(`--- ${entry.name} ---\n${truncate(content)}`);
   }
   if (entries.length > MAX_ZIP_ENTRIES) {
     skipped.push(`…and ${entries.length - MAX_ZIP_ENTRIES} more entries not listed`);

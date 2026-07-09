@@ -102,7 +102,15 @@ export async function POST(req: NextRequest) {
   }
 
   const projectName = sanitizeProjectName(input.projectName ?? "robot-arm-project");
-  const zipBuffer = await buildZip(input.files, input.notes ?? "");
+  let zipBuffer: Buffer;
+  try {
+    zipBuffer = await buildZip(input.files, input.notes ?? "");
+  } catch (err) {
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Failed to package the generated files" },
+      { status: 502 }
+    );
+  }
 
   return new Response(new Uint8Array(zipBuffer), {
     headers: {

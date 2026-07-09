@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { AUTH_COOKIE_NAME, computeSessionToken } from "@/lib/auth";
+import { AUTH_COOKIE_NAME, computeSessionToken, timingSafeEqualStr } from "@/lib/auth";
 
 export const runtime = "nodejs";
 
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Site password is not configured" }, { status: 500 });
   }
 
-  if (body.password !== sitePassword) {
+  if (!timingSafeEqualStr(body.password, sitePassword)) {
     return NextResponse.json({ error: "Incorrect password" }, { status: 401 });
   }
 
