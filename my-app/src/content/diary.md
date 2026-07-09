@@ -115,3 +115,16 @@ A running log of what happened on RoboPrompt, day by day.
   non-constant-time credential comparisons on the password gate, and an
   unvalidated-tool-output crash in /api/generate. Also migrated
   middleware.ts to proxy.ts (Next.js 16 deprecated the old convention).
+- Added real photo thumbnails to the upload/interview screens (previously
+  just a "N photos ready" text count) so users can see exactly what they
+  uploaded, with a per-photo remove button.
+- Dora Ai pushed a full multilingual feature (English/Spanish/French/
+  Chinese, with an AI language policy so the agent replies in the user's
+  chosen language) directly to main while this was in progress — first
+  real parallel teammate contribution on this repo. Merged the two via
+  rebase; only one real conflict (both sides touched the same spot in
+  `try/page.tsx`'s upload screen), resolved in favor of the thumbnails.
+  Also fixed one lint error the merge exposed in the new language context
+  (a synchronous setState-in-effect flagged by React's hooks lint rule).
+  Verified with a full typecheck/lint/build/local-smoke pass before
+  pushing.
