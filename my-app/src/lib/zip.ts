@@ -11,7 +11,11 @@ export async function buildZip(
     zip.file(file.path, file.content);
   }
   if (notes) {
-    zip.file("SETUP.md", notes);
+    // The model occasionally writes literal backslash-n as plain text in
+    // this prose field instead of an actual line break (a quirk specific
+    // to this free-text field, not the code files — those legitimately
+    // contain "\n" as real string-literal escapes and must not be touched).
+    zip.file("SETUP.md", notes.replace(/\\n/g, "\n"));
   }
   return zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" });
 }
