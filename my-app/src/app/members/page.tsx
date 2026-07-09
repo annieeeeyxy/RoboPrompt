@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslation } from "@/hooks/useTranslation";
 import { MEMBERS, type Member } from "@/content/members";
 
 function Avatar({ member }: { member: Member }) {
@@ -25,12 +28,27 @@ function Avatar({ member }: { member: Member }) {
 }
 
 export default function MembersPage() {
+  const { t } = useTranslation();
+
+  const getMemberRole = (slug: string, role: string) => {
+    const key = `member_${slug.replaceAll("-", "_")}_role`;
+    const translated = t(key);
+    return translated === key ? role : translated;
+  };
+
+  const getMemberBio = (slug: string, bio?: string) => {
+    if (!bio) return bio;
+    const key = `member_${slug.replaceAll("-", "_")}_bio`;
+    const translated = t(key);
+    return translated === key ? bio : translated;
+  };
+
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-8 px-4 py-16">
       <header>
-        <h1 className="text-2xl font-semibold">Members</h1>
+        <h1 className="text-2xl font-semibold">{t("membersTitle")}</h1>
         <p className="mt-2 text-sm text-black/60 dark:text-white/60">
-          The people behind RoboPrompt.
+          {t("thePeopleBehind")}
         </p>
       </header>
 
@@ -45,11 +63,15 @@ export default function MembersPage() {
                 <Avatar member={member} />
                 <div>
                   <p className="font-medium">{member.name}</p>
-                  <p className="text-xs text-black/50 dark:text-white/50">{member.role}</p>
+                  <p className="text-xs text-black/50 dark:text-white/50">
+                    {getMemberRole(member.slug, member.role)}
+                  </p>
                 </div>
               </div>
               {member.bio && (
-                <p className="text-sm text-black/60 dark:text-white/60">{member.bio}</p>
+                <p className="text-sm text-black/60 dark:text-white/60">
+                  {getMemberBio(member.slug, member.bio)}
+                </p>
               )}
             </Link>
           </li>

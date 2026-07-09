@@ -5,6 +5,12 @@ import { getSystemPrompt } from "@/lib/systemPrompt";
 import { streamToSSEResponse } from "@/lib/sse";
 import { ASK_FORM_TOOL } from "@/lib/tools";
 import { ChatMessageSchema } from "@/lib/chatSchema";
+import {
+  buildLanguagePolicyInstruction,
+  resolveResponseLanguage,
+  UI_LANGUAGES,
+  type UiLanguage,
+} from "@/lib/languagePolicy";
 import { EARLY_GENERATION_SIGNAL, MAX_TOKENS, MODEL_ID } from "@/lib/constants";
 import type { ChatMessage } from "@/types/chat";
 
@@ -14,6 +20,7 @@ export const maxDuration = 120;
 const RequestSchema = z
   .object({
     history: z.array(ChatMessageSchema),
+    uiLanguage: z.enum(UI_LANGUAGES).default("en"),
     message: z.string().min(1).optional(),
     formAnswer: z
       .object({ toolUseId: z.string(), values: z.record(z.string(), z.string()) })
@@ -63,6 +70,12 @@ export async function POST(req: NextRequest) {
 
   const messages: ChatMessage[] = [...body.history, nextMessage];
 
+  const latestUserText = body.message ?? Object.values(body.formAnswer?.values ?? {}).join(" ");
+  const responseLanguage = resolveResponseLanguage(
+    body.uiLanguage as UiLanguage,
+    latestUserText
+  );
+
   let client: ReturnType<typeof getAnthropicClient>;
   let systemPrompt: string;
   try {
@@ -78,7 +91,10 @@ export async function POST(req: NextRequest) {
   const stream = client.messages.stream({
     model: MODEL_ID,
     max_tokens: MAX_TOKENS,
-    system: systemPrompt,
+    system: `${systemPrompt}\n\n${buildLanguagePolicyInstruction(
+      body.uiLanguage as UiLanguage,
+      responseLanguage
+    )}`,
     tools: [ASK_FORM_TOOL],
     messages: toAnthropicMessages(messages),
   });

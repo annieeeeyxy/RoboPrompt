@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { useTranslation } from "@/hooks/useTranslation";
 import { MAX_IMAGE_FILES } from "@/lib/constants";
 
 const MAX_EDGE = 2000;
@@ -32,6 +33,7 @@ export function ImageDropzone({
   onImagesReady: (blobs: Blob[], previewUrls: string[]) => void;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isPreparing, setIsPreparing] = useState(false);
@@ -86,10 +88,10 @@ export function ImageDropzone({
         }}
       />
       <p className="text-lg font-medium">
-        {isPreparing ? "Preparing photos…" : "Drop photos of your robot arm here"}
+        {isPreparing ? t("preparingPhotos") : t("dropPhotosHere")}
       </p>
       <p className="text-sm text-black/50 dark:text-white/50">
-        or click to choose one or more files — JPEG, PNG, or WebP (up to {MAX_IMAGE_FILES})
+        {t("chooseFilesHint").replace("{count}", String(MAX_IMAGE_FILES))}
       </p>
     </div>
   );

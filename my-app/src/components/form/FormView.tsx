@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import { useTranslation } from "@/hooks/useTranslation";
 import type { FormField } from "@/types/chat";
 
 const OTHER_SENTINEL = "__other__";
@@ -130,6 +131,7 @@ export function FormView({
   onSubmit: (values: Record<string, string>) => void;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation();
   const [values, setValues] = useState<Record<string, string>>(() =>
     Object.fromEntries(fields.map((f) => [f.id, ""]))
   );
@@ -163,7 +165,7 @@ export function FormView({
         disabled={disabled}
         className="self-start rounded-full bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-500 disabled:opacity-40"
       >
-        Continue
+        {t("continue")}
       </button>
     </form>
   );

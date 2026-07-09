@@ -8,6 +8,7 @@ import { PlanView } from "@/components/plan/PlanView";
 import { ErrorBanner } from "@/components/ui/ErrorBanner";
 import { ThinkingIndicator } from "@/components/ui/ThinkingIndicator";
 import { useAgentStream, type FormRequest, type SendResult } from "@/hooks/useAgentStream";
+import { useTranslation } from "@/hooks/useTranslation";
 import type { ChatMessage } from "@/types/chat";
 
 type Phase = "upload" | "interview" | "plan";
@@ -22,6 +23,7 @@ function blobToBase64(blob: Blob): Promise<string> {
 }
 
 export default function TryPage() {
+  const { t, language } = useTranslation();
   const [phase, setPhase] = useState<Phase>("upload");
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const [currentForm, setCurrentForm] = useState<FormRequest | null>(null);
@@ -92,9 +94,6 @@ export default function TryPage() {
             description: entry.description,
           };
         }
-        // Full extraction (zip contents, text files) happens server-side for
-        // the actual analysis call — this is just a lightweight mirror so
-        // later turns' history still show the file was provided.
         return {
           type: "text",
           text: `Reference file "${entry.file.name}"${
@@ -117,10 +116,7 @@ export default function TryPage() {
         ...referenceBlocks,
         {
           type: "text",
-          text:
-            blobs.length > 1
-              ? "Here are photos of my robotic arm. Please analyze them and help me figure out how to control it."
-              : "Here is a photo of my robotic arm. Please analyze it and help me figure out how to control it.",
+          text: blobs.length > 1 ? t("herePhotosOfArm") : t("herePhotoOfArm"),
         },
       ],
     };
@@ -131,6 +127,7 @@ export default function TryPage() {
       formData.append("refFile", entry.file, entry.file.name);
       formData.append("refDescription", entry.description);
     });
+    formData.append("uiLanguage", language);
 
     try {
       const result = await agent.send("/api/classify", { method: "POST", body: formData });
@@ -138,7 +135,7 @@ export default function TryPage() {
     } catch {
       // agent.error already holds the message
     }
-  }, [agent, applyResult, selectedImages, refEntries]);
+  }, [agent, applyResult, selectedImages, refEntries, language, t]);
 
   const submitFormAnswer = useCallback(
     async (values: Record<string, string>) => {
@@ -155,6 +152,7 @@ export default function TryPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             history,
+            uiLanguage: language,
             formAnswer: { toolUseId: currentForm.toolUseId, values },
           }),
         });
@@ -163,7 +161,7 @@ export default function TryPage() {
         // agent.error already holds the message
       }
     },
-    [agent, applyResult, currentForm, history]
+    [agent, applyResult, currentForm, history, language]
   );
 
   const submitFallbackReply = useCallback(
@@ -173,14 +171,14 @@ export default function TryPage() {
         const result = await agent.send("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ history, message: text }),
+          body: JSON.stringify({ history, uiLanguage: language, message: text }),
         });
         applyResult(result, [...history, userMessage]);
       } catch {
         // agent.error already holds the message
       }
     },
-    [agent, applyResult, history]
+    [agent, applyResult, history, language]
   );
 
   const handleGeneratePlanNow = useCallback(async () => {
@@ -199,13 +197,17 @@ export default function TryPage() {
       const result = await agent.send("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ history, earlyGeneration: { toolUseId: currentForm.toolUseId } }),
+        body: JSON.stringify({
+          history,
+          uiLanguage: language,
+          earlyGeneration: { toolUseId: currentForm.toolUseId },
+        }),
       });
       applyResult(result, [...history, userMessage]);
     } catch {
       // agent.error already holds the message
     }
-  }, [agent, applyResult, currentForm, history]);
+  }, [agent, applyResult, currentForm, history, language]);
 
   const handleDownloadCode = useCallback(async () => {
     setIsGeneratingCode(true);
@@ -255,20 +257,20 @@ export default function TryPage() {
       {phase === "upload" && (
         <>
           <header className="text-center">
-            <h1 className="text-2xl font-semibold">Upload your robot arm</h1>
+            <h1 className="text-2xl font-semibold">{t("uploadYourArm")}</h1>
             <p className="mt-1 text-sm text-black/50 dark:text-white/50">
-              We&apos;ll analyze it and ask what we can&apos;t tell from the photo.
+              {t("analyzeAskPhoto")}
             </p>
           </header>
           {agent.isStreaming ? (
-            <ThinkingIndicator label="Analyzing your photo…" />
+            <ThinkingIndicator label={t("analyzingPhoto")} />
           ) : (
             <>
               <ImageDropzone onImagesReady={handleImagesReady} disabled={agent.isStreaming} />
 
               {selectedImages.length > 0 && (
                 <p className="text-center text-sm text-black/50 dark:text-white/50">
-                  {selectedImages.length} photo{selectedImages.length > 1 ? "s" : ""} ready.
+                  {t("photosReady").replace("{count}", String(selectedImages.length)).replace("{s}", selectedImages.length > 1 ? "s" : "")}
                 </p>
               )}
 
@@ -283,7 +285,7 @@ export default function TryPage() {
                   onClick={() => void handleAnalyze()}
                   className="self-center rounded-full bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-500"
                 >
-                  Analyze
+                  {t("analyze")}
                 </button>
               )}
             </>
@@ -315,7 +317,7 @@ export default function TryPage() {
           {!agent.isStreaming && !currentForm && fallbackText && (
             <FormView
               prompt={fallbackText}
-              fields={[{ id: "reply", label: "Your reply", type: "textarea" }]}
+              fields={[{ id: "reply", label: t("replyLabel"), type: "textarea" }]}
               onSubmit={(values) => void submitFallbackReply(values.reply ?? "")}
               disabled={agent.isStreaming}
             />
@@ -326,7 +328,7 @@ export default function TryPage() {
               onClick={() => void handleGeneratePlanNow()}
               className="self-center rounded-full border border-black/15 px-4 py-2 text-xs font-medium text-black/60 hover:border-black/30 hover:text-black dark:border-white/15 dark:text-white/60 dark:hover:border-white/30 dark:hover:text-white"
             >
-              Generate my plan now
+              {t("generatePlanNow")}
             </button>
           )}
         </div>
@@ -346,7 +348,7 @@ export default function TryPage() {
                 disabled={isGeneratingCode}
                 className="rounded-full bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-500 disabled:opacity-40"
               >
-                {isGeneratingCode ? "Generating code…" : "Download code (.zip)"}
+                {isGeneratingCode ? t("generatingCode") : t("downloadCode")}
               </button>
             }
           />

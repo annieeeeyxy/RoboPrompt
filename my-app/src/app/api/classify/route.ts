@@ -6,6 +6,11 @@ import { processImage, UnsupportedImageError, ImageProcessingUnavailableError } 
 import { processReferenceFile } from "@/lib/referenceFiles";
 import { ASK_FORM_TOOL } from "@/lib/tools";
 import {
+  buildLanguagePolicyInstruction,
+  UI_LANGUAGES,
+  type UiLanguage,
+} from "@/lib/languagePolicy";
+import {
   ALLOWED_IMAGE_MIME_TYPES,
   MAX_IMAGE_BYTES,
   MAX_IMAGE_FILES,
@@ -26,6 +31,31 @@ export async function POST(req: NextRequest) {
   } catch {
     return NextResponse.json({ error: "Expected multipart/form-data" }, { status: 400 });
   }
+
+  const rawUiLanguage = formData.get("uiLanguage");
+  const uiLanguage =
+    typeof rawUiLanguage === "string" && UI_LANGUAGES.includes(rawUiLanguage as UiLanguage)
+      ? (rawUiLanguage as UiLanguage)
+      : "en";
+
+  const initialTextByLanguage: Record<UiLanguage, { one: string; many: string }> = {
+    en: {
+      one: "Here is a photo of my robotic arm. Please analyze it and help me figure out how to control it.",
+      many: "Here are photos of my robotic arm. Please analyze them and help me figure out how to control it.",
+    },
+    es: {
+      one: "Aqui hay una foto de mi brazo robotico. Analizala y ayudame a entender como controlarlo.",
+      many: "Aqui hay fotos de mi brazo robotico. Analizalas y ayudame a entender como controlarlo.",
+    },
+    fr: {
+      one: "Voici une photo de mon bras robotique. Analyse-la et aide-moi a comprendre comment le controler.",
+      many: "Voici des photos de mon bras robotique. Analyse-les et aide-moi a comprendre comment le controler.",
+    },
+    zh: {
+      one: "这是我机械臂的一张照片。请分析并帮助我了解如何控制它。",
+      many: "这是我机械臂的多张照片。请分析并帮助我了解如何控制它。",
+    },
+  };
 
   const files = formData.getAll("file").filter((f): f is File => f instanceof File);
   if (files.length === 0) {
@@ -103,8 +133,8 @@ export async function POST(req: NextRequest) {
         type: "text",
         text:
           imageBlocks.length > 1
-            ? "Here are photos of my robotic arm. Please analyze them and help me figure out how to control it."
-            : "Here is a photo of my robotic arm. Please analyze it and help me figure out how to control it.",
+            ? initialTextByLanguage[uiLanguage].many
+            : initialTextByLanguage[uiLanguage].one,
       },
     ],
   };
@@ -124,7 +154,7 @@ export async function POST(req: NextRequest) {
   const stream = client.messages.stream({
     model: MODEL_ID,
     max_tokens: MAX_TOKENS,
-    system: systemPrompt,
+    system: `${systemPrompt}\n\n${buildLanguagePolicyInstruction(uiLanguage, uiLanguage)}`,
     tools: [ASK_FORM_TOOL],
     messages: toAnthropicMessages([initialMessage]),
   });
