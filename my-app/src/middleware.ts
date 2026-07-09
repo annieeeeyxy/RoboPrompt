@@ -32,5 +32,5 @@ function blockedResponse(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/try/:path*", "/api/classify/:path*", "/api/chat/:path*"],
+  matcher: ["/try/:path*", "/api/classify/:path*", "/api/chat/:path*", "/api/generate/:path*"],
 };

@@ -4,34 +4,12 @@ import { getAnthropicClient, toAnthropicMessages } from "@/lib/anthropic";
 import { getSystemPrompt } from "@/lib/systemPrompt";
 import { streamToSSEResponse } from "@/lib/sse";
 import { ASK_FORM_TOOL } from "@/lib/tools";
+import { ChatMessageSchema } from "@/lib/chatSchema";
 import { EARLY_GENERATION_SIGNAL, MAX_TOKENS, MODEL_ID } from "@/lib/constants";
 import type { ChatMessage } from "@/types/chat";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
-
-const ChatContentBlockSchema = z.union([
-  z.object({ type: z.literal("text"), text: z.string() }),
-  z.object({
-    type: z.literal("image"),
-    mediaType: z.enum(["image/jpeg", "image/png", "image/webp"]),
-    base64: z.string(),
-  }),
-  z.object({
-    type: z.literal("document"),
-    mediaType: z.literal("application/pdf"),
-    base64: z.string(),
-    filename: z.string().optional(),
-    description: z.string().optional(),
-  }),
-  z.object({ type: z.literal("tool_use"), id: z.string(), name: z.string(), input: z.unknown() }),
-  z.object({ type: z.literal("tool_result"), toolUseId: z.string(), content: z.string() }),
-]);
-
-const ChatMessageSchema = z.object({
-  role: z.enum(["user", "assistant"]),
-  content: z.array(ChatContentBlockSchema),
-});
 
 const RequestSchema = z
   .object({

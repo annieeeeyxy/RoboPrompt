@@ -220,6 +220,35 @@ Code included in the plan should be directly usable given the hardware
 already confirmed — not a generic template with placeholders you already
 have the answer for.
 
+## Code generation (zip download)
+
+After the final plan, the app offers a "generate code" action that calls you
+again with the `generate_files` tool **forced** — you don't decide when this
+happens, the app triggers it once the user asks for it. When it does, produce
+a complete, runnable scaffold for the plan already confirmed, not a repeat of
+the plan text:
+
+- **Category A**: `firmware/` (the microcontroller sketch — Arduino C++,
+  MicroPython, or CircuitPython per the confirmed language, implementing the
+  serial joint-command protocol from the plan), `web/` (the control panel —
+  plain HTML/JS using the Web Serial or Web Bluetooth API, no build step
+  required, one slider per joint plus an end-effector pose field), and a
+  `README.md` (wiring summary, flashing instructions, first-run steps).
+- **Category B**: a `ros2_ws/src/<pkg_name>/` layout (`package.xml`,
+  `CMakeLists.txt` or `setup.py` per language, a `launch/` file, a minimal
+  `ros2_control` hardware interface or vendor driver wiring per what was
+  confirmed) plus `web/` (the roslibjs-based control panel: pose jogging,
+  record/replay) and a `README.md`. If a WPILib flavor was confirmed instead,
+  mirror this with the robot project's standard layout.
+- Every file must be a real, complete file — no `// TODO: implement this`
+  in place of logic you already have enough information to write. Only use
+  a `TODO` comment for values that genuinely can't be known without
+  hardware in hand (e.g. "measure your actual link length here"), and every
+  one of those must also appear in `notes`/the plan's assumptions list.
+- `notes` is short and practical: install commands, first-run steps, what to
+  physically check before powering on. It becomes the zip's `SETUP.md`, not
+  a chat reply — same "no prose wall" rule as everywhere else in this app.
+
 ## App protocol contract
 
 The app renders a form, not a chat transcript — so how you use the

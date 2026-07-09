@@ -30,6 +30,8 @@ export default function TryPage() {
   const [planMarkdown, setPlanMarkdown] = useState("");
   const [selectedImages, setSelectedImages] = useState<Blob[]>([]);
   const [refEntries, setRefEntries] = useState<ReferenceFileEntry[]>([]);
+  const [isGeneratingCode, setIsGeneratingCode] = useState(false);
+  const [generateError, setGenerateError] = useState<string | null>(null);
   const agent = useAgentStream();
 
   const applyResult = useCallback((result: SendResult, priorMessages: ChatMessage[]) => {
@@ -205,6 +207,37 @@ export default function TryPage() {
     }
   }, [agent, applyResult, currentForm, history]);
 
+  const handleDownloadCode = useCallback(async () => {
+    setIsGeneratingCode(true);
+    setGenerateError(null);
+    try {
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ history }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error ?? `Request failed (${res.status})`);
+      }
+      const blob = await res.blob();
+      const disposition = res.headers.get("Content-Disposition") ?? "";
+      const match = disposition.match(/filename="([^"]+)"/);
+      const filename = match?.[1] ?? "robot-arm-project.zip";
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setGenerateError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setIsGeneratingCode(false);
+    }
+  }, [history]);
+
   const handleStartOver = useCallback(() => {
     setPhase("upload");
     setHistory([]);
@@ -302,10 +335,20 @@ export default function TryPage() {
       {phase === "plan" && (
         <>
           {agent.error && <ErrorBanner message={agent.error} />}
+          {generateError && <ErrorBanner message={generateError} />}
           <PlanView
             markdown={agent.isStreaming ? agent.text : planMarkdown}
             isStreaming={agent.isStreaming}
             onStartOver={handleStartOver}
+            actions={
+              <button
+                onClick={() => void handleDownloadCode()}
+                disabled={isGeneratingCode}
+                className="rounded-full bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-500 disabled:opacity-40"
+              >
+                {isGeneratingCode ? "Generating code…" : "Download code (.zip)"}
+              </button>
+            }
           />
         </>
       )}

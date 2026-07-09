@@ -1,5 +1,5 @@
 import type Anthropic from "@anthropic-ai/sdk";
-import { ASK_FORM_TOOL_NAME } from "@/lib/constants";
+import { ASK_FORM_TOOL_NAME, GENERATE_FILES_TOOL_NAME } from "@/lib/constants";
 
 export const ASK_FORM_TOOL: Anthropic.Tool = {
   name: ASK_FORM_TOOL_NAME,
@@ -38,5 +38,42 @@ export const ASK_FORM_TOOL: Anthropic.Tool = {
       },
     },
     required: ["prompt", "fields"],
+  },
+};
+
+export const GENERATE_FILES_TOOL: Anthropic.Tool = {
+  name: GENERATE_FILES_TOOL_NAME,
+  description:
+    "Produce the actual code scaffold for the confirmed plan, as a set of files to package into a downloadable zip. Call this once, with every file the project needs.",
+  input_schema: {
+    type: "object",
+    properties: {
+      projectName: {
+        type: "string",
+        description: "A short kebab-case project folder name, e.g. 'my-arm-controller'.",
+      },
+      files: {
+        type: "array",
+        description:
+          "Every file in the scaffold — firmware/driver code, host bridge, the web control panel, a README, and config. Directory structure via '/' in path.",
+        items: {
+          type: "object",
+          properties: {
+            path: {
+              type: "string",
+              description: "Relative file path, e.g. 'firmware/arm_controller.ino' or 'web/index.html'.",
+            },
+            content: { type: "string", description: "The full file content." },
+          },
+          required: ["path", "content"],
+        },
+      },
+      notes: {
+        type: "string",
+        description:
+          "Short plain-text setup notes (install steps, what to fill in) — this becomes the zip's SETUP.md, not a chat reply.",
+      },
+    },
+    required: ["projectName", "files", "notes"],
   },
 };
