@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { ImageDropzone } from "@/components/upload/ImageDropzone";
+import { ImageThumbnails } from "@/components/upload/ImageThumbnails";
 import { ReferenceFileUpload, type ReferenceFileEntry } from "@/components/upload/ReferenceFileUpload";
 import { FormView } from "@/components/form/FormView";
 import { PlanView } from "@/components/plan/PlanView";
@@ -31,6 +32,7 @@ export default function TryPage() {
   const [formCount, setFormCount] = useState(0);
   const [planMarkdown, setPlanMarkdown] = useState("");
   const [selectedImages, setSelectedImages] = useState<Blob[]>([]);
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
   const [refEntries, setRefEntries] = useState<ReferenceFileEntry[]>([]);
   const [isGeneratingCode, setIsGeneratingCode] = useState(false);
   const [generateError, setGenerateError] = useState<string | null>(null);
@@ -74,8 +76,18 @@ export default function TryPage() {
     }
   }, []);
 
-  const handleImagesReady = useCallback((blobs: Blob[]) => {
+  const handleImagesReady = useCallback((blobs: Blob[], previewUrls: string[]) => {
     setSelectedImages((prev) => [...prev, ...blobs]);
+    setImagePreviewUrls((prev) => [...prev, ...previewUrls]);
+  }, []);
+
+  const handleRemoveImage = useCallback((index: number) => {
+    setImagePreviewUrls((prev) => {
+      const url = prev[index];
+      if (url) URL.revokeObjectURL(url);
+      return prev.filter((_, i) => i !== index);
+    });
+    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
   }, []);
 
   const handleAnalyze = useCallback(async () => {
@@ -248,9 +260,11 @@ export default function TryPage() {
     setFormCount(0);
     setPlanMarkdown("");
     setSelectedImages([]);
+    imagePreviewUrls.forEach((url) => URL.revokeObjectURL(url));
+    setImagePreviewUrls([]);
     setRefEntries([]);
     agent.resetPhase();
-  }, [agent]);
+  }, [agent, imagePreviewUrls]);
 
   return (
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-6 px-4 py-10">
@@ -268,10 +282,12 @@ export default function TryPage() {
             <>
               <ImageDropzone onImagesReady={handleImagesReady} disabled={agent.isStreaming} />
 
-              {selectedImages.length > 0 && (
-                <p className="text-center text-sm text-black/50 dark:text-white/50">
-                  {t("photosReady").replace("{count}", String(selectedImages.length)).replace("{s}", selectedImages.length > 1 ? "s" : "")}
-                </p>
+              {imagePreviewUrls.length > 0 && (
+                <ImageThumbnails
+                  urls={imagePreviewUrls}
+                  onRemove={handleRemoveImage}
+                  disabled={agent.isStreaming}
+                />
               )}
 
               <ReferenceFileUpload
@@ -296,6 +312,8 @@ export default function TryPage() {
 
       {phase === "interview" && (
         <div className="flex flex-1 flex-col gap-5">
+          {imagePreviewUrls.length > 0 && <ImageThumbnails urls={imagePreviewUrls} />}
+
           {agent.error && <ErrorBanner message={agent.error} />}
 
           {agent.isStreaming && agent.phase === "plan" && (
