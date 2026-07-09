@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ImageDropzone } from "@/components/upload/ImageDropzone";
 import { ImageThumbnails } from "@/components/upload/ImageThumbnails";
 import { ReferenceFileUpload, type ReferenceFileEntry } from "@/components/upload/ReferenceFileUpload";
@@ -10,6 +10,12 @@ import { ErrorBanner } from "@/components/ui/ErrorBanner";
 import { ThinkingIndicator } from "@/components/ui/ThinkingIndicator";
 import { useAgentStream, type FormRequest, type SendResult } from "@/hooks/useAgentStream";
 import { useTranslation } from "@/hooks/useTranslation";
+import {
+  clearSession,
+  loadSession,
+  previewUrlsFromHistory,
+  saveSession,
+} from "@/lib/sessionPersistence";
 import type { ChatMessage } from "@/types/chat";
 
 type Phase = "upload" | "interview" | "plan";
@@ -37,6 +43,36 @@ export default function TryPage() {
   const [isGeneratingCode, setIsGeneratingCode] = useState(false);
   const [generateError, setGenerateError] = useState<string | null>(null);
   const agent = useAgentStream();
+
+  // Restore a saved interview after a refresh, so mid-interview progress
+  // (and a finished plan) survives reloads. Photo thumbnails are rebuilt
+  // from the base64 images already embedded in the restored history.
+  useEffect(() => {
+    const saved = loadSession();
+    if (!saved) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- restoring persisted state from localStorage, not derivable during SSR render
+    setPhase(saved.phase);
+    setHistory(saved.history);
+    setCurrentForm(saved.currentForm);
+    setFallbackText(saved.fallbackText);
+    setFormCount(saved.formCount);
+    setPlanMarkdown(saved.planMarkdown);
+    setImagePreviewUrls(previewUrlsFromHistory(saved.history));
+  }, []);
+
+  // Keep the saved session in sync once the interview has started.
+  useEffect(() => {
+    if (phase === "upload") return;
+    saveSession({
+      v: 1,
+      phase,
+      history,
+      currentForm,
+      fallbackText,
+      formCount,
+      planMarkdown,
+    });
+  }, [phase, history, currentForm, fallbackText, formCount, planMarkdown]);
 
   const applyResult = useCallback((result: SendResult, priorMessages: ChatMessage[]) => {
     if (result.kind === "form") {
@@ -253,6 +289,7 @@ export default function TryPage() {
   }, [history, language]);
 
   const handleStartOver = useCallback(() => {
+    clearSession();
     setPhase("upload");
     setHistory([]);
     setCurrentForm(null);
