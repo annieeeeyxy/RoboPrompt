@@ -30,6 +30,8 @@ A running log of what happened on RoboPrompt, day by day.
 - Had an independent security review done and fixed everything it found (a zip-bomb vulnerability, unsafe file paths, insecure comparisons).
 - Added photo thumbnails so users can see what they uploaded.
 - Merged in a teammate's (Dora Ai) multilingual feature (English/Spanish/French/Chinese) that landed on main in parallel - resolved the overlap and backfilled the diary translations.
+- Rebranded the site to a fixed black-and-pink theme with a new robot logo.
+- Made the tool feel like a real product: CI now checks every push, an interview survives a page refresh, and a finished plan can be revised with feedback (e.g. "switch to ESP32") instead of starting over.
 `,
   es: `# Diario del Proyecto
 
@@ -60,6 +62,8 @@ Un registro continuo de lo que paso en RoboPrompt, dia por dia.
 - Se realizo una revision de seguridad independiente y se corrigio todo lo que encontro (una vulnerabilidad de zip bomb, rutas de archivo inseguras, comparaciones inseguras).
 - Se agregaron miniaturas de fotos para que los usuarios vean lo que subieron.
 - Se fusiono la funcion multilingue de una companera de equipo (Dora Ai, ingles/espanol/frances/chino) que llego a main en paralelo - se resolvio el solape y se completaron las traducciones del diario.
+- Se cambio la imagen del sitio a un tema fijo negro y rosa con un nuevo logo de robot.
+- La herramienta ahora se siente como un producto real: CI verifica cada push, una entrevista sobrevive a un refresco de pagina, y un plan terminado se puede revisar con comentarios (p. ej. "cambia a ESP32") en lugar de empezar de cero.
 `,
   fr: `# Journal du Projet
 
@@ -90,6 +94,8 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 - Revue de securite independante realisee, et tout ce qu'elle a trouve a ete corrige (une vulnerabilite de type zip bomb, des chemins de fichiers non securises, des comparaisons non securisees).
 - Ajout de miniatures des photos pour que les utilisateurs voient ce qu'ils ont televerse.
 - Fusion de la fonctionnalite multilingue d'une coequipiere (Dora Ai, anglais/espagnol/francais/chinois) arrivee sur main en parallele - chevauchement resolu et traductions du journal completees.
+- Nouvelle identite visuelle : theme fixe noir et rose avec un nouveau logo robot.
+- L'outil ressemble maintenant a un vrai produit : la CI verifie chaque push, un entretien survit a un rafraichissement de page, et un plan termine peut etre revise avec des retours (p. ex. "passer a l'ESP32") au lieu de tout recommencer.
 `,
   zh: `# 项目日志
 
@@ -120,5 +126,7 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 - 找人做了一次独立安全审查，并修复了发现的所有问题（zip 炸弹漏洞、不安全的文件路径、不安全的比较逻辑）。
 - 新增了照片缩略图，方便用户看清自己上传了什么。
 - 合并了队友 Dora Ai 并行开发的多语言功能（英/西/法/中）——处理了冲突，并补全了日志的翻译内容。
+- 网站换上固定的黑粉配色主题和全新的机器人 logo。
+- 工具向真正的产品迈进：每次 push 都有 CI 自动检查，访谈进度刷新页面不再丢失，生成的方案可以直接提修改意见（比如"改用 ESP32"）迭代，无需重头再来。
 `,
 };
