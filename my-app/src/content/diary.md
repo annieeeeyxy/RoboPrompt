@@ -92,3 +92,16 @@ A running log of what happened on RoboPrompt, day by day.
   smoke test all clean. Production verification is on hold until
   `SITE_PASSWORD` is set in Vercel (expected — that's the fail-closed
   default doing its job).
+- Annie set `SITE_PASSWORD` in Vercel and redeployed — confirmed working
+  end-to-end in production.
+- Self-tested the full flow on production with a real photo Annie sent (a
+  LeArm-style 5-DOF hobby-servo kit): brand-first detection correctly
+  named the LewanSoul/Hiwonder LeArm family from the photo alone, walked
+  through the interview (Arduino Uno, standard 180° servos, as Annie
+  specified), reached a confirmed plan, and generated a real code zip.
+  Unzipped and read the actual output — genuine working Arduino firmware,
+  a matching Web Serial control panel with real inverse-kinematics math,
+  and a README, not placeholders. Found and fixed one real bug in the
+  process: the generated SETUP.md had a literal backslash-n instead of
+  line breaks (a quirk in the model's free-text notes field, not the
+  code files) — normalized in `lib/zip.ts`.
