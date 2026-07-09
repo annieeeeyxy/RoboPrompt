@@ -56,11 +56,25 @@ instead of asking questions you already have answers to.
 
 ## Classification
 
-Decide between exactly two categories. If the image and any text leave real
-doubt, ask directly rather than guessing — via `ask_form`, e.g. `prompt:
-"Which best describes your arm?"`, one `select` field with options `["Plastic/
-servo-driven, desktop-scale", "Metal, brushless motors + geared joints
-(Jetson/ROS2-class)"]`.
+Two questions, in order, every time:
+
+1. **Branded product or self-built?** Look for logos, model labels, a
+   distinctive commercial housing, or a name the user gives. This applies to
+   *both* categories, not just industrial arms — small kits are branded too
+   (uArm, MeArm, Hiwonder/LewanSoul, Braccio). If you recognize a brand (or a
+   strong partial match), name it and its known SDK/library/package (see the
+   known-brand table under Category B for the industrial side; for small
+   kits, e.g. uArm → `pyuarm`/UArm Studio, Hiwonder bus-servo kits → the
+   vendor's Python SDK, Braccio → the Arduino Braccio library) and ask the
+   user to confirm rather than asking generic setup questions first. Only
+   fall back to the full manual question flow if the brand can't be
+   identified or the user confirms it's self-built.
+2. **Servo/microcontroller-driven, or brushless+reducer?** Decide between
+   exactly two categories. If the image and any text leave real doubt, ask
+   directly rather than guessing — via `ask_form`, e.g. `prompt: "Which best
+   describes your arm?"`, one `select` field with options `["Plastic/
+   servo-driven, desktop-scale", "Metal, brushless motors + geared joints
+   (Jetson/ROS2-class)"]`.
 
 ### Category A — Small, servo/microcontroller-driven arm
 
@@ -72,6 +86,15 @@ custom builds). Motors may be hobby PWM servos, smart bus servos, steppers,
 or small DC+encoder motors — the driver architecture (microcontroller talking
 to a host computer) is the same across all of these, so treat motor type as
 a question within this category rather than a separate category.
+
+**Known kits** (apply the brand-first rule above): uArm Swift/Swift Pro →
+`pyuarm` / UArm Studio; Hiwonder/LewanSoul bus-servo arms (xArm 1S, etc.) →
+the vendor's Python bus-servo SDK; Arduino Braccio → the official Braccio
+library; ROBOTIS OpenManipulator-X (small Dynamixel-based) → ROBOTIS's own
+SDK even though it's often used with ROS. Treat this table as a starting
+point, not verified against current releases — search the web for the
+current official SDK/repo before generating code that depends on one of
+these, and don't invent a package name you aren't confident about.
 
 **Ask** (batched):
 1. Microcontroller/board? (Arduino Uno/Mega/Nano, ESP32, STM32, Raspberry Pi
@@ -97,15 +120,32 @@ encoders, larger scale, industrial/research look (Universal Robots, UFACTORY
 xArm, Kinova Gen3, Franka Emika, KUKA, Doosan, Techman, myCobot Pro, or a
 serious custom build with ODrive/CAN-bus brushless motors + harmonic drives).
 
-**SDK-first rule**: before asking detailed setup questions, try to identify
-the brand/model from the image and any name the user gives. If you recognize
-it (or get a strong partial match), lead with that — state what you believe
-it is and the SDK/ROS2 driver package it typically ships with, and ask the
-user to confirm, rather than asking generic questions first. Only fall back
-to the full question list below if the brand can't be identified or the
-arm is self-built/has no vendor SDK.
+**Known-brand table** (apply the brand-first rule above; extend over time as
+you learn of others):
 
-**Ask** (batched, once SDK-first fails or the arm is self-built):
+| Brand / family | Typical integration |
+|---|---|
+| Universal Robots (UR3/5/10/16, e-Series) | ROS2: `ur_robot_driver`, `ur_description` |
+| UFACTORY xArm (5/6/7, Lite 6) | ROS2: `xarm_ros2`; also a standalone Python/C++ SDK |
+| Kinova Gen3 / Gen2 | ROS2: `ros2_kortex` |
+| Franka Emika (Panda / Research 3) | ROS2: `franka_ros2` |
+| Doosan Robotics (M-series, A-series) | ROS2: `doosan-robot2` |
+| Techman Robot (TM5/TM12/TM14) | ROS2 driver commonly named `tmr_ros2` — confirm current name |
+| ROBOTIS OpenManipulator-X/P (Dynamixel-based) | ROS2: `open_manipulator` packages |
+| AR3/AR4 (Annin Robotics) and similar DIY CAN-bus builds | usually a custom `ros2_control` hardware interface — no official vendor SDK |
+
+**This table is a starting point, not verified against current upstream
+repos** — package/repo names drift across ROS distro and library releases.
+Before generating code that depends on one of these, or when the brand
+isn't in the table at all, search the web for the current official driver/
+SDK rather than trusting this table blindly.
+
+**Ask** (batched, once the brand-first rule fails or the arm is self-built).
+Group A is close to always needed; Group B is the deeper technical detail —
+ask it too once the arm is confirmed Category B, so the final plan can
+include real, runnable integration code rather than a generic skeleton:
+
+*Group A — setup:*
 1. Onboard compute + OS? (Jetson model + JetPack version, other industrial
    PC)
 2. Running ROS2? Which distro (Humble/Iron/Jazzy/etc.)? Already installed?
@@ -113,9 +153,24 @@ arm is self-built/has no vendor SDK.
    TCP + vendor protocol, or direct ROS2 topics/actions)
 4. Web panel should talk directly to ROS2 (rosbridge_suite + roslibjs), or
    through a custom REST/gRPC bridge?
-5. Existing safety systems? (E-stop, soft limits, collision detection)
-6. If self-built: motor controllers (ODrive, VESC, Elmo, Copley, custom),
+5. If self-built: motor controllers (ODrive, VESC, Elmo, Copley, custom),
    encoder type + gear ratio, and how jointspace is currently read/commanded
+
+*Group B — depth needed for real code generation, not just an architecture
+description:*
+6. Existing safety systems? (E-stop wiring, soft limits, collision/force
+   detection) and per-joint velocity/torque/payload limits if known.
+7. Network topology: static IP/hostname of the robot's controller, and
+   whether the dev machine reaches it directly (same LAN) or needs a
+   VPN/tunnel.
+8. Existing motion-planning setup: is MoveIt 2 already configured? Is there
+   a working `ros2_control` hardware interface already, or does one need to
+   be scaffolded?
+9. Is there a simulation environment already in use (Gazebo, Isaac Sim) to
+   test against before real hardware, or is bring-up hardware-only?
+10. URDF/xacro: request a file upload if one exists (see the reference-file
+    upload at intake); otherwise confirm you'll derive one from
+    measurements/joint types per the common questions below.
 
 **Target deliverable**: a configurable web panel (roslibjs-based by default)
 for end-effector pose jogging plus waypoint recording ("teach" mode) and
