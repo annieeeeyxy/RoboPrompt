@@ -3,11 +3,14 @@ import { getAnthropicClient, toAnthropicMessages } from "@/lib/anthropic";
 import { getSystemPrompt } from "@/lib/systemPrompt";
 import { streamToSSEResponse } from "@/lib/sse";
 import { processImage, UnsupportedImageError, ImageProcessingUnavailableError } from "@/lib/image";
+import { processReferenceFile } from "@/lib/referenceFiles";
 import { ASK_FORM_TOOL } from "@/lib/tools";
 import {
   ALLOWED_IMAGE_MIME_TYPES,
   MAX_IMAGE_BYTES,
   MAX_IMAGE_FILES,
+  MAX_REFERENCE_FILES,
+  MAX_REFERENCE_FILE_BYTES,
   MAX_TOKENS,
   MODEL_ID,
 } from "@/lib/constants";
@@ -69,10 +72,33 @@ export async function POST(req: NextRequest) {
     throw err;
   }
 
+  const refFiles = formData.getAll("refFile").filter((f): f is File => f instanceof File);
+  const refDescriptions = formData.getAll("refDescription").map((d) => String(d));
+  if (refFiles.length > MAX_REFERENCE_FILES) {
+    return NextResponse.json(
+      { error: `Too many reference files — upload at most ${MAX_REFERENCE_FILES}.` },
+      { status: 400 }
+    );
+  }
+  for (const file of refFiles) {
+    if (file.size > MAX_REFERENCE_FILE_BYTES) {
+      return NextResponse.json(
+        { error: `Reference file "${file.name}" is too large (max ${MAX_REFERENCE_FILE_BYTES / 1024 / 1024}MB).` },
+        { status: 400 }
+      );
+    }
+  }
+
+  const referenceBlocks: ChatContentBlock[] = [];
+  for (let i = 0; i < refFiles.length; i++) {
+    referenceBlocks.push(await processReferenceFile(refFiles[i], refDescriptions[i] ?? ""));
+  }
+
   const initialMessage: ChatMessage = {
     role: "user",
     content: [
       ...imageBlocks,
+      ...referenceBlocks,
       {
         type: "text",
         text:

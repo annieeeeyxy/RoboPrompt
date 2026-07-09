@@ -25,7 +25,13 @@ export function streamToSSEResponse(
       let closed = false;
       const send = (event: SSEEvent) => {
         if (closed) return;
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
+        try {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
+        } catch {
+          // Controller was closed by the runtime (client disconnected)
+          // between our check and this call — nothing left to do.
+          closed = true;
+        }
       };
 
       let buffer = "";
@@ -64,10 +70,28 @@ export function streamToSSEResponse(
         }
       });
 
+      const closeController = () => {
+        if (closed) return;
+        closed = true;
+        try {
+          controller.close();
+        } catch {
+          // Already closed by the runtime — nothing left to do.
+        }
+      };
+
       stream.on("error", (err: Error) => {
         send({ type: "error", message: err instanceof Error ? err.message : "stream failed" });
-        closed = true;
-        controller.close();
+        closeController();
+      });
+
+      // Separate from "error" — fires specifically when .abort() is called
+      // (e.g. our own cancel() below, on client disconnect). Anthropic's SDK
+      // rejects an internal promise on abort; without a listener here that
+      // surfaces as an unhandled rejection even though nothing is actually
+      // broken.
+      stream.on("abort", () => {
+        closeController();
       });
 
       stream.on("end", () => {
@@ -87,11 +111,16 @@ export function streamToSSEResponse(
           } catch (err) {
             send({ type: "error", message: err instanceof Error ? err.message : "stream failed" });
           } finally {
-            closed = true;
-            controller.close();
+            closeController();
           }
         })();
       });
+    },
+    cancel() {
+      // The client disconnected (closed tab, navigated away, aborted the
+      // fetch) — stop the underlying Anthropic call rather than paying for
+      // a response nobody is listening to anymore.
+      stream.abort();
     },
   });
 

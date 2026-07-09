@@ -25,6 +25,13 @@ export function toAnthropicMessages(
             type: "image",
             source: { type: "base64", media_type: block.mediaType, data: block.base64 },
           };
+        case "document":
+          return {
+            type: "document",
+            source: { type: "base64", media_type: block.mediaType, data: block.base64 },
+            title: block.filename,
+            context: block.description,
+          };
         case "tool_use":
           return { type: "tool_use", id: block.id, name: block.name, input: block.input };
         case "tool_result":

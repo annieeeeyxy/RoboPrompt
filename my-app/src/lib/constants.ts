@@ -7,6 +7,8 @@ export const ALLOWED_IMAGE_MIME_TYPES = [
   "image/png",
   "image/webp",
 ] as const;
+export const MAX_REFERENCE_FILES = 5;
+export const MAX_REFERENCE_FILE_BYTES = 15 * 1024 * 1024; // 15MB per reference file
 export const FINAL_PLAN_SENTINEL = "<<<FINAL_PLAN>>>";
 export const ASK_FORM_TOOL_NAME = "ask_form";
 export const EARLY_GENERATION_SIGNAL = "USER_REQUESTED_EARLY_GENERATION";

@@ -17,6 +17,13 @@ export type ChatContentBlock =
       mediaType: "image/jpeg" | "image/png" | "image/webp";
       base64: string;
     }
+  | {
+      type: "document";
+      mediaType: "application/pdf";
+      base64: string;
+      filename?: string;
+      description?: string;
+    }
   | { type: "tool_use"; id: string; name: string; input: unknown }
   | { type: "tool_result"; toolUseId: string; content: string };
 

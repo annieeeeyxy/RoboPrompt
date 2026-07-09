@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { ImageDropzone } from "@/components/upload/ImageDropzone";
+import { ReferenceFileUpload, type ReferenceFileEntry } from "@/components/upload/ReferenceFileUpload";
 import { FormView } from "@/components/form/FormView";
 import { PlanView } from "@/components/plan/PlanView";
 import { ErrorBanner } from "@/components/ui/ErrorBanner";
@@ -27,6 +28,8 @@ export default function TryPage() {
   const [fallbackText, setFallbackText] = useState<string | null>(null);
   const [formCount, setFormCount] = useState(0);
   const [planMarkdown, setPlanMarkdown] = useState("");
+  const [selectedImages, setSelectedImages] = useState<Blob[]>([]);
+  const [refEntries, setRefEntries] = useState<ReferenceFileEntry[]>([]);
   const agent = useAgentStream();
 
   const applyResult = useCallback((result: SendResult, priorMessages: ChatMessage[]) => {
@@ -67,41 +70,73 @@ export default function TryPage() {
     }
   }, []);
 
-  const handleImagesReady = useCallback(
-    async (blobs: Blob[]) => {
-      const base64s = await Promise.all(blobs.map(blobToBase64));
-      const initialMessage: ChatMessage = {
-        role: "user",
-        content: [
-          ...base64s.map(
-            (base64): ChatMessage["content"][number] => ({
-              type: "image",
-              mediaType: "image/jpeg",
-              base64,
-            })
-          ),
-          {
-            type: "text",
-            text:
-              blobs.length > 1
-                ? "Here are photos of my robotic arm. Please analyze them and help me figure out how to control it."
-                : "Here is a photo of my robotic arm. Please analyze it and help me figure out how to control it.",
-          },
-        ],
-      };
+  const handleImagesReady = useCallback((blobs: Blob[]) => {
+    setSelectedImages((prev) => [...prev, ...blobs]);
+  }, []);
 
-      const formData = new FormData();
-      blobs.forEach((blob, i) => formData.append("file", blob, `arm-${i}.jpg`));
+  const handleAnalyze = useCallback(async () => {
+    const blobs = selectedImages;
+    const base64s = await Promise.all(blobs.map(blobToBase64));
 
-      try {
-        const result = await agent.send("/api/classify", { method: "POST", body: formData });
-        applyResult(result, [initialMessage]);
-      } catch {
-        // agent.error already holds the message
-      }
-    },
-    [agent, applyResult]
-  );
+    const referenceBlocks: ChatMessage["content"] = await Promise.all(
+      refEntries.map(async (entry): Promise<ChatMessage["content"][number]> => {
+        const ext = entry.file.name.split(".").pop()?.toLowerCase() ?? "";
+        if (ext === "pdf" || entry.file.type === "application/pdf") {
+          return {
+            type: "document",
+            mediaType: "application/pdf",
+            base64: await blobToBase64(entry.file),
+            filename: entry.file.name,
+            description: entry.description,
+          };
+        }
+        // Full extraction (zip contents, text files) happens server-side for
+        // the actual analysis call — this is just a lightweight mirror so
+        // later turns' history still show the file was provided.
+        return {
+          type: "text",
+          text: `Reference file "${entry.file.name}"${
+            entry.description ? ` — user says: ${entry.description}` : ""
+          } (uploaded alongside the photo).`,
+        };
+      })
+    );
+
+    const initialMessage: ChatMessage = {
+      role: "user",
+      content: [
+        ...base64s.map(
+          (base64): ChatMessage["content"][number] => ({
+            type: "image",
+            mediaType: "image/jpeg",
+            base64,
+          })
+        ),
+        ...referenceBlocks,
+        {
+          type: "text",
+          text:
+            blobs.length > 1
+              ? "Here are photos of my robotic arm. Please analyze them and help me figure out how to control it."
+              : "Here is a photo of my robotic arm. Please analyze it and help me figure out how to control it.",
+        },
+      ],
+    };
+
+    const formData = new FormData();
+    blobs.forEach((blob, i) => formData.append("file", blob, `arm-${i}.jpg`));
+    refEntries.forEach((entry) => {
+      formData.append("refFile", entry.file, entry.file.name);
+      formData.append("refDescription", entry.description);
+    });
+
+    try {
+      const result = await agent.send("/api/classify", { method: "POST", body: formData });
+      applyResult(result, [initialMessage]);
+    } catch {
+      // agent.error already holds the message
+    }
+  }, [agent, applyResult, selectedImages, refEntries]);
 
   const submitFormAnswer = useCallback(
     async (values: Record<string, string>) => {
@@ -177,6 +212,8 @@ export default function TryPage() {
     setFallbackText(null);
     setFormCount(0);
     setPlanMarkdown("");
+    setSelectedImages([]);
+    setRefEntries([]);
     agent.resetPhase();
   }, [agent]);
 
@@ -193,7 +230,30 @@ export default function TryPage() {
           {agent.isStreaming ? (
             <ThinkingIndicator label="Analyzing your photo…" />
           ) : (
-            <ImageDropzone onImagesReady={handleImagesReady} disabled={agent.isStreaming} />
+            <>
+              <ImageDropzone onImagesReady={handleImagesReady} disabled={agent.isStreaming} />
+
+              {selectedImages.length > 0 && (
+                <p className="text-center text-sm text-black/50 dark:text-white/50">
+                  {selectedImages.length} photo{selectedImages.length > 1 ? "s" : ""} ready.
+                </p>
+              )}
+
+              <ReferenceFileUpload
+                entries={refEntries}
+                onChange={setRefEntries}
+                disabled={agent.isStreaming}
+              />
+
+              {selectedImages.length > 0 && (
+                <button
+                  onClick={() => void handleAnalyze()}
+                  className="self-center rounded-full bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-500"
+                >
+                  Analyze
+                </button>
+              )}
+            </>
           )}
           {agent.error && <ErrorBanner message={agent.error} />}
         </>
