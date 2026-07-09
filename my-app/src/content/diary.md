@@ -105,3 +105,13 @@ A running log of what happened on RoboPrompt, day by day.
   process: the generated SETUP.md had a literal backslash-n instead of
   line breaks (a quirk in the model's free-text notes field, not the
   code files) — normalized in `lib/zip.ts`.
+- Had a fresh agent (Fable) do an independent, adversarial security
+  review of the whole codebase. Verified and fixed the real findings:
+  a genuine zip-bomb DoS in the reference-file upload (fixed via the
+  zip's central-directory size metadata, after a first attempt at
+  stream-aborting mid-decompression crashed with an uncaught exception
+  — jszip's internal pipe doesn't like being cut off), unsanitized file
+  paths in generated-code zips (path traversal/absolute-path risk),
+  non-constant-time credential comparisons on the password gate, and an
+  unvalidated-tool-output crash in /api/generate. Also migrated
+  middleware.ts to proxy.ts (Next.js 16 deprecated the old convention).
