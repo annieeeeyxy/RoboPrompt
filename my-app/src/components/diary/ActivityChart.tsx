@@ -37,7 +37,7 @@ export function ActivityChart({
                 {d.commits}
               </span>
               <div
-                className="w-6 rounded-t-[4px] bg-[#2a78d6] transition-opacity hover:opacity-80 dark:bg-[#3987e5]"
+                className="w-6 rounded-t-[4px] bg-[#db2777] transition-opacity hover:opacity-80 dark:bg-[#ec4899]"
                 style={{ height }}
                 title={`${formatDate(d.date, language)}: ${d.commits}`}
               />

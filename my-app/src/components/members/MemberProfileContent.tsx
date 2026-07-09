@@ -35,7 +35,7 @@ export function MemberProfileContent({ member }: { member: Member }) {
             className="h-24 w-24 rounded-full object-cover"
           />
         ) : (
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-blue-600 text-2xl font-semibold text-white">
+          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-pink-600 text-2xl font-semibold text-white">
             {member.name
               .split(" ")
               .map((part) => part[0])

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslation } from "@/hooks/useTranslation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { RobotLogo } from "./RobotLogo";
 
 export function NavBar() {
   const pathname = usePathname();
@@ -20,7 +21,8 @@ export function NavBar() {
   return (
     <header className="border-b border-black/10 dark:border-white/10">
       <nav className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
-        <Link href="/" className="font-semibold tracking-tight">
+        <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
+          <RobotLogo className="h-7 w-7" />
           RoboPrompt
         </Link>
         <div className="flex items-center gap-2">
@@ -34,8 +36,8 @@ export function NavBar() {
                     href={link.href}
                     className={`rounded-full px-3 py-1.5 transition-colors ${
                       isActive
-                        ? "bg-black/10 font-medium text-foreground dark:bg-white/15"
-                        : "text-black/60 hover:text-foreground dark:text-white/60 dark:hover:text-foreground"
+                        ? "bg-pink-500/15 font-medium text-pink-400"
+                        : "text-white/60 hover:text-foreground"
                     }`}
                   >
                     {link.label}

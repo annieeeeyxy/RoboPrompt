@@ -73,7 +73,7 @@ export function ImageDropzone({
       onClick={() => !disabled && inputRef.current?.click()}
       className={`flex min-h-64 cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-8 text-center transition-colors ${
         isDragging
-          ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
+          ? "border-pink-500 bg-pink-50 dark:bg-pink-950/30"
           : "border-black/15 hover:border-black/30 dark:border-white/15 dark:hover:border-white/30"
       } ${disabled ? "pointer-events-none opacity-50" : ""}`}
     >

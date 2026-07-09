@@ -49,13 +49,13 @@ function LoginForm() {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           autoFocus
-          className="w-full rounded-xl border border-black/15 bg-background px-4 py-3 text-sm text-foreground outline-none focus:border-blue-500 dark:border-white/15"
+          className="w-full rounded-xl border border-black/15 bg-background px-4 py-3 text-sm text-foreground outline-none focus:border-pink-500 dark:border-white/15"
         />
         {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
         <button
           type="submit"
           disabled={loading || !password}
-          className="rounded-full bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-500 disabled:opacity-40"
+          className="rounded-full bg-pink-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-pink-500 disabled:opacity-40"
         >
           {loading ? "Checking…" : "Continue"}
         </button>

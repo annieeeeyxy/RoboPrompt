@@ -32,7 +32,7 @@ export function LanguageSwitcher() {
             onClick={() => setLanguage(lang.code)}
             className={`block w-full px-3 py-2 text-left text-xs transition-colors ${
               language === lang.code
-                ? "bg-blue-500/10 font-medium text-blue-600 dark:text-blue-400"
+                ? "bg-pink-500/10 font-medium text-pink-600 dark:text-pink-400"
                 : "text-black/70 hover:bg-black/5 dark:text-white/70 dark:hover:bg-white/10"
             }`}
           >

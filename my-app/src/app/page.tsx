@@ -48,7 +48,7 @@ export default function Home() {
     <main className="flex flex-1 flex-col">
       <section className="relative overflow-hidden px-4 pt-24 pb-20 text-center sm:pt-32 sm:pb-28">
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center">
-          <div className="h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-[100px] dark:bg-blue-500/25" />
+          <div className="h-[420px] w-[420px] rounded-full bg-pink-500/20 blur-[100px] dark:bg-pink-500/25" />
         </div>
         <div className="mx-auto flex max-w-2xl flex-col items-center gap-6">
           <span className="rounded-full border border-black/10 px-3 py-1 text-xs font-medium text-black/60 dark:border-white/15 dark:text-white/60">
@@ -63,7 +63,7 @@ export default function Home() {
           <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/try"
-              className="rounded-full bg-blue-600 px-7 py-3.5 text-base font-medium text-white shadow-lg shadow-blue-600/25 transition-all hover:bg-blue-500 hover:shadow-blue-500/30"
+              className="rounded-full bg-pink-600 px-7 py-3.5 text-base font-medium text-white shadow-lg shadow-pink-600/25 transition-all hover:bg-pink-500 hover:shadow-pink-500/30"
             >
               {t("tryNow")}
             </Link>
@@ -84,7 +84,7 @@ export default function Home() {
               key={step.title}
               className="flex flex-col gap-3 rounded-2xl border border-black/10 p-6 dark:border-white/10"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600/10 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-pink-600/10 text-pink-600 dark:bg-pink-500/15 dark:text-pink-400">
                 <step.icon className="h-6 w-6" />
               </div>
               <h2 className="font-medium">{step.title}</h2>
@@ -124,7 +124,7 @@ export default function Home() {
         </p>
         <Link
           href="/try"
-          className="mt-6 inline-block rounded-full bg-blue-600 px-7 py-3.5 text-base font-medium text-white shadow-lg shadow-blue-600/25 transition-all hover:bg-blue-500 hover:shadow-blue-500/30"
+          className="mt-6 inline-block rounded-full bg-pink-600 px-7 py-3.5 text-base font-medium text-white shadow-lg shadow-pink-600/25 transition-all hover:bg-pink-500 hover:shadow-pink-500/30"
         >
           {t("tryNow")}
         </Link>

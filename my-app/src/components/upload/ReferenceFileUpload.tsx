@@ -23,7 +23,7 @@ export function ReferenceFileUpload({
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={disabled}
-          className="text-xs font-medium text-blue-600 hover:underline disabled:opacity-50 dark:text-blue-400"
+          className="text-xs font-medium text-pink-600 hover:underline disabled:opacity-50 dark:text-pink-400"
         >
           + Add files
         </button>
@@ -64,7 +64,7 @@ export function ReferenceFileUpload({
                   }
                   placeholder="What is this file? (optional)"
                   disabled={disabled}
-                  className="mt-1 w-full rounded-lg border border-black/10 bg-background px-3 py-1.5 text-xs text-foreground outline-none focus:border-blue-500 disabled:opacity-50 dark:border-white/10"
+                  className="mt-1 w-full rounded-lg border border-black/10 bg-background px-3 py-1.5 text-xs text-foreground outline-none focus:border-pink-500 disabled:opacity-50 dark:border-white/10"
                 />
               </div>
               <button

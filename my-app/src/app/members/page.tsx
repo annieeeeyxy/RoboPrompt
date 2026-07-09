@@ -18,7 +18,7 @@ function Avatar({ member }: { member: Member }) {
     );
   }
   return (
-    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
+    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-pink-600 text-sm font-semibold text-white">
       {member.name
         .split(" ")
         .map((part) => part[0])

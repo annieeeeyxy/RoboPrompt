@@ -299,7 +299,7 @@ export default function TryPage() {
               {selectedImages.length > 0 && (
                 <button
                   onClick={() => void handleAnalyze()}
-                  className="self-center rounded-full bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-500"
+                  className="self-center rounded-full bg-pink-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-pink-500"
                 >
                   {t("analyze")}
                 </button>
@@ -364,7 +364,7 @@ export default function TryPage() {
               <button
                 onClick={() => void handleDownloadCode()}
                 disabled={isGeneratingCode}
-                className="rounded-full bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-500 disabled:opacity-40"
+                className="rounded-full bg-pink-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-pink-500 disabled:opacity-40"
               >
                 {isGeneratingCode ? t("generatingCode") : t("downloadCode")}
               </button>

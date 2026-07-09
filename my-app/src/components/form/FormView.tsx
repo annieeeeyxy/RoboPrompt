@@ -8,7 +8,7 @@ import type { FormField } from "@/types/chat";
 const OTHER_SENTINEL = "__other__";
 
 const baseInputClass =
-  "w-full rounded-xl border border-black/15 bg-background px-4 py-3 text-sm text-foreground outline-none focus:border-blue-500 disabled:opacity-50 dark:border-white/15";
+  "w-full rounded-xl border border-black/15 bg-background px-4 py-3 text-sm text-foreground outline-none focus:border-pink-500 disabled:opacity-50 dark:border-white/15";
 
 function SelectField({
   field,
@@ -163,7 +163,7 @@ export function FormView({
       <button
         type="submit"
         disabled={disabled}
-        className="self-start rounded-full bg-blue-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-500 disabled:opacity-40"
+        className="self-start rounded-full bg-pink-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-pink-500 disabled:opacity-40"
       >
         {t("continue")}
       </button>
