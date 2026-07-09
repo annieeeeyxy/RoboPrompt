@@ -13,13 +13,12 @@ const LanguageContext = createContext<LanguageContextType | null>(null);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("en");
-  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
     // Load language from localStorage on mount
     const saved = localStorage.getItem("language") as Language | null;
     if (saved && ["en", "es", "fr", "zh"].includes(saved)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reading persisted language from localStorage, not derivable during SSR render
       setLanguageState(saved);
     } else {
       // Default to browser language if supported
