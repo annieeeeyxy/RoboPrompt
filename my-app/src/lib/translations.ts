@@ -126,6 +126,11 @@ export const translations: Record<Language, Record<string, string>> = {
     analyze: "Analyze",
     downloadCode: "Download code (.zip)",
     generatingCode: "Generating code…",
+    requestChanges: "Want something different?",
+    requestChangesPlaceholder:
+      "e.g. Use an ESP32 instead of the Arduino Uno, or skip Web Serial and use a Python bridge",
+    revisePlan: "Revise plan",
+    revisingPlan: "Revising plan…",
   },
   es: {
     // Navigation
@@ -252,6 +257,11 @@ export const translations: Record<Language, Record<string, string>> = {
     analyze: "Analizar",
     downloadCode: "Descargar código (.zip)",
     generatingCode: "Generando código…",
+    requestChanges: "¿Quieres algo diferente?",
+    requestChangesPlaceholder:
+      "p. ej. Usa un ESP32 en lugar del Arduino Uno, o evita Web Serial y usa un puente en Python",
+    revisePlan: "Revisar plan",
+    revisingPlan: "Revisando el plan…",
   },
   fr: {
     // Navigation
@@ -378,6 +388,11 @@ export const translations: Record<Language, Record<string, string>> = {
     analyze: "Analyser",
     downloadCode: "Télécharger le code (.zip)",
     generatingCode: "Génération du code…",
+    requestChanges: "Envie d'autre chose ?",
+    requestChangesPlaceholder:
+      "p. ex. Utiliser un ESP32 au lieu de l'Arduino Uno, ou remplacer Web Serial par un pont Python",
+    revisePlan: "Réviser le plan",
+    revisingPlan: "Révision du plan…",
   },
   zh: {
     // Navigation
@@ -504,6 +519,10 @@ export const translations: Record<Language, Record<string, string>> = {
     analyze: "分析",
     downloadCode: "下载代码（.zip）",
     generatingCode: "正在生成代码…",
+    requestChanges: "想改点什么？",
+    requestChangesPlaceholder: "例如：改用 ESP32 而不是 Arduino Uno，或者不用 Web Serial、改用 Python 桥接",
+    revisePlan: "修改方案",
+    revisingPlan: "正在修改方案…",
   },
 };
 

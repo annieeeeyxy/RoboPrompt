@@ -42,6 +42,7 @@ export default function TryPage() {
   const [refEntries, setRefEntries] = useState<ReferenceFileEntry[]>([]);
   const [isGeneratingCode, setIsGeneratingCode] = useState(false);
   const [generateError, setGenerateError] = useState<string | null>(null);
+  const [revisionText, setRevisionText] = useState("");
   const agent = useAgentStream();
 
   // Restore a saved interview after a refresh, so mid-interview progress
@@ -288,6 +289,13 @@ export default function TryPage() {
     }
   }, [history, language]);
 
+  const handleRequestRevision = useCallback(async () => {
+    const text = revisionText.trim();
+    if (!text) return;
+    setRevisionText("");
+    await submitFallbackReply(text);
+  }, [revisionText, submitFallbackReply]);
+
   const handleStartOver = useCallback(() => {
     clearSession();
     setPhase("upload");
@@ -407,6 +415,32 @@ export default function TryPage() {
               </button>
             }
           />
+          {!agent.isStreaming && (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                void handleRequestRevision();
+              }}
+              className="flex flex-col gap-2 rounded-2xl border border-white/10 p-4"
+            >
+              <label className="text-sm font-medium">{t("requestChanges")}</label>
+              <textarea
+                value={revisionText}
+                onChange={(e) => setRevisionText(e.target.value)}
+                placeholder={t("requestChangesPlaceholder")}
+                rows={3}
+                disabled={isGeneratingCode}
+                className="w-full resize-none rounded-xl border border-black/15 bg-background px-4 py-3 text-sm text-foreground outline-none focus:border-pink-500 disabled:opacity-50 dark:border-white/15"
+              />
+              <button
+                type="submit"
+                disabled={isGeneratingCode || revisionText.trim() === ""}
+                className="self-start rounded-full bg-pink-600 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-pink-500 disabled:opacity-40"
+              >
+                {t("revisePlan")}
+              </button>
+            </form>
+          )}
         </>
       )}
     </main>

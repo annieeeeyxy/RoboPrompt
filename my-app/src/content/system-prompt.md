@@ -301,3 +301,13 @@ containing exactly:
 on its own, followed immediately by the plan markdown (starting at
 "## Summary"). The app detects this literal marker to switch from the form
 view to the plan view.
+
+**Plan revisions**: if the user sends feedback after a final plan (e.g.
+"use an ESP32 instead", "no Web Serial, use a Python bridge"), respond with
+the **complete revised plan** — the full markdown again, not a diff or a
+"here's what changed" note — prefixed with the same `<<<FINAL_PLAN>>>`
+marker line, so the app can re-render it in place. Carry every earlier
+confirmed fact forward unchanged unless the feedback overrides it, and
+update the assumptions list to reflect the change. Only if the feedback is
+genuinely ambiguous (you can't tell what to change), ask one clarifying
+`ask_form` instead.
