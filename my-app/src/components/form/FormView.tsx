@@ -1,7 +1,83 @@
 "use client";
 
 import { useState } from "react";
+import { cn } from "@/lib/cn";
 import type { FormField } from "@/types/chat";
+
+const OTHER_SENTINEL = "__other__";
+
+const baseInputClass =
+  "w-full rounded-xl border border-black/15 bg-background px-4 py-3 text-sm text-foreground outline-none focus:border-blue-500 disabled:opacity-50 dark:border-white/15";
+
+function SelectField({
+  field,
+  value,
+  onChange,
+  disabled,
+}: {
+  field: FormField;
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+}) {
+  const options = field.options ?? [];
+  const [customMode, setCustomMode] = useState(() => value !== "" && !options.includes(value));
+
+  if (customMode) {
+    return (
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={field.placeholder ?? "Type your own answer"}
+          disabled={disabled}
+          autoFocus
+          className={baseInputClass}
+        />
+        <button
+          type="button"
+          onClick={() => {
+            setCustomMode(false);
+            onChange("");
+          }}
+          disabled={disabled}
+          className="shrink-0 rounded-xl border border-black/15 px-3 text-xs text-black/60 hover:border-black/30 disabled:opacity-50 dark:border-white/15 dark:text-white/60 dark:hover:border-white/30"
+        >
+          Choose from list
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <select
+      value={value}
+      onChange={(e) => {
+        if (e.target.value === OTHER_SENTINEL) {
+          setCustomMode(true);
+          onChange("");
+        } else {
+          onChange(e.target.value);
+        }
+      }}
+      disabled={disabled}
+      className={baseInputClass}
+    >
+      <option value="" disabled className="bg-background text-foreground">
+        Select…
+      </option>
+      {options.map((option) => (
+        <option key={option} value={option} className="bg-background text-foreground">
+          {option}
+        </option>
+      ))}
+      <option value={OTHER_SENTINEL} className="bg-background text-foreground">
+        Other (type my own)
+      </option>
+    </select>
+  );
+}
 
 function FieldInput({
   field,
@@ -14,27 +90,8 @@ function FieldInput({
   onChange: (value: string) => void;
   disabled?: boolean;
 }) {
-  const baseClass =
-    "w-full rounded-xl border border-black/15 bg-transparent px-4 py-3 text-sm outline-none focus:border-blue-500 disabled:opacity-50 dark:border-white/15";
-
   if (field.type === "select") {
-    return (
-      <select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
-        className={baseClass}
-      >
-        <option value="" disabled>
-          Select…
-        </option>
-        {(field.options ?? []).map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-    );
+    return <SelectField field={field} value={value} onChange={onChange} disabled={disabled} />;
   }
 
   if (field.type === "textarea") {
@@ -45,7 +102,7 @@ function FieldInput({
         placeholder={field.placeholder}
         disabled={disabled}
         rows={3}
-        className={`${baseClass} resize-none`}
+        className={cn(baseInputClass, "resize-none")}
       />
     );
   }
@@ -57,7 +114,7 @@ function FieldInput({
       onChange={(e) => onChange(e.target.value)}
       placeholder={field.placeholder}
       disabled={disabled}
-      className={baseClass}
+      className={baseInputClass}
     />
   );
 }
