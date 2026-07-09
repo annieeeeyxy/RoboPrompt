@@ -52,3 +52,6 @@ A running log of what happened on RoboPrompt, day by day.
   and the frontend renders real form fields instead of chat bubbles. Kept
   the final plan as a streamed markdown document. Verified the full
   classify → gap-fill form → summary form → plan flow via the live API.
+- Fixed two blank/black-screen gaps during waits (upload analysis and form
+  submission) by adding a proper loading indicator, and made the final plan
+  stream in live instead of staying hidden behind the spinner.
