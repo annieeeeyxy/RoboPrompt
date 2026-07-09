@@ -55,3 +55,40 @@ A running log of what happened on RoboPrompt, day by day.
 - Fixed two blank/black-screen gaps during waits (upload analysis and form
   submission) by adding a proper loading indicator, and made the final plan
   stream in live instead of staying hidden behind the spinner.
+
+## 2026-07-09 (overnight batch, self-tested while Annie slept)
+
+- Fixed the select-dropdown dark-mode contrast bug (unreadable light-on-light
+  text) and added an "Other (type my own)" escape hatch to every select
+  field so users aren't limited to the given options.
+- Added a password gate: `SITE_PASSWORD` env var, `/api/auth`,
+  `src/middleware.ts`, `/login` page. Protects `/try` and every API route
+  that spends tokens. Fails closed in production if the env var isn't set —
+  confirmed the deployed site is currently fully locked until it's added in
+  Vercel.
+- Deepened the system prompt: brand-first SDK detection now applies to
+  small kits too (uArm, Hiwonder, Braccio), not just industrial arms, and
+  Category B's question flow gained a second, deeper group (payload/torque
+  limits, network topology, MoveIt2/ros2_control status, simulation
+  environment) so the final plan can include real integration code.
+- Added reference-file upload at intake: users can attach URDF/xacro,
+  datasheets, existing code, or a zip of their project alongside the photo,
+  each with an optional description. Zips get their text-readable entries
+  extracted; PDFs go through Claude's native document support; anything
+  else keeps its filename/description as context.
+- Found and fixed a real crash while testing the above: sending a larger
+  request exposed a race where the SSE response's stream controller gets
+  closed by the runtime on client disconnect, independent of the app's own
+  state tracking — hardened `lib/sse.ts` against it.
+- Added a "Download code (.zip)" option on the confirmed plan: forces a
+  `generate_files` tool call, packages the result into a real zip via
+  `jszip`. Had to raise the token budget and switch to the streaming API
+  internally after finding the non-streaming call gets rejected outright
+  at that budget ("streaming required for operations that may take longer
+  than 10 minutes"). Verified by actually unzipping the output — real,
+  working Arduino firmware + a matching Web Serial control panel + a
+  Python bridge + a honest SETUP.md, not placeholder code.
+- Full regression pass: typecheck, lint, build, and a local end-to-end
+  smoke test all clean. Production verification is on hold until
+  `SITE_PASSWORD` is set in Vercel (expected — that's the fail-closed
+  default doing its job).
