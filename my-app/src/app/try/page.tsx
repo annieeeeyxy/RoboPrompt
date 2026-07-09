@@ -228,7 +228,7 @@ export default function TryPage() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ history }),
+        body: JSON.stringify({ history, uiLanguage: language }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
@@ -250,7 +250,7 @@ export default function TryPage() {
     } finally {
       setIsGeneratingCode(false);
     }
-  }, [history]);
+  }, [history, language]);
 
   const handleStartOver = useCallback(() => {
     setPhase("upload");

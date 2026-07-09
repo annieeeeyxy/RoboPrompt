@@ -21,6 +21,7 @@ function SelectField({
   onChange: (value: string) => void;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation();
   const options = field.options ?? [];
   const [customMode, setCustomMode] = useState(() => value !== "" && !options.includes(value));
 
@@ -31,7 +32,7 @@ function SelectField({
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder={field.placeholder ?? "Type your own answer"}
+          placeholder={field.placeholder ?? t("typeYourOwnAnswer")}
           disabled={disabled}
           autoFocus
           className={baseInputClass}
@@ -45,7 +46,7 @@ function SelectField({
           disabled={disabled}
           className="shrink-0 rounded-xl border border-black/15 px-3 text-xs text-black/60 hover:border-black/30 disabled:opacity-50 dark:border-white/15 dark:text-white/60 dark:hover:border-white/30"
         >
-          Choose from list
+          {t("chooseFromList")}
         </button>
       </div>
     );
@@ -66,7 +67,7 @@ function SelectField({
       className={baseInputClass}
     >
       <option value="" disabled className="bg-background text-foreground">
-        Select…
+        {t("selectPlaceholder")}
       </option>
       {options.map((option) => (
         <option key={option} value={option} className="bg-background text-foreground">
@@ -74,7 +75,7 @@ function SelectField({
         </option>
       ))}
       <option value={OTHER_SENTINEL} className="bg-background text-foreground">
-        Other (type my own)
+        {t("otherTypeMyOwn")}
       </option>
     </select>
   );
