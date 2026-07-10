@@ -32,6 +32,12 @@ A running log of what happened on RoboPrompt, day by day.
 - Merged in a teammate's (Dora Ai) multilingual feature (English/Spanish/French/Chinese) that landed on main in parallel - resolved the overlap and backfilled the diary translations.
 - Rebranded the site to a fixed black-and-pink theme with a new robot logo.
 - Made the tool feel like a real product: CI now checks every push, an interview survives a page refresh, and a finished plan can be revised with feedback (e.g. "switch to ESP32") instead of starting over.
+
+## 2026-07-10 - Faster, cheaper, and two production bugs squashed
+
+- Fixed the intermittent 504 when downloading code: generation regularly runs past two minutes, but the serverless function was capped at exactly that — raised the limit and added a friendly timeout message.
+- Switched the interview to a faster model (Haiku): photo analysis and questions now respond in 2-5 seconds instead of 8-11, at a tenth of the cost, while code generation stays on Sonnet for quality. Live-testing the switch surfaced three protocol weaknesses (prose drift, a fenced plan marker breaking detection, endless follow-up questions after confirmation) — all fixed for every model.
+- Fixed a crash on "Download code" ("e.forEach is not a function"): the model occasionally double-encodes its file list as a JSON string — output is now normalized and recovered, covered by unit tests and a real-browser click test.
 `,
   es: `# Diario del Proyecto
 
@@ -64,6 +70,12 @@ Un registro continuo de lo que paso en RoboPrompt, dia por dia.
 - Se fusiono la funcion multilingue de una companera de equipo (Dora Ai, ingles/espanol/frances/chino) que llego a main en paralelo - se resolvio el solape y se completaron las traducciones del diario.
 - Se cambio la imagen del sitio a un tema fijo negro y rosa con un nuevo logo de robot.
 - La herramienta ahora se siente como un producto real: CI verifica cada push, una entrevista sobrevive a un refresco de pagina, y un plan terminado se puede revisar con comentarios (p. ej. "cambia a ESP32") en lugar de empezar de cero.
+
+## 2026-07-10 - Mas rapido, mas barato, y dos bugs de produccion resueltos
+
+- Se corrigio el 504 intermitente al descargar codigo: la generacion suele superar los dos minutos, pero la funcion serverless estaba limitada exactamente a eso — se elevo el limite y se agrego un mensaje de timeout amigable.
+- La entrevista ahora usa un modelo mas rapido (Haiku): el analisis de fotos y las preguntas responden en 2-5 segundos en lugar de 8-11, a una decima parte del costo, mientras la generacion de codigo sigue en Sonnet por calidad. Las pruebas en vivo revelaron tres debilidades del protocolo — todas corregidas para cualquier modelo.
+- Se corrigio un fallo en "Descargar codigo" ("e.forEach is not a function"): el modelo a veces codifica doblemente su lista de archivos como cadena JSON — la salida ahora se normaliza y recupera, con pruebas unitarias y una prueba de clic en navegador real.
 `,
   fr: `# Journal du Projet
 
@@ -96,6 +108,12 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 - Fusion de la fonctionnalite multilingue d'une coequipiere (Dora Ai, anglais/espagnol/francais/chinois) arrivee sur main en parallele - chevauchement resolu et traductions du journal completees.
 - Nouvelle identite visuelle : theme fixe noir et rose avec un nouveau logo robot.
 - L'outil ressemble maintenant a un vrai produit : la CI verifie chaque push, un entretien survit a un rafraichissement de page, et un plan termine peut etre revise avec des retours (p. ex. "passer a l'ESP32") au lieu de tout recommencer.
+
+## 2026-07-10 - Plus rapide, moins cher, et deux bugs de production corriges
+
+- Correction du 504 intermittent au telechargement du code : la generation depasse souvent deux minutes, mais la fonction serverless etait plafonnee exactement a cela — limite relevee et message de timeout convivial ajoute.
+- L'entretien passe sur un modele plus rapide (Haiku) : l'analyse photo et les questions repondent en 2-5 secondes au lieu de 8-11, pour un dixieme du cout, tandis que la generation de code reste sur Sonnet pour la qualite. Les tests en direct ont revele trois faiblesses du protocole — toutes corrigees pour tous les modeles.
+- Correction d'un plantage sur "Telecharger le code" ("e.forEach is not a function") : le modele encode parfois doublement sa liste de fichiers en chaine JSON — la sortie est desormais normalisee et recuperee, couverte par des tests unitaires et un test de clic en navigateur reel.
 `,
   zh: `# 项目日志
 
@@ -128,5 +146,11 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 - 合并了队友 Dora Ai 并行开发的多语言功能（英/西/法/中）——处理了冲突，并补全了日志的翻译内容。
 - 网站换上固定的黑粉配色主题和全新的机器人 logo。
 - 工具向真正的产品迈进：每次 push 都有 CI 自动检查，访谈进度刷新页面不再丢失，生成的方案可以直接提修改意见（比如"改用 ESP32"）迭代，无需重头再来。
+
+## 2026-07-10 —— 更快、更省，修掉两个生产 bug
+
+- 修复了下载代码偶发的 504：代码生成经常超过两分钟，而 serverless 函数的时限恰好卡在两分钟——上调了时限，并加了友好的超时提示。
+- 访谈切换到更快的模型（Haiku）：照片分析和提问的响应从 8-11 秒降到 2-5 秒，成本降到十分之一；代码生成仍用 Sonnet 保证质量。切换时的实测暴露了三个协议弱点（偏离表单协议、方案标记被代码围栏包裹导致检测失败、确认后无限追问）——已全部修复，对任何模型都生效。
+- 修复了"下载代码"的崩溃（"e.forEach is not a function"）：模型偶尔会把文件列表双重编码成 JSON 字符串——现在会自动归一化恢复，并配有单元测试和真实浏览器点击测试。
 `,
 };
