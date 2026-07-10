@@ -268,6 +268,7 @@ export default function TryPage() {
         body: JSON.stringify({ history, uiLanguage: language }),
       });
       if (!res.ok) {
+        if (res.status === 504) throw new Error(t("generateTimeout"));
         const body = await res.json().catch(() => null);
         throw new Error(body?.error ?? `Request failed (${res.status})`);
       }
@@ -287,7 +288,7 @@ export default function TryPage() {
     } finally {
       setIsGeneratingCode(false);
     }
-  }, [history, language]);
+  }, [history, language, t]);
 
   const handleRequestRevision = useCallback(async () => {
     const text = revisionText.trim();

@@ -131,6 +131,8 @@ export const translations: Record<Language, Record<string, string>> = {
       "e.g. Use an ESP32 instead of the Arduino Uno, or skip Web Serial and use a Python bridge",
     revisePlan: "Revise plan",
     revisingPlan: "Revising plan…",
+    generateTimeout:
+      "Code generation took too long and timed out. Try again — a second attempt usually completes.",
   },
   es: {
     // Navigation
@@ -262,6 +264,8 @@ export const translations: Record<Language, Record<string, string>> = {
       "p. ej. Usa un ESP32 en lugar del Arduino Uno, o evita Web Serial y usa un puente en Python",
     revisePlan: "Revisar plan",
     revisingPlan: "Revisando el plan…",
+    generateTimeout:
+      "La generación de código tardó demasiado y se agotó el tiempo. Inténtalo de nuevo — un segundo intento suele completarse.",
   },
   fr: {
     // Navigation
@@ -393,6 +397,8 @@ export const translations: Record<Language, Record<string, string>> = {
       "p. ex. Utiliser un ESP32 au lieu de l'Arduino Uno, ou remplacer Web Serial par un pont Python",
     revisePlan: "Réviser le plan",
     revisingPlan: "Révision du plan…",
+    generateTimeout:
+      "La génération du code a pris trop de temps et a expiré. Réessayez — une seconde tentative aboutit généralement.",
   },
   zh: {
     // Navigation
@@ -523,6 +529,7 @@ export const translations: Record<Language, Record<string, string>> = {
     requestChangesPlaceholder: "例如：改用 ESP32 而不是 Arduino Uno，或者不用 Web Serial、改用 Python 桥接",
     revisePlan: "修改方案",
     revisingPlan: "正在修改方案…",
+    generateTimeout: "代码生成耗时过长已超时。请再试一次——第二次通常能成功。",
   },
 };
 

@@ -10,7 +10,10 @@ import { GENERATE_FILES_TOOL_NAME, GENERATE_MAX_TOKENS, MODEL_ID } from "@/lib/c
 import type { ChatMessage } from "@/types/chat";
 
 export const runtime = "nodejs";
-export const maxDuration = 120;
+// Code generation streams up to GENERATE_MAX_TOKENS from the model, which
+// regularly takes 2+ minutes for multi-file scaffolds — 120s caused real
+// 504s in production. 300 is the Vercel Hobby-plan ceiling.
+export const maxDuration = 300;
 
 const RequestSchema = z.object({
   history: z.array(ChatMessageSchema),
