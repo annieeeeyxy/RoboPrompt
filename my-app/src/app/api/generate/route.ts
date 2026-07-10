@@ -6,7 +6,7 @@ import { ChatMessageSchema } from "@/lib/chatSchema";
 import { UI_LANGUAGES } from "@/lib/languagePolicy";
 import { GENERATE_FILES_TOOL } from "@/lib/tools";
 import { buildZip, type GeneratedFile } from "@/lib/zip";
-import { GENERATE_FILES_TOOL_NAME, GENERATE_MAX_TOKENS, MODEL_ID } from "@/lib/constants";
+import { GENERATE_FILES_TOOL_NAME, GENERATE_MAX_TOKENS, GENERATE_MODEL_ID } from "@/lib/constants";
 import type { ChatMessage } from "@/types/chat";
 
 export const runtime = "nodejs";
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
     // only changes how we talk to Anthropic internally.
     const docLanguage = DOC_LANGUAGE_NAMES[body.uiLanguage];
     const stream = client.messages.stream({
-      model: MODEL_ID,
+      model: GENERATE_MODEL_ID,
       max_tokens: GENERATE_MAX_TOKENS,
       system: `${systemPrompt}\n\nDocumentation language: write README.md, SETUP-style docs, and the "notes" field in ${docLanguage}. Keep code, code comments, file paths, and protocol strings in English.`,
       tools: [GENERATE_FILES_TOOL],

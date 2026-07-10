@@ -43,14 +43,17 @@ export function streamToSSEResponse(
           return;
         }
         buffer += delta;
-        const trimmed = buffer.replace(/^\s+/, "");
+        // Some models wrap the sentinel in a markdown code fence — strip
+        // leading whitespace AND backticks before matching, so a fenced
+        // sentinel still flips the client into plan view.
+        const trimmed = buffer.replace(/^[\s`]+/, "");
         if (trimmed.length < FINAL_PLAN_SENTINEL.length) {
           return; // not enough to decide yet
         }
         sentinelResolved = true;
         if (trimmed.startsWith(FINAL_PLAN_SENTINEL)) {
           send({ type: "phase", phase: "plan" });
-          const rest = trimmed.slice(FINAL_PLAN_SENTINEL.length).replace(/^\s+/, "");
+          const rest = trimmed.slice(FINAL_PLAN_SENTINEL.length).replace(/^[\s`]+/, "");
           if (rest) send({ type: "delta", text: rest });
         } else {
           send({ type: "delta", text: buffer });
@@ -107,7 +110,12 @@ export function streamToSSEResponse(
               .filter((block): block is Anthropic.TextBlock => block.type === "text")
               .map((block) => block.text)
               .join("");
-            send({ type: "done", text: finalText.replace(FINAL_PLAN_SENTINEL, "").trim() });
+            // Strip the sentinel plus any code fence the model wrapped it in.
+            const cleaned = finalText
+              .replace(new RegExp(`^[\\s\`]*${FINAL_PLAN_SENTINEL}[\\s\`]*`), "")
+              .replace(FINAL_PLAN_SENTINEL, "")
+              .trim();
+            send({ type: "done", text: cleaned });
           } catch (err) {
             send({ type: "error", message: err instanceof Error ? err.message : "stream failed" });
           } finally {

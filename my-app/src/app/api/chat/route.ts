@@ -11,7 +11,7 @@ import {
   UI_LANGUAGES,
   type UiLanguage,
 } from "@/lib/languagePolicy";
-import { EARLY_GENERATION_SIGNAL, MAX_TOKENS, MODEL_ID } from "@/lib/constants";
+import { EARLY_GENERATION_SIGNAL, INTERVIEW_MODEL_ID, MAX_TOKENS } from "@/lib/constants";
 import type { ChatMessage } from "@/types/chat";
 
 export const runtime = "nodejs";
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
   }
 
   const stream = client.messages.stream({
-    model: MODEL_ID,
+    model: INTERVIEW_MODEL_ID,
     max_tokens: MAX_TOKENS,
     system: `${systemPrompt}\n\n${buildLanguagePolicyInstruction(
       body.uiLanguage as UiLanguage,

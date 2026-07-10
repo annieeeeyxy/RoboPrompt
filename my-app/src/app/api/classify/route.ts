@@ -17,7 +17,7 @@ import {
   MAX_REFERENCE_FILES,
   MAX_REFERENCE_FILE_BYTES,
   MAX_TOKENS,
-  MODEL_ID,
+  INTERVIEW_MODEL_ID,
 } from "@/lib/constants";
 import type { ChatContentBlock, ChatMessage } from "@/types/chat";
 
@@ -152,10 +152,13 @@ export async function POST(req: NextRequest) {
   }
 
   const stream = client.messages.stream({
-    model: MODEL_ID,
+    model: INTERVIEW_MODEL_ID,
     max_tokens: MAX_TOKENS,
     system: `${systemPrompt}\n\n${buildLanguagePolicyInstruction(uiLanguage, uiLanguage)}`,
     tools: [ASK_FORM_TOOL],
+    // The first turn is always questions, never a plan — forcing the tool
+    // keeps faster models from drifting into prose (the form-less chat UX).
+    tool_choice: { type: "tool", name: ASK_FORM_TOOL.name },
     messages: toAnthropicMessages([initialMessage]),
   });
 

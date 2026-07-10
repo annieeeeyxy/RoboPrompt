@@ -1,4 +1,8 @@
-export const MODEL_ID = "claude-sonnet-5";
+// Interview turns (photo analysis, forms) prioritize latency — Haiku is
+// 2-3x faster and an order of magnitude cheaper. Code generation keeps
+// Sonnet: that's the deliverable, quality wins over speed there.
+export const INTERVIEW_MODEL_ID = "claude-haiku-4-5-20251001";
+export const GENERATE_MODEL_ID = "claude-sonnet-5";
 export const MAX_TOKENS = 8192;
 export const GENERATE_MAX_TOKENS = 32000; // multi-file code scaffolds need much more headroom than a form/plan turn
 export const MAX_IMAGE_BYTES = 20 * 1024 * 1024; // 20MB raw upload cap (client compresses before this)
