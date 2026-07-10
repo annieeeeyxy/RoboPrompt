@@ -164,7 +164,7 @@ export function FormView({
       <button
         type="submit"
         disabled={disabled}
-        className="self-start rounded-full bg-pink-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-pink-500 disabled:opacity-40"
+        className="self-start rounded-full bg-pink-600 px-8 py-4 text-base font-medium text-white shadow-lg shadow-pink-600/25 transition-all hover:bg-pink-500 hover:shadow-pink-500/30 disabled:opacity-40"
       >
         {t("continue")}
       </button>

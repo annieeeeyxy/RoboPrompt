@@ -392,14 +392,14 @@ export default function TryPage() {
               {formCount >= 2 && currentForm && (
                 <button
                   onClick={() => void handleGeneratePlanNow()}
-                  className="rounded-full bg-pink-600 px-7 py-3.5 text-base font-medium text-white shadow-lg shadow-pink-600/25 transition-all hover:bg-pink-500 hover:shadow-pink-500/30"
+                  className="rounded-full bg-pink-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-pink-500"
                 >
                   {t("generatePlanNow")}
                 </button>
               )}
               <button
                 onClick={handleStartOver}
-                className="rounded-full bg-pink-600 px-7 py-3.5 text-base font-medium text-white shadow-lg shadow-pink-600/25 transition-all hover:bg-pink-500 hover:shadow-pink-500/30"
+                className="rounded-full border border-pink-500/40 px-4 py-2 text-xs font-medium text-pink-400 transition-colors hover:border-pink-500 hover:text-pink-300"
               >
                 {t("startOverWithNewArm")}
               </button>
