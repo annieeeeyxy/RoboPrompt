@@ -92,6 +92,9 @@ export const translations: Record<Language, Record<string, string>> = {
     member_annie_ye_role: "Creator & Developer",
     member_annie_ye_bio: "Building RoboPrompt end to end — product, system prompt design, and the web app.",
     member_dora_ai_role: "Team Member",
+    member_matt_beitler_role: "Team Member",
+    member_pearson_wu_role: "Team Member",
+    member_james_yang_role: "Team Member",
     member_dora_ai_bio: "A high school student and a huge gamer who loves combining creativity with technology.",
     
     // Diary page
@@ -225,6 +228,9 @@ export const translations: Record<Language, Record<string, string>> = {
     member_annie_ye_role: "Creadora y Desarrolladora",
     member_annie_ye_bio: "Construyendo RoboPrompt de extremo a extremo: producto, diseño del prompt del sistema y aplicación web.",
     member_dora_ai_role: "Miembro del equipo",
+    member_matt_beitler_role: "Miembro del equipo",
+    member_pearson_wu_role: "Miembro del equipo",
+    member_james_yang_role: "Miembro del equipo",
     
     // Diary page
     diaryTitle: "Diario",
@@ -357,6 +363,9 @@ export const translations: Record<Language, Record<string, string>> = {
     member_annie_ye_role: "Créatrice et Développeuse",
     member_annie_ye_bio: "Création de RoboPrompt de bout en bout : produit, conception du prompt système et application web.",
     member_dora_ai_role: "Membre de l'équipe",
+    member_matt_beitler_role: "Membre de l'équipe",
+    member_pearson_wu_role: "Membre de l'équipe",
+    member_james_yang_role: "Membre de l'équipe",
     
     // Diary page
     diaryTitle: "Journal",
@@ -489,6 +498,9 @@ export const translations: Record<Language, Record<string, string>> = {
     member_annie_ye_role: "创建者与开发者",
     member_annie_ye_bio: "从产品、系统提示词设计到网页应用，端到端构建 RoboPrompt。",
     member_dora_ai_role: "团队成员",
+    member_matt_beitler_role: "团队成员",
+    member_pearson_wu_role: "团队成员",
+    member_james_yang_role: "团队成员",
     
     // Diary page
     diaryTitle: "日记",

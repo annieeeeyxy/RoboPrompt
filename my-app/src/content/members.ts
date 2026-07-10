@@ -27,4 +27,19 @@ export const MEMBERS: Member[] = [
     bio: "A high school student and a huge gamer who loves combining creativity with technology.",
     photo: "/dora.png",
   },
+  {
+    slug: "matt-beitler",
+    name: "Matt Beitler",
+    role: "Team Member",
+  },
+  {
+    slug: "pearson-wu",
+    name: "Pearson Wu",
+    role: "Team Member",
+  },
+  {
+    slug: "james-yang",
+    name: "James Yang",
+    role: "Team Member",
+  },
 ];
