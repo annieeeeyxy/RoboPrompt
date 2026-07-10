@@ -4,6 +4,7 @@ import { getAnthropicClient, toAnthropicMessages } from "@/lib/anthropic";
 import { getSystemPrompt } from "@/lib/systemPrompt";
 import { streamToSSEResponse } from "@/lib/sse";
 import { ASK_FORM_TOOL } from "@/lib/tools";
+import { enforceRateLimit } from "@/lib/rateLimit";
 import { ChatMessageSchema } from "@/lib/chatSchema";
 import {
   buildLanguagePolicyInstruction,
@@ -16,6 +17,8 @@ import type { ChatMessage } from "@/types/chat";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
+
+const CHAT_RATE_LIMIT = { windowMs: 60 * 1000, maxRequests: 40 } as const;
 
 const RequestSchema = z
   .object({
@@ -33,6 +36,17 @@ const RequestSchema = z
   );
 
 export async function POST(req: NextRequest) {
+  const limit = enforceRateLimit(req, "api:chat", CHAT_RATE_LIMIT);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait and try again." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(limit.retryAfterSeconds) },
+      }
+    );
+  }
+
   let body: z.infer<typeof RequestSchema>;
   try {
     body = RequestSchema.parse(await req.json());

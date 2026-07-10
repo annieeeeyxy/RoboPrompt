@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { normalizeInternalRedirect } from "@/lib/redirect";
 
 function LoginForm() {
   const router = useRouter();
@@ -24,7 +25,7 @@ function LoginForm() {
         const body = await res.json().catch(() => null);
         throw new Error(body?.error ?? "Incorrect password");
       }
-      const redirect = searchParams.get("redirect") ?? "/try";
+      const redirect = normalizeInternalRedirect(searchParams.get("redirect"), "/try");
       router.push(redirect);
       router.refresh();
     } catch (err) {

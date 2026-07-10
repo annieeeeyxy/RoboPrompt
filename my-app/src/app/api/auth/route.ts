@@ -1,12 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { AUTH_COOKIE_NAME, computeSessionToken, timingSafeEqualStr } from "@/lib/auth";
+import { enforceRateLimit } from "@/lib/rateLimit";
 
 export const runtime = "nodejs";
+
+const AUTH_RATE_LIMIT = { windowMs: 5 * 60 * 1000, maxRequests: 10 } as const;
 
 const RequestSchema = z.object({ password: z.string().min(1) });
 
 export async function POST(req: NextRequest) {
+  const limit = enforceRateLimit(req, "api:auth", AUTH_RATE_LIMIT);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Too many login attempts. Please try again later." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(limit.retryAfterSeconds) },
+      }
+    );
+  }
+
   let body: z.infer<typeof RequestSchema>;
   try {
     body = RequestSchema.parse(await req.json());

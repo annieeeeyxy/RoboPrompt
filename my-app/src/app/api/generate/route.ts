@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getAnthropicClient, toAnthropicMessages } from "@/lib/anthropic";
 import { getSystemPrompt } from "@/lib/systemPrompt";
 import { ChatMessageSchema } from "@/lib/chatSchema";
+import { enforceRateLimit } from "@/lib/rateLimit";
 import { UI_LANGUAGES } from "@/lib/languagePolicy";
 import { GENERATE_FILES_TOOL } from "@/lib/tools";
 import { buildZip, normalizeGeneratedFiles } from "@/lib/zip";
@@ -14,6 +15,8 @@ export const runtime = "nodejs";
 // regularly takes 2+ minutes for multi-file scaffolds — 120s caused real
 // 504s in production. 300 is the Vercel Hobby-plan ceiling.
 export const maxDuration = 300;
+
+const GENERATE_RATE_LIMIT = { windowMs: 10 * 60 * 1000, maxRequests: 8 } as const;
 
 const RequestSchema = z.object({
   history: z.array(ChatMessageSchema),
@@ -33,6 +36,17 @@ function sanitizeProjectName(name: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  const limit = enforceRateLimit(req, "api:generate", GENERATE_RATE_LIMIT);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Too many code generation requests. Please try again later." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(limit.retryAfterSeconds) },
+      }
+    );
+  }
+
   let body: z.infer<typeof RequestSchema>;
   try {
     body = RequestSchema.parse(await req.json());

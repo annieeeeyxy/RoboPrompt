@@ -4,6 +4,7 @@ import { getSystemPrompt } from "@/lib/systemPrompt";
 import { streamToSSEResponse } from "@/lib/sse";
 import { processImage, UnsupportedImageError, ImageProcessingUnavailableError } from "@/lib/image";
 import { processReferenceFile } from "@/lib/referenceFiles";
+import { enforceRateLimit } from "@/lib/rateLimit";
 import { ASK_FORM_TOOL } from "@/lib/tools";
 import {
   buildLanguagePolicyInstruction,
@@ -24,7 +25,20 @@ import type { ChatContentBlock, ChatMessage } from "@/types/chat";
 export const runtime = "nodejs";
 export const maxDuration = 120;
 
+const CLASSIFY_RATE_LIMIT = { windowMs: 60 * 1000, maxRequests: 15 } as const;
+
 export async function POST(req: NextRequest) {
+  const limit = enforceRateLimit(req, "api:classify", CLASSIFY_RATE_LIMIT);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait and try again." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(limit.retryAfterSeconds) },
+      }
+    );
+  }
+
   let formData: FormData;
   try {
     formData = await req.formData();
