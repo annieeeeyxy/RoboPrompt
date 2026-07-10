@@ -5,7 +5,7 @@ import { getSystemPrompt } from "@/lib/systemPrompt";
 import { ChatMessageSchema } from "@/lib/chatSchema";
 import { UI_LANGUAGES } from "@/lib/languagePolicy";
 import { GENERATE_FILES_TOOL } from "@/lib/tools";
-import { buildZip, type GeneratedFile } from "@/lib/zip";
+import { buildZip, normalizeGeneratedFiles } from "@/lib/zip";
 import { GENERATE_FILES_TOOL_NAME, GENERATE_MAX_TOKENS, GENERATE_MODEL_ID } from "@/lib/constants";
 import type { ChatMessage } from "@/types/chat";
 
@@ -108,18 +108,24 @@ export async function POST(req: NextRequest) {
   }
 
   const input = toolUse.input as {
-    projectName?: string;
-    files?: GeneratedFile[];
-    notes?: string;
+    projectName?: unknown;
+    files?: unknown;
+    notes?: unknown;
   };
-  if (!input.files || input.files.length === 0) {
+  // Tool output is model-generated and occasionally malformed (e.g. files
+  // as a double-encoded JSON string) — normalize instead of trusting it.
+  const files = normalizeGeneratedFiles(input.files);
+  if (!files) {
     return NextResponse.json({ error: "No files were generated. Try again." }, { status: 502 });
   }
 
-  const projectName = sanitizeProjectName(input.projectName ?? "robot-arm-project");
+  const projectName = sanitizeProjectName(
+    typeof input.projectName === "string" ? input.projectName : "robot-arm-project"
+  );
+  const notes = typeof input.notes === "string" ? input.notes : "";
   let zipBuffer: Buffer;
   try {
-    zipBuffer = await buildZip(input.files, input.notes ?? "");
+    zipBuffer = await buildZip(files, notes);
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Failed to package the generated files" },

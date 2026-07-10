@@ -3,6 +3,46 @@ import JSZip from "jszip";
 export type GeneratedFile = { path: string; content: string };
 
 /**
+ * The generate_files tool output comes from the model and is NOT guaranteed
+ * to match the schema: `files` occasionally arrives as a JSON *string*
+ * (double-encoded array) instead of an array, which used to crash buildZip
+ * with "files.forEach is not a function". Normalize every shape we can
+ * recover; return null only when there is genuinely nothing usable.
+ */
+export function normalizeGeneratedFiles(raw: unknown): GeneratedFile[] | null {
+  let files = raw;
+  if (typeof files === "string") {
+    try {
+      files = JSON.parse(files);
+    } catch {
+      return null;
+    }
+  }
+  if (!Array.isArray(files)) return null;
+
+  const out: GeneratedFile[] = [];
+  for (const entry of files) {
+    let file = entry;
+    // Individual entries can be double-encoded too.
+    if (typeof file === "string") {
+      try {
+        file = JSON.parse(file);
+      } catch {
+        continue;
+      }
+    }
+    if (typeof file !== "object" || file === null) continue;
+    const { path, content } = file as { path?: unknown; content?: unknown };
+    if (typeof path !== "string" || path.trim() === "") continue;
+    out.push({
+      path,
+      content: typeof content === "string" ? content : content == null ? "" : String(content),
+    });
+  }
+  return out.length > 0 ? out : null;
+}
+
+/**
  * Model-supplied paths are untrusted. Strip leading slashes and drop "."/".."
  * segments entirely (rather than resolving them) so the result can never
  * point outside the archive root or be treated as absolute by a naive
