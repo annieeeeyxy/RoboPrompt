@@ -70,9 +70,15 @@ Visit `http://localhost:3000` in your browser.
 - `pnpm run build` — build production app
 - `pnpm run start` — run production server
 - `pnpm run lint` — run ESLint checks
+- `pnpm run typecheck` — run TypeScript checks
+- `pnpm run test` — run unit tests
 
 ## Deployment
-- Vercel?
-- Netlify?
-- Railway?
+Primary target: Vercel.
+
+1. Import the repository in Vercel.
+2. Set environment variables for `ANTHROPIC_API_KEY` and `SITE_PASSWORD`.
+3. Deploy from `main`.
+
+If you deploy on another platform, make sure Next.js App Router + Node.js runtime routes are supported.
 
