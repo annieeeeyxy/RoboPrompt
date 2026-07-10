@@ -92,6 +92,7 @@ export const translations: Record<Language, Record<string, string>> = {
     member_annie_ye_role: "Creator & Developer",
     member_annie_ye_bio: "Building RoboPrompt end to end — product, system prompt design, and the web app.",
     member_dora_ai_role: "Team Member",
+    member_dora_ai_bio: "A high school student and a huge gamer who loves combining creativity with technology.",
     
     // Diary page
     diaryTitle: "Diary",

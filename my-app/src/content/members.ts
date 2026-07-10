@@ -24,6 +24,7 @@ export const MEMBERS: Member[] = [
     slug: "dora-ai",
     name: "Dora Ai",
     role: "Team Member",
+    bio: "A high school student and a huge gamer who loves combining creativity with technology.",
     photo: "/dora.png",
   },
 ];
