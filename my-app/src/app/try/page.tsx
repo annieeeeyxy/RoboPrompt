@@ -388,18 +388,18 @@ export default function TryPage() {
           )}
 
           {!agent.isStreaming && (
-            <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-4">
               {formCount >= 2 && currentForm && (
                 <button
                   onClick={() => void handleGeneratePlanNow()}
-                  className="rounded-full border border-black/15 px-4 py-2 text-xs font-medium text-black/60 hover:border-black/30 hover:text-black dark:border-white/15 dark:text-white/60 dark:hover:border-white/30 dark:hover:text-white"
+                  className="rounded-full bg-pink-600 px-7 py-3.5 text-base font-medium text-white shadow-lg shadow-pink-600/25 transition-all hover:bg-pink-500 hover:shadow-pink-500/30"
                 >
                   {t("generatePlanNow")}
                 </button>
               )}
               <button
                 onClick={handleStartOver}
-                className="rounded-full border border-black/15 px-4 py-2 text-xs font-medium text-black/60 hover:border-black/30 hover:text-black dark:border-white/15 dark:text-white/60 dark:hover:border-white/30 dark:hover:text-white"
+                className="rounded-full bg-pink-600 px-7 py-3.5 text-base font-medium text-white shadow-lg shadow-pink-600/25 transition-all hover:bg-pink-500 hover:shadow-pink-500/30"
               >
                 {t("startOverWithNewArm")}
               </button>
