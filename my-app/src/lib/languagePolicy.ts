@@ -95,6 +95,11 @@ export function resolveResponseLanguage(uiLanguage: UiLanguage, userText?: strin
   return single ?? uiLanguage;
 }
 
+export function shouldMirrorMixedStyle(userText?: string): boolean {
+  if (!userText || userText.trim().length === 0) return false;
+  return detectLanguagesInText(userText).mixed;
+}
+
 function languageName(language: UiLanguage): string {
   switch (language) {
     case "en":
@@ -110,12 +115,19 @@ function languageName(language: UiLanguage): string {
 
 export function buildLanguagePolicyInstruction(
   uiLanguage: UiLanguage,
-  responseLanguage: UiLanguage
+  responseLanguage: UiLanguage,
+  userText?: string
 ): string {
+  const mirrorMixed = shouldMirrorMixedStyle(userText);
+
   return [
     "Language policy (must follow):",
     `- UI-selected default language: ${languageName(uiLanguage)}.`,
-    `- For this turn, respond in: ${languageName(responseLanguage)}.`,
-    "- If the user's latest message is mixed-language, keep using the UI-selected default language.",
+    `- For this turn, respond in: ${languageName(responseLanguage)} unless the user is writing in a clearly mixed-language style.`,
+    mirrorMixed
+      ? "- The user's latest message is mixed-language: mirror that mixed style (e.g., Chinese+English) and keep the same tone/register."
+      : "- If the user's latest message is single-language, match that language and tone.",
+    "- If language is ambiguous, fall back to the UI-selected default language.",
+    "- Keep technical terms (URDF, ROS2, CAN bus) in original form when natural.",
   ].join("\n");
 }

@@ -107,7 +107,8 @@ export async function POST(req: NextRequest) {
     max_tokens: MAX_TOKENS,
     system: `${systemPrompt}\n\n${buildLanguagePolicyInstruction(
       body.uiLanguage as UiLanguage,
-      responseLanguage
+      responseLanguage,
+      latestUserText
     )}`,
     tools: [ASK_FORM_TOOL],
     messages: toAnthropicMessages(messages),
