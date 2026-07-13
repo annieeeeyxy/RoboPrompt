@@ -16,17 +16,27 @@ export function toAnthropicMessages(
 ): Anthropic.MessageParam[] {
   return messages.map((message) => ({
     role: message.role,
-    content: message.content.map((block) =>
-      block.type === "text"
-        ? { type: "text" as const, text: block.text }
-        : {
-            type: "image" as const,
-            source: {
-              type: "base64" as const,
-              media_type: block.mediaType,
-              data: block.base64,
-            },
-          }
-    ),
+    content: message.content.map((block): Anthropic.ContentBlockParam => {
+      switch (block.type) {
+        case "text":
+          return { type: "text", text: block.text };
+        case "image":
+          return {
+            type: "image",
+            source: { type: "base64", media_type: block.mediaType, data: block.base64 },
+          };
+        case "document":
+          return {
+            type: "document",
+            source: { type: "base64", media_type: block.mediaType, data: block.base64 },
+            title: block.filename,
+            context: block.description,
+          };
+        case "tool_use":
+          return { type: "tool_use", id: block.id, name: block.name, input: block.input };
+        case "tool_result":
+          return { type: "tool_result", tool_use_id: block.toolUseId, content: block.content };
+      }
+    }),
   }));
 }

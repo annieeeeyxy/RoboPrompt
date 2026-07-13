@@ -1,0 +1,36 @@
+import { NextRequest, NextResponse } from "next/server";
+import { AUTH_COOKIE_NAME, computeSessionToken, timingSafeEqualStr } from "@/lib/auth";
+
+export async function proxy(req: NextRequest) {
+  const sitePassword = process.env.SITE_PASSWORD;
+
+  // No password configured: fail closed in production (nothing should be
+  // reachable until it's set), fail open in local dev so testing isn't
+  // blocked before the env var is set up.
+  if (!sitePassword) {
+    if (process.env.NODE_ENV !== "production") return NextResponse.next();
+    return blockedResponse(req);
+  }
+
+  const cookie = req.cookies.get(AUTH_COOKIE_NAME)?.value;
+  const expected = await computeSessionToken(sitePassword);
+
+  if (cookie && timingSafeEqualStr(cookie, expected)) {
+    return NextResponse.next();
+  }
+
+  return blockedResponse(req);
+}
+
+function blockedResponse(req: NextRequest) {
+  if (req.nextUrl.pathname.startsWith("/api/")) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const loginUrl = new URL("/login", req.url);
+  loginUrl.searchParams.set("redirect", req.nextUrl.pathname);
+  return NextResponse.redirect(loginUrl);
+}
+
+export const config = {
+  matcher: ["/try/:path*", "/api/classify/:path*", "/api/chat/:path*", "/api/generate/:path*"],
+};

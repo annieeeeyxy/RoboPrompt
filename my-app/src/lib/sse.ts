@@ -1,6 +1,6 @@
 import type Anthropic from "@anthropic-ai/sdk";
-import type { SSEEvent } from "@/types/chat";
-import { FINAL_PLAN_SENTINEL } from "@/lib/constants";
+import type { SSEEvent, FormField } from "@/types/chat";
+import { FINAL_PLAN_SENTINEL, ASK_FORM_TOOL_NAME } from "@/lib/constants";
 
 type MessageStream = ReturnType<Anthropic["messages"]["stream"]>;
 
@@ -25,7 +25,13 @@ export function streamToSSEResponse(
       let closed = false;
       const send = (event: SSEEvent) => {
         if (closed) return;
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
+        try {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
+        } catch {
+          // Controller was closed by the runtime (client disconnected)
+          // between our check and this call — nothing left to do.
+          closed = true;
+        }
       };
 
       let buffer = "";
@@ -37,14 +43,17 @@ export function streamToSSEResponse(
           return;
         }
         buffer += delta;
-        const trimmed = buffer.replace(/^\s+/, "");
+        // Some models wrap the sentinel in a markdown code fence — strip
+        // leading whitespace AND backticks before matching, so a fenced
+        // sentinel still flips the client into plan view.
+        const trimmed = buffer.replace(/^[\s`]+/, "");
         if (trimmed.length < FINAL_PLAN_SENTINEL.length) {
           return; // not enough to decide yet
         }
         sentinelResolved = true;
         if (trimmed.startsWith(FINAL_PLAN_SENTINEL)) {
           send({ type: "phase", phase: "plan" });
-          const rest = trimmed.slice(FINAL_PLAN_SENTINEL.length).replace(/^\s+/, "");
+          const rest = trimmed.slice(FINAL_PLAN_SENTINEL.length).replace(/^[\s`]+/, "");
           if (rest) send({ type: "delta", text: rest });
         } else {
           send({ type: "delta", text: buffer });
@@ -52,26 +61,74 @@ export function streamToSSEResponse(
         buffer = "";
       });
 
+      stream.on("contentBlock", (content: Anthropic.ContentBlock) => {
+        if (content.type === "tool_use" && content.name === ASK_FORM_TOOL_NAME) {
+          const input = content.input as { prompt?: string; fields?: FormField[] };
+          send({
+            type: "form",
+            toolUseId: content.id,
+            prompt: input.prompt ?? "",
+            fields: input.fields ?? [],
+          });
+        }
+      });
+
+      const closeController = () => {
+        if (closed) return;
+        closed = true;
+        try {
+          controller.close();
+        } catch {
+          // Already closed by the runtime — nothing left to do.
+        }
+      };
+
       stream.on("error", (err: Error) => {
         send({ type: "error", message: err instanceof Error ? err.message : "stream failed" });
-        closed = true;
-        controller.close();
+        closeController();
+      });
+
+      // Separate from "error" — fires specifically when .abort() is called
+      // (e.g. our own cancel() below, on client disconnect). Anthropic's SDK
+      // rejects an internal promise on abort; without a listener here that
+      // surfaces as an unhandled rejection even though nothing is actually
+      // broken.
+      stream.on("abort", () => {
+        closeController();
       });
 
       stream.on("end", () => {
         if (closed) return;
         (async () => {
           try {
-            const finalText = await stream.finalText();
-            send({ type: "done", text: finalText.replace(FINAL_PLAN_SENTINEL, "").trim() });
+            // finalText() throws when the reply has no text block at all (a
+            // tool-only turn, i.e. every ask_form call) — read the message
+            // directly and default to "" instead.
+            const message = await stream.finalMessage();
+            const content = message.content as Anthropic.ContentBlock[];
+            const finalText = content
+              .filter((block): block is Anthropic.TextBlock => block.type === "text")
+              .map((block) => block.text)
+              .join("");
+            // Strip the sentinel plus any code fence the model wrapped it in.
+            const cleaned = finalText
+              .replace(new RegExp(`^[\\s\`]*${FINAL_PLAN_SENTINEL}[\\s\`]*`), "")
+              .replace(FINAL_PLAN_SENTINEL, "")
+              .trim();
+            send({ type: "done", text: cleaned });
           } catch (err) {
             send({ type: "error", message: err instanceof Error ? err.message : "stream failed" });
           } finally {
-            closed = true;
-            controller.close();
+            closeController();
           }
         })();
       });
+    },
+    cancel() {
+      // The client disconnected (closed tab, navigated away, aborted the
+      // fetch) — stop the underlying Anthropic call rather than paying for
+      // a response nobody is listening to anymore.
+      stream.abort();
     },
   });
 

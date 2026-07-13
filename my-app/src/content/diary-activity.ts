@@ -2,5 +2,6 @@
 export const DIARY_ACTIVITY = [
   { date: "2026-07-02", commits: 2 },
   { date: "2026-07-06", commits: 1 },
-  { date: "2026-07-08", commits: 8 },
+  { date: "2026-07-08", commits: 20 },
+  { date: "2026-07-09", commits: 4 },
 ];

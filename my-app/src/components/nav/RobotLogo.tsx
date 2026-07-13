@@ -1,0 +1,21 @@
+export function RobotLogo({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 32 32"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      aria-hidden="true"
+    >
+      <rect width="32" height="32" rx="8" fill="#0a0a0a" />
+      <line x1="16" y1="4" x2="16" y2="7.5" stroke="#ec4899" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="16" cy="3.4" r="1.5" fill="#ec4899" />
+      <line x1="8" y1="13" x2="5.5" y2="13" stroke="#ec4899" strokeWidth="1.6" strokeLinecap="round" />
+      <line x1="24" y1="13" x2="26.5" y2="13" stroke="#ec4899" strokeWidth="1.6" strokeLinecap="round" />
+      <rect x="8" y="8.5" width="16" height="13" rx="4" stroke="#ec4899" strokeWidth="1.8" />
+      <circle cx="12.6" cy="15" r="1.6" fill="#ec4899" />
+      <circle cx="19.4" cy="15" r="1.6" fill="#ec4899" />
+      <line x1="12.3" y1="18.4" x2="19.7" y2="18.4" stroke="#ec4899" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}

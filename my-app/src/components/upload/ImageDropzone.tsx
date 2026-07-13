@@ -2,6 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { UploadIcon } from "@/components/icons";
+import { useTranslation } from "@/hooks/useTranslation";
 import { MAX_IMAGE_FILES } from "@/lib/constants";
 
 const MAX_EDGE = 2000;
@@ -29,18 +30,11 @@ async function compressImage(file: File): Promise<Blob> {
 export function ImageDropzone({
   onImagesReady,
   disabled,
-  preparingLabel = "Preparing photos...",
-  title = "Drop photos of your robot arm here",
-  hint,
-  buttonLabel = "Choose photos",
 }: {
   onImagesReady: (blobs: Blob[], previewUrls: string[]) => void;
   disabled?: boolean;
-  preparingLabel?: string;
-  title?: string;
-  hint?: string;
-  buttonLabel?: string;
 }) {
+  const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isPreparing, setIsPreparing] = useState(false);
@@ -89,7 +83,7 @@ export function ImageDropzone({
       }}
       className={`flex min-h-64 cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-8 text-center transition-colors ${
         isDragging
-          ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
+          ? "border-pink-500 bg-pink-50 dark:bg-pink-950/30"
           : "border-black/15 hover:border-black/30 dark:border-white/15 dark:hover:border-white/30"
       } ${disabled ? "pointer-events-none opacity-50" : ""}`}
     >
@@ -103,19 +97,14 @@ export function ImageDropzone({
           if (e.target.files?.length) void handleFiles(e.target.files);
         }}
       />
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-pink-600/10 text-pink-500">
         <UploadIcon className="h-6 w-6" />
       </div>
       <p className="text-lg font-medium">
-        {isPreparing ? preparingLabel : title}
+        {isPreparing ? t("preparingPhotos") : t("dropPhotosHere")}
       </p>
-      {!isPreparing && (
-        <span className="rounded-full bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm">
-          {buttonLabel}
-        </span>
-      )}
       <p className="text-sm text-black/50 dark:text-white/50">
-        {hint ?? `or click to choose one or more files - JPEG, PNG, or WebP (up to ${MAX_IMAGE_FILES})`}
+        {t("chooseFilesHint").replace("{count}", String(MAX_IMAGE_FILES))}
       </p>
     </div>
   );
