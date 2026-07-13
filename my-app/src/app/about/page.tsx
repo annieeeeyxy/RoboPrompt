@@ -15,6 +15,7 @@ export default function AboutPage() {
       body: t("categoryBDesc"),
     },
   ];
+  console.log(CATEGORIES);
 
   const PIPELINE_STEPS = [
     {
