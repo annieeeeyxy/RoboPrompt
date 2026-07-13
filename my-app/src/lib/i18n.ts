@@ -46,8 +46,23 @@ export const copy = {
       finalBody: "Upload a photo and get started in minutes.",
     },
     try: {
-      uploadHeading: "Upload your robot arm",
-      uploadBody: "We'll analyze it and ask what we can't tell from the photo.",
+      stepLabel: "Step 1 of 3",
+      uploadHeading: "Let’s start with a photo",
+      uploadBody: "No robotics experience needed. A clear phone photo is enough to begin.",
+      photoTipsHeading: "For the best result",
+      photoTips: [
+        "Show the whole arm from base to gripper",
+        "Use good light and keep labels visible",
+        "Add a second angle if parts overlap",
+      ],
+      whatNextHeading: "What happens next?",
+      whatNextBody:
+        "We’ll identify the visible parts, ask a few plain-language questions, then create a step-by-step control plan.",
+      privacyNote: "Your photos are only used to analyze this project.",
+      choosePhotos: "Choose photos",
+      interviewStep: "Step 2 of 3 · A few quick questions",
+      interviewHint: "Answer in your own words. “I’m not sure” is always okay.",
+      planStep: "Step 3 of 3 · Your build plan",
       uploadedSingle: "Uploaded a photo of my robot arm.",
       uploadedMultiple: (count: number) => `Uploaded ${count} photos of my robot arm.`,
       initialSingle:
@@ -61,7 +76,9 @@ export const copy = {
       preparing: "Preparing photos...",
       dropzoneTitle: "Drop photos of your robot arm here",
       dropzoneHint: (maxFiles: number) =>
-        `or click to choose one or more files - JPEG, PNG, or WebP (up to ${maxFiles})`,
+        `or drag them here · JPEG, PNG, or WebP · up to ${maxFiles}`,
+      generatePlanButton: "Use what we have and make my plan",
+      startOver: "Start over with a new arm",
     },
   },
   zh: {
@@ -109,8 +126,22 @@ export const copy = {
       finalBody: "上传照片，几分钟内开始。",
     },
     try: {
-      uploadHeading: "上传你的机械臂",
-      uploadBody: "我们会分析照片，并询问照片中无法确定的信息。",
+      stepLabel: "第 1 步，共 3 步",
+      uploadHeading: "先从一张照片开始",
+      uploadBody: "不需要机器人基础，一张清晰的手机照片就可以开始。",
+      photoTipsHeading: "这样拍，识别更准确",
+      photoTips: [
+        "拍到从底座到夹爪的完整机械臂",
+        "保持光线充足，尽量让标签清晰可见",
+        "零件互相遮挡时，再补充一个角度",
+      ],
+      whatNextHeading: "接下来会发生什么？",
+      whatNextBody: "我们会识别照片中的零件，用简单的问题补全信息，再生成一步步的控制方案。",
+      privacyNote: "你的照片只会用于分析当前项目。",
+      choosePhotos: "选择照片",
+      interviewStep: "第 2 步，共 3 步 · 回答几个小问题",
+      interviewHint: "用自己的话回答就好，不知道时可以直接说“不确定”。",
+      planStep: "第 3 步，共 3 步 · 你的搭建方案",
       uploadedSingle: "已上传一张机械臂照片。",
       uploadedMultiple: (count: number) => `已上传 ${count} 张机械臂照片。`,
       initialSingle: "这是一张我的机械臂照片。请分析它，并帮我弄清楚如何控制它。",
@@ -121,7 +152,9 @@ export const copy = {
       preparing: "正在处理照片...",
       dropzoneTitle: "把机械臂照片拖到这里",
       dropzoneHint: (maxFiles: number) =>
-        `也可以点击选择一个或多个文件 - JPEG、PNG 或 WebP（最多 ${maxFiles} 个）`,
+        `也可以拖到这里 · JPEG、PNG 或 WebP · 最多 ${maxFiles} 张`,
+      generatePlanButton: "根据现有信息生成方案",
+      startOver: "换一个机械臂重新开始",
     },
   },
   es: {
@@ -169,8 +202,23 @@ export const copy = {
       finalBody: "Sube una foto y empieza en minutos.",
     },
     try: {
-      uploadHeading: "Sube tu brazo robótico",
-      uploadBody: "Lo analizaremos y preguntaremos lo que no podamos deducir de la foto.",
+      stepLabel: "Paso 1 de 3",
+      uploadHeading: "Empecemos con una foto",
+      uploadBody: "No necesitas experiencia en robótica. Una foto clara del móvil es suficiente.",
+      photoTipsHeading: "Para obtener el mejor resultado",
+      photoTips: [
+        "Muestra el brazo completo, desde la base hasta la pinza",
+        "Usa buena luz y deja visibles las etiquetas",
+        "Añade otro ángulo si las piezas se superponen",
+      ],
+      whatNextHeading: "¿Qué pasará después?",
+      whatNextBody:
+        "Identificaremos las piezas visibles, haremos preguntas sencillas y crearemos un plan de control paso a paso.",
+      privacyNote: "Tus fotos solo se usan para analizar este proyecto.",
+      choosePhotos: "Elegir fotos",
+      interviewStep: "Paso 2 de 3 · Unas preguntas rápidas",
+      interviewHint: "Responde con tus palabras. Siempre puedes decir «No lo sé».",
+      planStep: "Paso 3 de 3 · Tu plan de construcción",
       uploadedSingle: "Subí una foto de mi brazo robótico.",
       uploadedMultiple: (count: number) => `Subí ${count} fotos de mi brazo robótico.`,
       initialSingle:
@@ -184,7 +232,9 @@ export const copy = {
       preparing: "Preparando fotos...",
       dropzoneTitle: "Arrastra aquí fotos de tu brazo robótico",
       dropzoneHint: (maxFiles: number) =>
-        `o haz clic para elegir uno o más archivos - JPEG, PNG o WebP (hasta ${maxFiles})`,
+        `o arrástralas aquí · JPEG, PNG o WebP · hasta ${maxFiles}`,
+      generatePlanButton: "Crear mi plan con lo que tenemos",
+      startOver: "Empezar con otro brazo",
     },
   },
 } satisfies Record<LanguageCode, unknown>;

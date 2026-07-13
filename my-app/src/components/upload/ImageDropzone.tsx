@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { UploadIcon } from "@/components/icons";
 import { MAX_IMAGE_FILES } from "@/lib/constants";
 
 const MAX_EDGE = 2000;
@@ -31,12 +32,14 @@ export function ImageDropzone({
   preparingLabel = "Preparing photos...",
   title = "Drop photos of your robot arm here",
   hint,
+  buttonLabel = "Choose photos",
 }: {
   onImagesReady: (blobs: Blob[], previewUrls: string[]) => void;
   disabled?: boolean;
   preparingLabel?: string;
   title?: string;
   hint?: string;
+  buttonLabel?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -63,6 +66,9 @@ export function ImageDropzone({
 
   return (
     <div
+      role="button"
+      tabIndex={disabled ? -1 : 0}
+      aria-disabled={disabled}
       onDragOver={(e) => {
         e.preventDefault();
         if (!disabled) setIsDragging(true);
@@ -75,6 +81,12 @@ export function ImageDropzone({
         if (e.dataTransfer.files.length) void handleFiles(e.dataTransfer.files);
       }}
       onClick={() => !disabled && inputRef.current?.click()}
+      onKeyDown={(event) => {
+        if (!disabled && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          inputRef.current?.click();
+        }
+      }}
       className={`flex min-h-64 cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-8 text-center transition-colors ${
         isDragging
           ? "border-blue-500 bg-blue-50 dark:bg-blue-950/30"
@@ -91,9 +103,17 @@ export function ImageDropzone({
           if (e.target.files?.length) void handleFiles(e.target.files);
         }}
       />
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/10 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400">
+        <UploadIcon className="h-6 w-6" />
+      </div>
       <p className="text-lg font-medium">
         {isPreparing ? preparingLabel : title}
       </p>
+      {!isPreparing && (
+        <span className="rounded-full bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm">
+          {buttonLabel}
+        </span>
+      )}
       <p className="text-sm text-black/50 dark:text-white/50">
         {hint ?? `or click to choose one or more files - JPEG, PNG, or WebP (up to ${MAX_IMAGE_FILES})`}
       </p>

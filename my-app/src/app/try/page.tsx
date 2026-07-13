@@ -125,27 +125,57 @@ export default function TryPage() {
   }, [agent]);
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-10">
+    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-10 sm:py-14">
       {phase === "upload" && (
         <>
-          <header className="text-center">
-            <h1 className="text-2xl font-semibold">{t.try.uploadHeading}</h1>
-            <p className="mt-1 text-sm text-black/50 dark:text-white/50">
+          <header className="mx-auto max-w-2xl text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-600 dark:text-blue-400">
+              {t.try.stepLabel}
+            </p>
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{t.try.uploadHeading}</h1>
+            <p className="mx-auto mt-3 max-w-xl text-base leading-7 text-black/55 dark:text-white/55">
               {t.try.uploadBody}
             </p>
           </header>
-          <ImageDropzone
-            onImagesReady={handleImagesReady}
-            disabled={agent.isStreaming}
-            preparingLabel={t.try.preparing}
-            title={t.try.dropzoneTitle}
-            hint={t.try.dropzoneHint(MAX_IMAGE_FILES)}
-          />
+          <div className="grid items-stretch gap-5 md:grid-cols-[minmax(0,1.35fr)_minmax(260px,0.65fr)]">
+            <ImageDropzone
+              onImagesReady={handleImagesReady}
+              disabled={agent.isStreaming}
+              preparingLabel={t.try.preparing}
+              title={t.try.dropzoneTitle}
+              hint={t.try.dropzoneHint(MAX_IMAGE_FILES)}
+              buttonLabel={t.try.choosePhotos}
+            />
+            <aside className="rounded-2xl border border-black/10 bg-black/[0.02] p-6 dark:border-white/10 dark:bg-white/[0.03]">
+              <h2 className="font-semibold">{t.try.photoTipsHeading}</h2>
+              <ol className="mt-4 space-y-4">
+                {t.try.photoTips.map((tip, index) => (
+                  <li key={tip} className="flex gap-3 text-sm leading-6 text-black/65 dark:text-white/65">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white">
+                      {index + 1}
+                    </span>
+                    <span>{tip}</span>
+                  </li>
+                ))}
+              </ol>
+            </aside>
+          </div>
+          <section className="mx-auto grid max-w-3xl gap-3 rounded-2xl border border-blue-600/15 bg-blue-600/[0.04] px-5 py-4 sm:grid-cols-[1fr_auto] sm:items-center dark:border-blue-400/15 dark:bg-blue-400/[0.05]">
+            <div>
+              <h2 className="text-sm font-semibold">{t.try.whatNextHeading}</h2>
+              <p className="mt-1 text-sm leading-6 text-black/60 dark:text-white/60">{t.try.whatNextBody}</p>
+            </div>
+            <p className="text-xs text-black/45 dark:text-white/45">🔒 {t.try.privacyNote}</p>
+          </section>
         </>
       )}
 
       {phase === "interview" && (
-        <div className="flex flex-1 flex-col gap-4">
+        <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4">
+          <header className="border-b border-black/10 pb-4 dark:border-white/10">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-blue-600 dark:text-blue-400">{t.try.interviewStep}</p>
+            <p className="mt-1 text-sm text-black/50 dark:text-white/50">{t.try.interviewHint}</p>
+          </header>
           <ChatThread
             messages={displayMessages}
             streamingText={agent.text}
@@ -159,20 +189,22 @@ export default function TryPage() {
             sendLabel={t.try.send}
           />
           {assistantTurnCount >= 3 && (
-            <GeneratePlanButton onClick={handleGeneratePlanNow} disabled={agent.isStreaming} />
+            <GeneratePlanButton onClick={handleGeneratePlanNow} disabled={agent.isStreaming} label={t.try.generatePlanButton} />
           )}
         </div>
       )}
 
       {phase === "plan" && (
-        <>
+        <div className="mx-auto w-full max-w-2xl">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.12em] text-blue-600 dark:text-blue-400">{t.try.planStep}</p>
           {agent.error && <ErrorBanner message={agent.error} />}
           <PlanView
             markdown={agent.isStreaming ? agent.text : planMarkdown}
             isStreaming={agent.isStreaming}
             onStartOver={handleStartOver}
+            startOverLabel={t.try.startOver}
           />
-        </>
+        </div>
       )}
     </main>
   );
