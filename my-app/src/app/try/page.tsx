@@ -313,20 +313,38 @@ export default function TryPage() {
   }, [agent, imagePreviewUrls]);
 
   return (
-    <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-6 px-4 py-10">
+    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-10 sm:py-14">
       {phase === "upload" && (
         <>
-          <header className="text-center">
-            <h1 className="text-2xl font-semibold">{t("uploadYourArm")}</h1>
-            <p className="mt-1 text-sm text-black/50 dark:text-white/50">
+          <header className="mx-auto max-w-2xl text-center">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-pink-500">
+              {t("onboardingStepOne")}
+            </p>
+            <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{t("uploadYourArm")}</h1>
+            <p className="mx-auto mt-3 max-w-xl text-base leading-7 text-black/55 dark:text-white/55">
               {t("analyzeAskPhoto")}
             </p>
           </header>
           {agent.isStreaming ? (
             <ThinkingIndicator label={t("analyzingPhoto")} />
           ) : (
-            <>
-              <ImageDropzone onImagesReady={handleImagesReady} disabled={agent.isStreaming} />
+            <div className="flex flex-col gap-5">
+              <div className="grid items-stretch gap-5 md:grid-cols-[minmax(0,1.35fr)_minmax(260px,0.65fr)]">
+                <ImageDropzone onImagesReady={handleImagesReady} disabled={agent.isStreaming} />
+                <aside className="rounded-2xl border border-black/10 bg-black/[0.02] p-6 dark:border-white/10 dark:bg-white/[0.03]">
+                  <h2 className="font-semibold">{t("photoTipsTitle")}</h2>
+                  <ol className="mt-4 space-y-4">
+                    {[t("photoTipOne"), t("photoTipTwo"), t("photoTipThree")].map((tip, index) => (
+                      <li key={tip} className="flex gap-3 text-sm leading-6 text-black/65 dark:text-white/65">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-pink-600 text-xs font-semibold text-white">
+                          {index + 1}
+                        </span>
+                        <span>{tip}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </aside>
+              </div>
 
               {imagePreviewUrls.length > 0 && (
                 <ImageThumbnails
@@ -342,6 +360,14 @@ export default function TryPage() {
                 disabled={agent.isStreaming}
               />
 
+              <section className="grid gap-3 rounded-2xl border border-pink-500/15 bg-pink-500/[0.04] px-5 py-4 sm:grid-cols-[1fr_auto] sm:items-center">
+                <div>
+                  <h2 className="text-sm font-semibold">{t("whatHappensNext")}</h2>
+                  <p className="mt-1 text-sm leading-6 text-black/60 dark:text-white/60">{t("whatHappensNextDesc")}</p>
+                </div>
+                <p className="text-xs text-black/45 dark:text-white/45">🔒 {t("privacyNote")}</p>
+              </section>
+
               {selectedImages.length > 0 && (
                 <button
                   onClick={() => void handleAnalyze()}
@@ -350,14 +376,18 @@ export default function TryPage() {
                   {t("analyze")}
                 </button>
               )}
-            </>
+            </div>
           )}
           {agent.error && <ErrorBanner message={agent.error} />}
         </>
       )}
 
       {phase === "interview" && (
-        <div className="flex flex-1 flex-col gap-5">
+        <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-5">
+          <header className="border-b border-black/10 pb-4 dark:border-white/10">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-pink-500">{t("interviewStep")}</p>
+            <p className="mt-1 text-sm text-black/50 dark:text-white/50">{t("interviewHint")}</p>
+          </header>
           {imagePreviewUrls.length > 0 && <ImageThumbnails urls={imagePreviewUrls} />}
 
           {agent.error && <ErrorBanner message={agent.error} />}
@@ -409,7 +439,8 @@ export default function TryPage() {
       )}
 
       {phase === "plan" && (
-        <>
+        <div className="mx-auto flex w-full max-w-2xl flex-col gap-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-pink-500">{t("planStep")}</p>
           {agent.error && <ErrorBanner message={agent.error} />}
           {generateError && <ErrorBanner message={generateError} />}
           <PlanView
@@ -452,7 +483,7 @@ export default function TryPage() {
               </button>
             </form>
           )}
-        </>
+        </div>
       )}
     </main>
   );

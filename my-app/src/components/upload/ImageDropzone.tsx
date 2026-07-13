@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { UploadIcon } from "@/components/icons";
 import { useTranslation } from "@/hooks/useTranslation";
 import { MAX_IMAGE_FILES } from "@/lib/constants";
 
@@ -59,6 +60,9 @@ export function ImageDropzone({
 
   return (
     <div
+      role="button"
+      tabIndex={disabled ? -1 : 0}
+      aria-disabled={disabled}
       onDragOver={(e) => {
         e.preventDefault();
         if (!disabled) setIsDragging(true);
@@ -71,6 +75,12 @@ export function ImageDropzone({
         if (e.dataTransfer.files.length) void handleFiles(e.dataTransfer.files);
       }}
       onClick={() => !disabled && inputRef.current?.click()}
+      onKeyDown={(event) => {
+        if (!disabled && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          inputRef.current?.click();
+        }
+      }}
       className={`flex min-h-64 cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed p-8 text-center transition-colors ${
         isDragging
           ? "border-pink-500 bg-pink-50 dark:bg-pink-950/30"
@@ -87,6 +97,9 @@ export function ImageDropzone({
           if (e.target.files?.length) void handleFiles(e.target.files);
         }}
       />
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-pink-600/10 text-pink-500">
+        <UploadIcon className="h-6 w-6" />
+      </div>
       <p className="text-lg font-medium">
         {isPreparing ? t("preparingPhotos") : t("dropPhotosHere")}
       </p>

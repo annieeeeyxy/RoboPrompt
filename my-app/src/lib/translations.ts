@@ -9,7 +9,7 @@ export const translations: Record<Language, Record<string, string>> = {
     diary: "Diary",
     tryIt: "Try it",
     language: "Language",
-    
+
     // Home page
     uploadPhoto: "Upload a photo",
     answerQuestions: "Answer a few questions",
@@ -35,7 +35,7 @@ export const translations: Record<Language, Record<string, string>> = {
     tryNow: "Try it now",
     howItWorks: "How it works",
     turnPhoto: "Turn a photo of a robotic arm into a working control plan.",
-    
+
     // About page
     aboutRoboPrompt: "About RoboPrompt",
     aboutDesc:
@@ -85,7 +85,7 @@ export const translations: Record<Language, Record<string, string>> = {
     unknownCustom: "Unknown / custom robot",
     motorTypeController: "Motor type, controller, connection",
     diagnosisTemplate: "Diagnosis + template code",
-    
+
     // Members page
     membersTitle: "Members",
     thePeopleBehind: "The people behind RoboPrompt.",
@@ -96,13 +96,24 @@ export const translations: Record<Language, Record<string, string>> = {
     member_pearson_wu_role: "Team Member",
     member_james_yang_role: "Team Member",
     member_dora_ai_bio: "A high school student and a huge gamer who loves combining creativity with technology.",
-    
+
     // Diary page
     diaryTitle: "Diary",
-    
+
     // Try page
-    uploadYourArm: "Upload your robot arm",
-    analyzeAskPhoto: "We'll analyze it and ask what we can't tell from the photo.",
+    onboardingStepOne: "Step 1 of 3",
+    uploadYourArm: "Let’s start with a photo",
+    analyzeAskPhoto: "No robotics experience needed. A clear phone photo is enough to begin.",
+    photoTipsTitle: "For the best result",
+    photoTipOne: "Show the whole arm from base to gripper",
+    photoTipTwo: "Use good light and keep labels visible",
+    photoTipThree: "Add a second angle if parts overlap",
+    whatHappensNext: "What happens next?",
+    whatHappensNextDesc: "We’ll identify the visible parts, ask a few plain-language questions, then create a step-by-step control plan.",
+    privacyNote: "Your photos are only used to analyze this project.",
+    interviewStep: "Step 2 of 3 · A few quick questions",
+    interviewHint: "Answer in your own words. “I’m not sure” is always okay.",
+    planStep: "Step 3 of 3 · Your build plan",
     analyzingPhoto: "Analyzing your photo…",
     generatePlanNow: "Generate my plan now",
     replyLabel: "Your reply",
@@ -145,7 +156,7 @@ export const translations: Record<Language, Record<string, string>> = {
     diary: "Diario",
     tryIt: "Pruébalo",
     language: "Idioma",
-    
+
     // Home page
     uploadPhoto: "Sube una foto",
     answerQuestions: "Responde algunas preguntas",
@@ -171,7 +182,7 @@ export const translations: Record<Language, Record<string, string>> = {
     tryNow: "Pruébalo ahora",
     howItWorks: "Cómo funciona",
     turnPhoto: "Convierte una foto de un brazo robótico en un plan de control funcional.",
-    
+
     // About page
     aboutRoboPrompt: "Acerca de RoboPrompt",
     aboutDesc:
@@ -221,7 +232,7 @@ export const translations: Record<Language, Record<string, string>> = {
     unknownCustom: "Robot desconocido / personalizado",
     motorTypeController: "Tipo de motor, controlador, conexión",
     diagnosisTemplate: "Diagnóstico + código de plantilla",
-    
+
     // Members page
     membersTitle: "Miembros",
     thePeopleBehind: "Las personas detrás de RoboPrompt.",
@@ -231,13 +242,24 @@ export const translations: Record<Language, Record<string, string>> = {
     member_matt_beitler_role: "Miembro del equipo",
     member_pearson_wu_role: "Miembro del equipo",
     member_james_yang_role: "Miembro del equipo",
-    
+
     // Diary page
     diaryTitle: "Diario",
-    
+
     // Try page
-    uploadYourArm: "Sube tu brazo robótico",
-    analyzeAskPhoto: "Lo analizaremos y preguntaremos lo que no podemos decir de la foto.",
+    onboardingStepOne: "Paso 1 de 3",
+    uploadYourArm: "Empecemos con una foto",
+    analyzeAskPhoto: "No necesitas experiencia en robótica. Una foto clara del móvil es suficiente.",
+    photoTipsTitle: "Para obtener el mejor resultado",
+    photoTipOne: "Muestra el brazo completo, desde la base hasta la pinza",
+    photoTipTwo: "Usa buena luz y deja visibles las etiquetas",
+    photoTipThree: "Añade otro ángulo si las piezas se superponen",
+    whatHappensNext: "¿Qué pasará después?",
+    whatHappensNextDesc: "Identificaremos las piezas visibles, haremos preguntas sencillas y crearemos un plan de control paso a paso.",
+    privacyNote: "Tus fotos solo se usan para analizar este proyecto.",
+    interviewStep: "Paso 2 de 3 · Unas preguntas rápidas",
+    interviewHint: "Responde con tus palabras. Siempre puedes decir «No lo sé».",
+    planStep: "Paso 3 de 3 · Tu plan de construcción",
     analyzingPhoto: "Analizando tu foto…",
     generatePlanNow: "Generar mi plan ahora",
     replyLabel: "Tu respuesta",
@@ -280,7 +302,7 @@ export const translations: Record<Language, Record<string, string>> = {
     diary: "Journal",
     tryIt: "Essayer",
     language: "Langue",
-    
+
     // Home page
     uploadPhoto: "Télécharger une photo",
     answerQuestions: "Répondre à quelques questions",
@@ -306,7 +328,7 @@ export const translations: Record<Language, Record<string, string>> = {
     tryNow: "Essayez maintenant",
     howItWorks: "Comment ça marche",
     turnPhoto: "Transformez une photo d'un bras robotique en un plan de contrôle fonctionnel.",
-    
+
     // About page
     aboutRoboPrompt: "À propos de RoboPrompt",
     aboutDesc:
@@ -356,7 +378,7 @@ export const translations: Record<Language, Record<string, string>> = {
     unknownCustom: "Robot inconnu/personnalisé",
     motorTypeController: "Type de moteur, contrôleur, connexion",
     diagnosisTemplate: "Diagnostic + code de modèle",
-    
+
     // Members page
     membersTitle: "Membres",
     thePeopleBehind: "Les gens derrière RoboPrompt.",
@@ -366,13 +388,24 @@ export const translations: Record<Language, Record<string, string>> = {
     member_matt_beitler_role: "Membre de l'équipe",
     member_pearson_wu_role: "Membre de l'équipe",
     member_james_yang_role: "Membre de l'équipe",
-    
+
     // Diary page
     diaryTitle: "Journal",
-    
+
     // Try page
-    uploadYourArm: "Téléchargez votre bras robotique",
-    analyzeAskPhoto: "Nous l'analyserons et poserons les questions que nous ne pouvons pas dire à partir de la photo.",
+    onboardingStepOne: "Étape 1 sur 3",
+    uploadYourArm: "Commençons par une photo",
+    analyzeAskPhoto: "Aucune expérience en robotique n’est nécessaire. Une photo nette prise avec votre téléphone suffit.",
+    photoTipsTitle: "Pour un meilleur résultat",
+    photoTipOne: "Montrez le bras entier, de la base à la pince",
+    photoTipTwo: "Utilisez un bon éclairage et gardez les étiquettes visibles",
+    photoTipThree: "Ajoutez un second angle si des pièces se chevauchent",
+    whatHappensNext: "Que se passe-t-il ensuite ?",
+    whatHappensNextDesc: "Nous identifierons les pièces visibles, poserons quelques questions simples, puis créerons un plan de contrôle étape par étape.",
+    privacyNote: "Vos photos servent uniquement à analyser ce projet.",
+    interviewStep: "Étape 2 sur 3 · Quelques questions rapides",
+    interviewHint: "Répondez avec vos propres mots. Vous pouvez toujours dire « Je ne sais pas ».",
+    planStep: "Étape 3 sur 3 · Votre plan de construction",
     analyzingPhoto: "Analyse de votre photo…",
     generatePlanNow: "Générez mon plan maintenant",
     replyLabel: "Votre réponse",
@@ -415,7 +448,7 @@ export const translations: Record<Language, Record<string, string>> = {
     diary: "日记",
     tryIt: "试试",
     language: "语言",
-    
+
     // Home page
     uploadPhoto: "上传照片",
     answerQuestions: "回答几个问题",
@@ -441,7 +474,7 @@ export const translations: Record<Language, Record<string, string>> = {
     tryNow: "立即试试",
     howItWorks: "它如何工作",
     turnPhoto: "将机械臂照片转变为可工作的控制计划。",
-    
+
     // About page
     aboutRoboPrompt: "关于 RoboPrompt",
     aboutDesc:
@@ -491,7 +524,7 @@ export const translations: Record<Language, Record<string, string>> = {
     unknownCustom: "未知/自定义机器人",
     motorTypeController: "电机类型、控制器、连接",
     diagnosisTemplate: "诊断 + 模板代码",
-    
+
     // Members page
     membersTitle: "成员",
     thePeopleBehind: "RoboPrompt 背后的人物。",
@@ -501,13 +534,24 @@ export const translations: Record<Language, Record<string, string>> = {
     member_matt_beitler_role: "团队成员",
     member_pearson_wu_role: "团队成员",
     member_james_yang_role: "团队成员",
-    
+
     // Diary page
     diaryTitle: "日记",
-    
+
     // Try page
-    uploadYourArm: "上传您的机械臂",
-    analyzeAskPhoto: "我们将分析它并提出从照片中无法看出的问题。",
+    onboardingStepOne: "第 1 步，共 3 步",
+    uploadYourArm: "先从一张照片开始",
+    analyzeAskPhoto: "不需要机器人基础，一张清晰的手机照片就可以开始。",
+    photoTipsTitle: "这样拍，识别更准确",
+    photoTipOne: "拍到从底座到夹爪的完整机械臂",
+    photoTipTwo: "保持光线充足，尽量让标签清晰可见",
+    photoTipThree: "零件互相遮挡时，再补充一个角度",
+    whatHappensNext: "接下来会发生什么？",
+    whatHappensNextDesc: "我们会识别照片中的零件，用简单的问题补全信息，再生成一步步的控制方案。",
+    privacyNote: "你的照片只会用于分析当前项目。",
+    interviewStep: "第 2 步，共 3 步 · 回答几个小问题",
+    interviewHint: "用自己的话回答就好，不知道时可以直接说“不确定”。",
+    planStep: "第 3 步，共 3 步 · 你的搭建方案",
     analyzingPhoto: "正在分析您的照片…",
     generatePlanNow: "立即生成我的计划",
     replyLabel: "你的回复",
