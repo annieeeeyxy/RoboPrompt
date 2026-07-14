@@ -38,6 +38,17 @@ A running log of what happened on RoboPrompt, day by day.
 - Fixed the intermittent 504 when downloading code: generation regularly runs past two minutes, but the serverless function was capped at exactly that — raised the limit and added a friendly timeout message.
 - Switched the interview to a faster model (Haiku): photo analysis and questions now respond in 2-5 seconds instead of 8-11, at a tenth of the cost, while code generation stays on Sonnet for quality. Live-testing the switch surfaced three protocol weaknesses (prose drift, a fenced plan marker breaking detection, endless follow-up questions after confirmation) — all fixed for every model.
 - Fixed a crash on "Download code" ("e.forEach is not a function"): the model occasionally double-encodes its file list as a JSON string — output is now normalized and recovered, covered by unit tests and a real-browser click test.
+- Added a clear start-over path, refined the interview button hierarchy, and rebuilt the waiting indicator around the robot logo.
+- Hardened the product with safe redirects, API rate limits, broader tests and documentation, stronger CI, and a corrected pnpm setup for reliable Vercel deploys.
+- Replaced the finished plan's text wall with themed section cards and expanded the Members page with the rest of the team.
+
+## 2026-07-11 - More natural multilingual conversations
+
+- Improved adaptive language matching so replies follow the user's actual message while still respecting the selected interface language.
+
+## 2026-07-13 - Friendlier onboarding for beginners
+
+- Reworked the upload, interview, and plan flow into three clearly labeled steps, with photo tips, plain-language guidance, a privacy note, and complete copy in all four supported languages.
 `,
   es: `# Diario del Proyecto
 
@@ -76,6 +87,17 @@ Un registro continuo de lo que paso en RoboPrompt, dia por dia.
 - Se corrigio el 504 intermitente al descargar codigo: la generacion suele superar los dos minutos, pero la funcion serverless estaba limitada exactamente a eso — se elevo el limite y se agrego un mensaje de timeout amigable.
 - La entrevista ahora usa un modelo mas rapido (Haiku): el analisis de fotos y las preguntas responden en 2-5 segundos en lugar de 8-11, a una decima parte del costo, mientras la generacion de codigo sigue en Sonnet por calidad. Las pruebas en vivo revelaron tres debilidades del protocolo — todas corregidas para cualquier modelo.
 - Se corrigio un fallo en "Descargar codigo" ("e.forEach is not a function"): el modelo a veces codifica doblemente su lista de archivos como cadena JSON — la salida ahora se normaliza y recupera, con pruebas unitarias y una prueba de clic en navegador real.
+- Se agrego una forma clara de empezar de nuevo, se refino la jerarquia de botones de la entrevista y se rediseño el indicador de espera alrededor del logo del robot.
+- Se reforzo el producto con redirecciones seguras, limites de uso en las API, mas pruebas y documentacion, una CI mas solida y una configuracion de pnpm corregida para despliegues fiables en Vercel.
+- Se reemplazo el muro de texto del plan final por tarjetas tematicas y se amplio la pagina de miembros con el resto del equipo.
+
+## 2026-07-11 - Conversaciones multilingues mas naturales
+
+- Se mejoro la adaptacion automatica del idioma para que las respuestas sigan el mensaje real del usuario sin dejar de respetar el idioma elegido para la interfaz.
+
+## 2026-07-13 - Una introduccion mas sencilla para principiantes
+
+- Se reorganizo el flujo de carga, entrevista y plan en tres pasos claramente identificados, con consejos para las fotos, instrucciones sencillas, una nota de privacidad y textos completos en los cuatro idiomas compatibles.
 `,
   fr: `# Journal du Projet
 
@@ -114,6 +136,17 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 - Correction du 504 intermittent au telechargement du code : la generation depasse souvent deux minutes, mais la fonction serverless etait plafonnee exactement a cela — limite relevee et message de timeout convivial ajoute.
 - L'entretien passe sur un modele plus rapide (Haiku) : l'analyse photo et les questions repondent en 2-5 secondes au lieu de 8-11, pour un dixieme du cout, tandis que la generation de code reste sur Sonnet pour la qualite. Les tests en direct ont revele trois faiblesses du protocole — toutes corrigees pour tous les modeles.
 - Correction d'un plantage sur "Telecharger le code" ("e.forEach is not a function") : le modele encode parfois doublement sa liste de fichiers en chaine JSON — la sortie est desormais normalisee et recuperee, couverte par des tests unitaires et un test de clic en navigateur reel.
+- Ajout d'un moyen clair de recommencer, amelioration de la hierarchie des boutons de l'entretien et refonte de l'indicateur d'attente autour du logo robot.
+- Renforcement du produit avec des redirections sures, des limites de requetes API, davantage de tests et de documentation, une CI plus robuste et une configuration pnpm corrigee pour des deploiements Vercel fiables.
+- Remplacement du bloc de texte du plan final par des cartes thematiques et ajout du reste de l'equipe a la page Membres.
+
+## 2026-07-11 - Des conversations multilingues plus naturelles
+
+- Amelioration de l'adaptation automatique de la langue pour que les reponses suivent le message reel de l'utilisateur tout en respectant la langue choisie pour l'interface.
+
+## 2026-07-13 - Un accueil plus simple pour les debutants
+
+- Reorganisation du parcours d'upload, d'entretien et de plan en trois etapes clairement indiquees, avec conseils photo, instructions simples, note de confidentialite et textes complets dans les quatre langues prises en charge.
 `,
   zh: `# 项目日志
 
@@ -152,5 +185,16 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 - 修复了下载代码偶发的 504：代码生成经常超过两分钟，而 serverless 函数的时限恰好卡在两分钟——上调了时限，并加了友好的超时提示。
 - 访谈切换到更快的模型（Haiku）：照片分析和提问的响应从 8-11 秒降到 2-5 秒，成本降到十分之一；代码生成仍用 Sonnet 保证质量。切换时的实测暴露了三个协议弱点（偏离表单协议、方案标记被代码围栏包裹导致检测失败、确认后无限追问）——已全部修复，对任何模型都生效。
 - 修复了"下载代码"的崩溃（"e.forEach is not a function"）：模型偶尔会把文件列表双重编码成 JSON 字符串——现在会自动归一化恢复，并配有单元测试和真实浏览器点击测试。
+- 增加了清晰的重新开始入口，优化了访谈按钮的层级，并围绕机器人 logo 重新设计了等待动画。
+- 进一步加固产品：加入安全重定向、API 限流、更全面的测试和文档、更可靠的 CI，并修正 pnpm 配置以保证 Vercel 稳定部署。
+- 把最终方案从大段文字改成主题卡片，并在成员页面补充了其余团队成员。
+
+## 2026-07-11 —— 更自然的多语言对话
+
+- 改进了自适应语言匹配，让回复能跟随用户实际输入的语言，同时仍尊重所选的界面语言。
+
+## 2026-07-13 —— 对新手更友好的引导流程
+
+- 把上传、访谈和方案整理成三个清晰标注的步骤，加入拍照建议、通俗说明、隐私提示，并为四种支持语言补齐全部文案。
 `,
 };
