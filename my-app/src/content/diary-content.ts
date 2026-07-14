@@ -7,17 +7,13 @@ A running log of what happened on RoboPrompt, day by day.
 
 ## 2026-07-02 - Project kickoff
 
-- Set up the initial Next.js project and the first README.
-
-## 2026-07-06
-
-- Small README tweak.
+- Set up the initial Next.js project.
 
 ## 2026-07-08 - Found the real product, rebuilt it
 
-- Cleaned up the README and clarified what RoboPrompt actually is: an AI assistant that turns a photo of a robotic arm into a working control plan.
+- Defined RoboPrompt as an AI assistant that turns a photo of a robotic arm into a working control plan.
 - Rebuilt the whole app from scratch - a proper agent system prompt, streaming classify/chat API routes, image upload, an interview UI, and a rendered plan view.
-- Turned the single chat page into a full site (Home, About, Members, Try it), added member profile pages, and deployed to Vercel.
+- Turned the single chat page into a multi-page product site and deployed it to Vercel.
 - Fixed a production photo-upload crash (a native-binary packaging issue with pnpm and sharp).
 - Reworked the interview from free-text chat into real structured forms, and fixed loading-state gaps so nothing looks frozen while waiting.
 
@@ -27,9 +23,9 @@ A running log of what happened on RoboPrompt, day by day.
 - Added the ability to attach reference files (datasheets, existing code, CAD/URDF) alongside the photo.
 - Added a "Download code (.zip)" option that generates a real, working project (firmware, control panel, README) from the confirmed plan.
 - Ran a full regression pass and a live production self-test end-to-end with a real robot arm photo - confirmed everything works.
-- Had an independent security review done and fixed everything it found (a zip-bomb vulnerability, unsafe file paths, insecure comparisons).
+- Fixed security issues involving zip bombs, unsafe file paths, and insecure comparisons.
 - Added photo thumbnails so users can see what they uploaded.
-- Merged in a teammate's (Dora Ai) multilingual feature (English/Spanish/French/Chinese) that landed on main in parallel - resolved the overlap and backfilled the diary translations.
+- Added multilingual interface and AI-response support for English, Spanish, French, and Chinese.
 - Rebranded the site to a fixed black-and-pink theme with a new robot logo.
 - Made the tool feel like a real product: CI now checks every push, an interview survives a page refresh, and a finished plan can be revised with feedback (e.g. "switch to ESP32") instead of starting over.
 
@@ -39,8 +35,8 @@ A running log of what happened on RoboPrompt, day by day.
 - Switched the interview to a faster model (Haiku): photo analysis and questions now respond in 2-5 seconds instead of 8-11, at a tenth of the cost, while code generation stays on Sonnet for quality. Live-testing the switch surfaced three protocol weaknesses (prose drift, a fenced plan marker breaking detection, endless follow-up questions after confirmation) — all fixed for every model.
 - Fixed a crash on "Download code" ("e.forEach is not a function"): the model occasionally double-encodes its file list as a JSON string — output is now normalized and recovered, covered by unit tests and a real-browser click test.
 - Added a clear start-over path, refined the interview button hierarchy, and rebuilt the waiting indicator around the robot logo.
-- Hardened the product with safe redirects, API rate limits, broader tests and documentation, stronger CI, and a corrected pnpm setup for reliable Vercel deploys.
-- Replaced the finished plan's text wall with themed section cards and expanded the Members page with the rest of the team.
+- Hardened the product with safe redirects, API rate limits, broader automated tests, stronger CI, and a corrected pnpm setup for reliable Vercel deploys.
+- Replaced the finished plan's text wall with themed section cards.
 
 ## 2026-07-11 - More natural multilingual conversations
 
@@ -56,17 +52,13 @@ Un registro continuo de lo que paso en RoboPrompt, dia por dia.
 
 ## 2026-07-02 - Inicio del proyecto
 
-- Se creo el proyecto inicial en Next.js y el primer README.
-
-## 2026-07-06
-
-- Pequeno ajuste del README.
+- Se creo el proyecto inicial en Next.js.
 
 ## 2026-07-08 - Se encontro el producto real y se reconstruyo
 
-- Se limpio el README y se aclaro que es realmente RoboPrompt: un asistente de IA que convierte una foto de un brazo robotico en un plan de control funcional.
+- Se definio RoboPrompt como un asistente de IA que convierte una foto de un brazo robotico en un plan de control funcional.
 - Se reconstruyo toda la aplicacion desde cero: un system prompt de agente propio, rutas de streaming classify/chat, carga de imagenes, interfaz de entrevista y vista de plan renderizada.
-- Se transformo la pagina de chat unica en un sitio completo (Home, About, Members, Try it), se agregaron paginas de perfil de los miembros, y se desplego en Vercel.
+- Se transformo la pagina de chat unica en un sitio de producto con varias paginas y se desplego en Vercel.
 - Se corrigio un fallo de subida de fotos en produccion (un problema de empaquetado nativo con pnpm y sharp).
 - Se rehizo la entrevista de chat libre a formularios estructurados reales, y se corrigieron los huecos de carga para que nada se vea congelado durante la espera.
 
@@ -76,9 +68,9 @@ Un registro continuo de lo que paso en RoboPrompt, dia por dia.
 - Se agrego la posibilidad de adjuntar archivos de referencia (hojas de datos, codigo existente, CAD/URDF) junto con la foto.
 - Se agrego la opcion "Download code (.zip)" que genera un proyecto real y funcional (firmware, panel de control, README) a partir del plan confirmado.
 - Se hizo un pase de regresion completo y una autoprueba en produccion de extremo a extremo con una foto real de un brazo robotico - todo funciono.
-- Se realizo una revision de seguridad independiente y se corrigio todo lo que encontro (una vulnerabilidad de zip bomb, rutas de archivo inseguras, comparaciones inseguras).
+- Se corrigieron problemas de seguridad relacionados con zip bombs, rutas de archivo inseguras y comparaciones inseguras.
 - Se agregaron miniaturas de fotos para que los usuarios vean lo que subieron.
-- Se fusiono la funcion multilingue de una companera de equipo (Dora Ai, ingles/espanol/frances/chino) que llego a main en paralelo - se resolvio el solape y se completaron las traducciones del diario.
+- Se agrego soporte multilingue para la interfaz y las respuestas de IA en ingles, espanol, frances y chino.
 - Se cambio la imagen del sitio a un tema fijo negro y rosa con un nuevo logo de robot.
 - La herramienta ahora se siente como un producto real: CI verifica cada push, una entrevista sobrevive a un refresco de pagina, y un plan terminado se puede revisar con comentarios (p. ej. "cambia a ESP32") en lugar de empezar de cero.
 
@@ -88,8 +80,8 @@ Un registro continuo de lo que paso en RoboPrompt, dia por dia.
 - La entrevista ahora usa un modelo mas rapido (Haiku): el analisis de fotos y las preguntas responden en 2-5 segundos en lugar de 8-11, a una decima parte del costo, mientras la generacion de codigo sigue en Sonnet por calidad. Las pruebas en vivo revelaron tres debilidades del protocolo — todas corregidas para cualquier modelo.
 - Se corrigio un fallo en "Descargar codigo" ("e.forEach is not a function"): el modelo a veces codifica doblemente su lista de archivos como cadena JSON — la salida ahora se normaliza y recupera, con pruebas unitarias y una prueba de clic en navegador real.
 - Se agrego una forma clara de empezar de nuevo, se refino la jerarquia de botones de la entrevista y se rediseño el indicador de espera alrededor del logo del robot.
-- Se reforzo el producto con redirecciones seguras, limites de uso en las API, mas pruebas y documentacion, una CI mas solida y una configuracion de pnpm corregida para despliegues fiables en Vercel.
-- Se reemplazo el muro de texto del plan final por tarjetas tematicas y se amplio la pagina de miembros con el resto del equipo.
+- Se reforzo el producto con redirecciones seguras, limites de uso en las API, mas pruebas automatizadas, una CI mas solida y una configuracion de pnpm corregida para despliegues fiables en Vercel.
+- Se reemplazo el muro de texto del plan final por tarjetas tematicas.
 
 ## 2026-07-11 - Conversaciones multilingues mas naturales
 
@@ -105,17 +97,13 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 
 ## 2026-07-02 - Lancement du projet
 
-- Mise en place du projet Next.js initial et du premier README.
-
-## 2026-07-06
-
-- Petite modification du README.
+- Mise en place du projet Next.js initial.
 
 ## 2026-07-08 - Le vrai produit a ete trouve, puis reconstruit
 
-- Nettoyage du README et clarification de ce qu'est vraiment RoboPrompt : un assistant IA qui transforme une photo de bras robotique en plan de controle fonctionnel.
+- Definition de RoboPrompt comme un assistant IA qui transforme une photo de bras robotique en plan de controle fonctionnel.
 - Reconstruction complete de l'application : nouveau prompt systeme de l'agent, routes streaming classify/chat, upload d'images, UI d'entretien et vue de plan rendue.
-- Transformation de la simple page de chat en site complet (Home, About, Members, Try it), ajout de pages de profil pour les membres, et deploiement sur Vercel.
+- Transformation de la simple page de chat en site produit multipage et deploiement sur Vercel.
 - Correction d'un plantage de l'upload photo en production (probleme de packaging natif avec pnpm et sharp).
 - Passage de l'entretien en chat libre a de vrais formulaires structures, et correction des trous de chargement pour que rien ne semble fige pendant l'attente.
 
@@ -125,9 +113,9 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 - Ajout de la possibilite de joindre des fichiers de reference (fiches techniques, code existant, CAD/URDF) avec la photo.
 - Ajout d'une option "Download code (.zip)" qui genere un vrai projet fonctionnel (firmware, panneau de controle, README) a partir du plan confirme.
 - Passage de regression complet et auto-test de bout en bout en production avec une vraie photo de bras robotique - tout a fonctionne.
-- Revue de securite independante realisee, et tout ce qu'elle a trouve a ete corrige (une vulnerabilite de type zip bomb, des chemins de fichiers non securises, des comparaisons non securisees).
+- Correction de problemes de securite lies aux zip bombs, aux chemins de fichiers non securises et aux comparaisons non securisees.
 - Ajout de miniatures des photos pour que les utilisateurs voient ce qu'ils ont televerse.
-- Fusion de la fonctionnalite multilingue d'une coequipiere (Dora Ai, anglais/espagnol/francais/chinois) arrivee sur main en parallele - chevauchement resolu et traductions du journal completees.
+- Ajout du support multilingue de l'interface et des reponses de l'IA en anglais, espagnol, francais et chinois.
 - Nouvelle identite visuelle : theme fixe noir et rose avec un nouveau logo robot.
 - L'outil ressemble maintenant a un vrai produit : la CI verifie chaque push, un entretien survit a un rafraichissement de page, et un plan termine peut etre revise avec des retours (p. ex. "passer a l'ESP32") au lieu de tout recommencer.
 
@@ -137,8 +125,8 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 - L'entretien passe sur un modele plus rapide (Haiku) : l'analyse photo et les questions repondent en 2-5 secondes au lieu de 8-11, pour un dixieme du cout, tandis que la generation de code reste sur Sonnet pour la qualite. Les tests en direct ont revele trois faiblesses du protocole — toutes corrigees pour tous les modeles.
 - Correction d'un plantage sur "Telecharger le code" ("e.forEach is not a function") : le modele encode parfois doublement sa liste de fichiers en chaine JSON — la sortie est desormais normalisee et recuperee, couverte par des tests unitaires et un test de clic en navigateur reel.
 - Ajout d'un moyen clair de recommencer, amelioration de la hierarchie des boutons de l'entretien et refonte de l'indicateur d'attente autour du logo robot.
-- Renforcement du produit avec des redirections sures, des limites de requetes API, davantage de tests et de documentation, une CI plus robuste et une configuration pnpm corrigee pour des deploiements Vercel fiables.
-- Remplacement du bloc de texte du plan final par des cartes thematiques et ajout du reste de l'equipe a la page Membres.
+- Renforcement du produit avec des redirections sures, des limites de requetes API, davantage de tests automatises, une CI plus robuste et une configuration pnpm corrigee pour des deploiements Vercel fiables.
+- Remplacement du bloc de texte du plan final par des cartes thematiques.
 
 ## 2026-07-11 - Des conversations multilingues plus naturelles
 
@@ -154,17 +142,13 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 
 ## 2026-07-02 —— 项目启动
 
-- 搭建了初始 Next.js 项目，写了第一版 README。
-
-## 2026-07-06
-
-- 对 README 做了小幅修改。
+- 搭建了初始 Next.js 项目。
 
 ## 2026-07-08 —— 找准了真正的产品方向，并重建
 
-- 清理了 README，明确了 RoboPrompt 究竟是什么：一个把机械臂照片转成可执行控制方案的 AI 助手。
+- 将 RoboPrompt 定位为一个把机械臂照片转成可执行控制方案的 AI 助手。
 - 从零重建了整个应用：全新的代理系统提示词、流式 classify/chat 接口、图片上传、访谈界面和方案渲染视图。
-- 把单一聊天页面改造成完整网站（首页、关于、团队成员、试用页），为团队成员加了个人主页，并部署到 Vercel。
+- 把单一聊天页面改造成多页面产品网站，并部署到 Vercel。
 - 修复了生产环境的照片上传崩溃问题（pnpm 与 sharp 的打包问题）。
 - 把访谈从自由文本聊天改成了真正的结构化表单，并修复了等待过程中的卡顿/黑屏问题。
 
@@ -174,9 +158,9 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 - 支持在上传照片时一并附带参考文件（数据手册、现有代码、CAD/URDF）。
 - 新增"下载代码（.zip）"功能，能根据确认后的方案生成真实可用的项目（固件、控制面板、README）。
 - 做了完整回归测试，并在生产环境用一张真实机械臂照片跑通了全流程自测。
-- 找人做了一次独立安全审查，并修复了发现的所有问题（zip 炸弹漏洞、不安全的文件路径、不安全的比较逻辑）。
+- 修复了 zip 炸弹、不安全的文件路径和不安全比较逻辑等安全问题。
 - 新增了照片缩略图，方便用户看清自己上传了什么。
-- 合并了队友 Dora Ai 并行开发的多语言功能（英/西/法/中）——处理了冲突，并补全了日志的翻译内容。
+- 为界面和 AI 回复加入英语、西班牙语、法语和中文支持。
 - 网站换上固定的黑粉配色主题和全新的机器人 logo。
 - 工具向真正的产品迈进：每次 push 都有 CI 自动检查，访谈进度刷新页面不再丢失，生成的方案可以直接提修改意见（比如"改用 ESP32"）迭代，无需重头再来。
 
@@ -186,8 +170,8 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 - 访谈切换到更快的模型（Haiku）：照片分析和提问的响应从 8-11 秒降到 2-5 秒，成本降到十分之一；代码生成仍用 Sonnet 保证质量。切换时的实测暴露了三个协议弱点（偏离表单协议、方案标记被代码围栏包裹导致检测失败、确认后无限追问）——已全部修复，对任何模型都生效。
 - 修复了"下载代码"的崩溃（"e.forEach is not a function"）：模型偶尔会把文件列表双重编码成 JSON 字符串——现在会自动归一化恢复，并配有单元测试和真实浏览器点击测试。
 - 增加了清晰的重新开始入口，优化了访谈按钮的层级，并围绕机器人 logo 重新设计了等待动画。
-- 进一步加固产品：加入安全重定向、API 限流、更全面的测试和文档、更可靠的 CI，并修正 pnpm 配置以保证 Vercel 稳定部署。
-- 把最终方案从大段文字改成主题卡片，并在成员页面补充了其余团队成员。
+- 进一步加固产品：加入安全重定向、API 限流、更全面的自动化测试、更可靠的 CI，并修正 pnpm 配置以保证 Vercel 稳定部署。
+- 把最终方案从大段文字改成主题卡片。
 
 ## 2026-07-11 —— 更自然的多语言对话
 
