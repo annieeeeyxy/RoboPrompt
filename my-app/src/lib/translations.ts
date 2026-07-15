@@ -5,7 +5,6 @@ export const translations: Record<Language, Record<string, string>> = {
     // Navigation
     home: "Home",
     about: "About",
-    members: "Members",
     diary: "Diary",
     tryIt: "Try it",
     language: "Language",
@@ -86,17 +85,6 @@ export const translations: Record<Language, Record<string, string>> = {
     motorTypeController: "Motor type, controller, connection",
     diagnosisTemplate: "Diagnosis + template code",
 
-    // Members page
-    membersTitle: "Members",
-    thePeopleBehind: "The people behind RoboPrompt.",
-    member_annie_ye_role: "Creator & Developer",
-    member_annie_ye_bio: "Building RoboPrompt end to end — product, system prompt design, and the web app.",
-    member_dora_ai_role: "Team Member",
-    member_matt_beitler_role: "Team Member",
-    member_pearson_wu_role: "Team Member",
-    member_james_yang_role: "Team Member",
-    member_dora_ai_bio: "A high school student and a huge gamer who loves combining creativity with technology.",
-
     // Diary page
     diaryTitle: "Diary",
 
@@ -129,10 +117,6 @@ export const translations: Record<Language, Record<string, string>> = {
     thinking: "Thinking…",
     loading: "Loading",
     changeLanguage: "Change language",
-    backToMembers: "Back to Members",
-    github: "GitHub",
-    email: "Email",
-    wechat: "WeChat",
     commitActivity: "Commit activity",
     herePhotoOfArm: "Here is a photo of my robotic arm. Please analyze it and help me figure out how to control it.",
     herePhotosOfArm: "Here are photos of my robotic arm. Please analyze them and help me figure out how to control it.",
@@ -152,7 +136,6 @@ export const translations: Record<Language, Record<string, string>> = {
     // Navigation
     home: "Inicio",
     about: "Acerca de",
-    members: "Miembros",
     diary: "Diario",
     tryIt: "Pruébalo",
     language: "Idioma",
@@ -233,16 +216,6 @@ export const translations: Record<Language, Record<string, string>> = {
     motorTypeController: "Tipo de motor, controlador, conexión",
     diagnosisTemplate: "Diagnóstico + código de plantilla",
 
-    // Members page
-    membersTitle: "Miembros",
-    thePeopleBehind: "Las personas detrás de RoboPrompt.",
-    member_annie_ye_role: "Creadora y Desarrolladora",
-    member_annie_ye_bio: "Construyendo RoboPrompt de extremo a extremo: producto, diseño del prompt del sistema y aplicación web.",
-    member_dora_ai_role: "Miembro del equipo",
-    member_matt_beitler_role: "Miembro del equipo",
-    member_pearson_wu_role: "Miembro del equipo",
-    member_james_yang_role: "Miembro del equipo",
-
     // Diary page
     diaryTitle: "Diario",
 
@@ -275,10 +248,6 @@ export const translations: Record<Language, Record<string, string>> = {
     thinking: "Pensando…",
     loading: "Cargando",
     changeLanguage: "Cambiar idioma",
-    backToMembers: "Volver a Miembros",
-    github: "GitHub",
-    email: "Correo",
-    wechat: "WeChat",
     commitActivity: "Actividad de commits",
     herePhotoOfArm: "Aquí hay una foto de mi brazo robótico. Por favor, analízala y ayúdame a descubrir cómo controlarlo.",
     herePhotosOfArm: "Aquí hay fotos de mi brazo robótico. Por favor, analízalas y ayúdame a descubrir cómo controlarlo.",
@@ -298,7 +267,6 @@ export const translations: Record<Language, Record<string, string>> = {
     // Navigation
     home: "Accueil",
     about: "À propos",
-    members: "Membres",
     diary: "Journal",
     tryIt: "Essayer",
     language: "Langue",
@@ -379,16 +347,6 @@ export const translations: Record<Language, Record<string, string>> = {
     motorTypeController: "Type de moteur, contrôleur, connexion",
     diagnosisTemplate: "Diagnostic + code de modèle",
 
-    // Members page
-    membersTitle: "Membres",
-    thePeopleBehind: "Les gens derrière RoboPrompt.",
-    member_annie_ye_role: "Créatrice et Développeuse",
-    member_annie_ye_bio: "Création de RoboPrompt de bout en bout : produit, conception du prompt système et application web.",
-    member_dora_ai_role: "Membre de l'équipe",
-    member_matt_beitler_role: "Membre de l'équipe",
-    member_pearson_wu_role: "Membre de l'équipe",
-    member_james_yang_role: "Membre de l'équipe",
-
     // Diary page
     diaryTitle: "Journal",
 
@@ -421,10 +379,6 @@ export const translations: Record<Language, Record<string, string>> = {
     thinking: "Réflexion…",
     loading: "Chargement",
     changeLanguage: "Changer la langue",
-    backToMembers: "Retour aux membres",
-    github: "GitHub",
-    email: "Email",
-    wechat: "WeChat",
     commitActivity: "Activité des commits",
     herePhotoOfArm: "Voici une photo de mon bras robotique. Veuillez l'analyser et m'aider à comprendre comment le contrôler.",
     herePhotosOfArm: "Voici des photos de mon bras robotique. Veuillez les analyser et m'aider à comprendre comment le contrôler.",
@@ -444,7 +398,6 @@ export const translations: Record<Language, Record<string, string>> = {
     // Navigation
     home: "首页",
     about: "关于",
-    members: "成员",
     diary: "日记",
     tryIt: "试试",
     language: "语言",
@@ -525,16 +478,6 @@ export const translations: Record<Language, Record<string, string>> = {
     motorTypeController: "电机类型、控制器、连接",
     diagnosisTemplate: "诊断 + 模板代码",
 
-    // Members page
-    membersTitle: "成员",
-    thePeopleBehind: "RoboPrompt 背后的人物。",
-    member_annie_ye_role: "创建者与开发者",
-    member_annie_ye_bio: "从产品、系统提示词设计到网页应用，端到端构建 RoboPrompt。",
-    member_dora_ai_role: "团队成员",
-    member_matt_beitler_role: "团队成员",
-    member_pearson_wu_role: "团队成员",
-    member_james_yang_role: "团队成员",
-
     // Diary page
     diaryTitle: "日记",
 
@@ -567,10 +510,6 @@ export const translations: Record<Language, Record<string, string>> = {
     thinking: "思考中…",
     loading: "加载中",
     changeLanguage: "切换语言",
-    backToMembers: "返回成员页",
-    github: "GitHub",
-    email: "邮箱",
-    wechat: "微信",
     commitActivity: "提交活动",
     herePhorosOfArm: "这是我的机械臂的照片。请分析它们并帮助我了解如何控制它。",
     herePhotoOfArm: "这是我的机械臂的照片。请分析它并帮助我了解如何控制它。",

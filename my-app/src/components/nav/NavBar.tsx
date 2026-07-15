@@ -13,7 +13,6 @@ export function NavBar() {
   const LINKS = [
     { href: "/", label: t("home") },
     { href: "/about", label: t("about") },
-    { href: "/members", label: t("members") },
     { href: "/diary", label: t("diary") },
     { href: "/try", label: t("tryIt") },
   ];

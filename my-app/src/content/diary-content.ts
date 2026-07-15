@@ -45,6 +45,10 @@ A running log of what happened on RoboPrompt, day by day.
 ## 2026-07-13 - Friendlier onboarding for beginners
 
 - Reworked the upload, interview, and plan flow into three clearly labeled steps, with photo tips, plain-language guidance, a privacy note, and complete copy in all four supported languages.
+
+## 2026-07-15 - Removed the Members page
+
+- Removed the Members section from the site: the page, individual profile pages, member photos, the nav link, and all related translations in the four languages.
 `,
   es: `# Diario del Proyecto
 
@@ -90,6 +94,10 @@ Un registro continuo de lo que paso en RoboPrompt, dia por dia.
 ## 2026-07-13 - Una introduccion mas sencilla para principiantes
 
 - Se reorganizo el flujo de carga, entrevista y plan en tres pasos claramente identificados, con consejos para las fotos, instrucciones sencillas, una nota de privacidad y textos completos en los cuatro idiomas compatibles.
+
+## 2026-07-15 - Se elimino la pagina de Miembros
+
+- Se elimino la seccion de Miembros del sitio: la pagina, los perfiles individuales, las fotos, el enlace de navegacion y todas las traducciones relacionadas en los cuatro idiomas.
 `,
   fr: `# Journal du Projet
 
@@ -135,6 +143,10 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 ## 2026-07-13 - Un accueil plus simple pour les debutants
 
 - Reorganisation du parcours d'upload, d'entretien et de plan en trois etapes clairement indiquees, avec conseils photo, instructions simples, note de confidentialite et textes complets dans les quatre langues prises en charge.
+
+## 2026-07-15 - Suppression de la page Membres
+
+- Suppression de la section Membres du site : la page, les profils individuels, les photos, le lien de navigation et toutes les traductions associees dans les quatre langues.
 `,
   zh: `# 项目日志
 
@@ -180,5 +192,9 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 ## 2026-07-13 —— 对新手更友好的引导流程
 
 - 把上传、访谈和方案整理成三个清晰标注的步骤，加入拍照建议、通俗说明、隐私提示，并为四种支持语言补齐全部文案。
+
+## 2026-07-15 —— 删除成员页面
+
+- 从网站上移除了成员板块：成员页、个人主页、成员照片、导航链接，以及四种语言中的所有相关翻译文案。
 `,
 };
