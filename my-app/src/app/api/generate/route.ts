@@ -7,6 +7,7 @@ import { enforceRateLimit } from "@/lib/rateLimit";
 import { UI_LANGUAGES } from "@/lib/languagePolicy";
 import { GENERATE_FILES_TOOL } from "@/lib/tools";
 import { buildZip, normalizeGeneratedFiles } from "@/lib/zip";
+import { loadTemplateFiles, mergeTemplateFiles, resolveTemplateId } from "@/lib/codegen/templates";
 import { GENERATE_FILES_TOOL_NAME, GENERATE_MAX_TOKENS, GENERATE_MODEL_ID } from "@/lib/constants";
 import type { ChatMessage } from "@/types/chat";
 
@@ -128,14 +129,29 @@ export async function POST(req: NextRequest) {
 
   const input = toolUse.input as {
     projectName?: unknown;
+    template?: unknown;
     files?: unknown;
     notes?: unknown;
   };
   // Tool output is model-generated and occasionally malformed (e.g. files
   // as a double-encoded JSON string) — normalize instead of trusting it.
-  const files = normalizeGeneratedFiles(input.files);
+  let files = normalizeGeneratedFiles(input.files);
   if (!files) {
     return NextResponse.json({ error: "No files were generated. Try again." }, { status: 502 });
+  }
+
+  // When the model picked a pre-built scaffold, it only generated the small
+  // per-project files (configs, README) — fill in the rest from the template.
+  const templateId = resolveTemplateId(input.template);
+  if (templateId) {
+    try {
+      files = mergeTemplateFiles(loadTemplateFiles(templateId), files);
+    } catch (err) {
+      return NextResponse.json(
+        { error: err instanceof Error ? err.message : "Template assets unavailable" },
+        { status: 500 }
+      );
+    }
   }
 
   const projectName = sanitizeProjectName(

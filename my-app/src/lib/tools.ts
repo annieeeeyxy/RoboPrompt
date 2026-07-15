@@ -52,10 +52,16 @@ export const GENERATE_FILES_TOOL: Anthropic.Tool = {
         type: "string",
         description: "A short kebab-case project folder name, e.g. 'my-arm-controller'.",
       },
+      template: {
+        type: "string",
+        enum: ["arduino-serial", "none"],
+        description:
+          "'arduino-serial' when the confirmed plan is the standard Category A Arduino-over-USB-serial build: the app injects the pre-built firmware sketch and Web Serial panel, and `files` then contains ONLY the per-project files the system prompt lists (config.h, web/config.js, README.md, plus extras). 'none' for every other setup — generate the complete scaffold in `files`.",
+      },
       files: {
         type: "array",
         description:
-          "Every file in the scaffold — firmware/driver code, host bridge, the web control panel, a README, and config. Directory structure via '/' in path.",
+          "Every file in the scaffold — firmware/driver code, host bridge, the web control panel, a README, and config. Directory structure via '/' in path. With template 'arduino-serial', only the per-project files.",
         items: {
           type: "object",
           properties: {

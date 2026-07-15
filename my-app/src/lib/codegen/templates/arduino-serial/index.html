@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Robot Arm Control Panel</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="panel">
+      <header class="panel-header">
+        <h1 id="project-name">Robot Arm Control Panel</h1>
+        <div class="controls">
+          <span id="status" class="status disconnected">Disconnected</span>
+          <button id="connect" class="btn primary">Connect</button>
+          <button id="home" class="btn" disabled>Home</button>
+        </div>
+      </header>
+
+      <p id="serial-warning" class="warning" hidden>
+        This browser does not support the Web Serial API. Use Chrome or Edge
+        on desktop, served from localhost or HTTPS.
+      </p>
+
+      <section id="joints" class="joints"></section>
+
+      <section class="log-section">
+        <h2>Serial log</h2>
+        <pre id="log" class="log"></pre>
+      </section>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

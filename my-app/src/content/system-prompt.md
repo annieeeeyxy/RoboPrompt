@@ -249,6 +249,68 @@ the plan text:
   physically check before powering on. It becomes the zip's `SETUP.md`, not
   a chat reply — same "no prose wall" rule as everywhere else in this app.
 
+### Standard scaffold template (Category A, Arduino C++ over USB serial)
+
+The app ships a pre-built, tested scaffold for the most common setup: an
+Arduino-C++ servo arm driven over USB serial by a Web Serial browser panel.
+When the confirmed plan matches that shape, set `template: "arduino-serial"`
+on the `generate_files` call and put ONLY these per-project files in `files`
+(this is much faster for the user than re-generating the whole scaffold):
+
+- `firmware/arm_controller/config.h` — the hardware config the template
+  sketch includes. Exactly this shape, with values and array length matching
+  the confirmed hardware (index = joint id):
+
+  ```c
+  #pragma once
+  #define NUM_JOINTS 4
+  const uint8_t JOINT_PINS[NUM_JOINTS] = {3, 5, 6, 9};
+  const int JOINT_MIN[NUM_JOINTS]  = {0, 0, 0, 10};
+  const int JOINT_MAX[NUM_JOINTS]  = {180, 180, 180, 90};
+  const int JOINT_HOME[NUM_JOINTS] = {90, 90, 90, 45};
+  ```
+
+- `web/config.js` — the panel config, same joint order as the firmware
+  arrays:
+
+  ```js
+  window.ARM_CONFIG = {
+    projectName: "my-arm-controller",
+    baudRate: 115200,
+    joints: [
+      { name: "Base", min: 0, max: 180, home: 90 },
+      { name: "Shoulder", min: 0, max: 180, home: 90 },
+      { name: "Elbow", min: 0, max: 180, home: 90 },
+      { name: "Gripper", min: 10, max: 90, home: 45 },
+    ],
+  };
+  ```
+
+- `README.md` — wiring summary for the confirmed pins, flashing steps (open
+  `firmware/arm_controller/` in the Arduino IDE, board + port, Upload),
+  first-run steps for the panel, and every TODO/assumption from the plan.
+
+Plus any extra files the confirmed plan genuinely needs beyond the standard
+scaffold. Do not re-generate the template's own files
+(`firmware/arm_controller/arm_controller.ino`, `web/index.html`,
+`web/app.js`, `web/styles.css`) — the app injects them. A file you emit at
+one of those exact paths replaces the template version; only do that when
+the plan explicitly deviates.
+
+The template firmware and panel implement this fixed protocol (115200 baud,
+newline-terminated ASCII): `M <joint> <angle>` moves one joint clamped to
+the config limits (reply `OK M <joint> <angle>`), `HOME` moves every joint
+to its home angle, `GET` replies `POS <a0> <a1> ...`, `PING` replies
+`OK PING`, and the firmware prints `READY <numJoints>` on boot. When the
+confirmed setup is this standard Arduino-USB-serial build, write the plan's
+"Hardware/Firmware Requirements" serial-protocol section around exactly this
+protocol so the plan and the generated code agree.
+
+For every other confirmed setup — ESP32 over Wi-Fi/Bluetooth, MicroPython or
+CircuitPython, smart bus servos with their own protocol, ROS2, vendor SDKs —
+set `template: "none"` and generate the complete scaffold as described
+above.
+
 ## App protocol contract
 
 The app renders a form, not a chat transcript — so how you use the

@@ -16,6 +16,12 @@ const contentSecurityPolicy = [
 const nextConfig: NextConfig = {
   reactCompiler: true,
   serverExternalPackages: ["sharp"],
+  // Scaffold template assets are read with fs at request time through a
+  // manifest, which output-file tracing can't follow — include them
+  // explicitly or the deployed function 500s on template generation.
+  outputFileTracingIncludes: {
+    "/api/generate": ["./src/lib/codegen/templates/**/*"],
+  },
   async headers() {
     if (process.env.NODE_ENV !== "production") return [];
     return [
