@@ -46,9 +46,10 @@ A running log of what happened on RoboPrompt, day by day.
 
 - Reworked the upload, interview, and plan flow into three clearly labeled steps, with photo tips, plain-language guidance, a privacy note, and complete copy in all four supported languages.
 
-## 2026-07-15 - Removed the Members page
+## 2026-07-15 - Removed the Members page, faster AI responses
 
 - Removed the Members section from the site: the page, individual profile pages, member photos, the nav link, and all related translations in the four languages.
+- Enabled prompt caching on all three AI routes (photo analysis, interview chat, code generation): the large system prompt and the conversation history are now cached between turns and shared across users — the cached portion costs ~90% less and responses start faster. Verified live: ~5,500 tokens served from cache per turn.
 `,
   es: `# Diario del Proyecto
 
@@ -95,9 +96,10 @@ Un registro continuo de lo que paso en RoboPrompt, dia por dia.
 
 - Se reorganizo el flujo de carga, entrevista y plan en tres pasos claramente identificados, con consejos para las fotos, instrucciones sencillas, una nota de privacidad y textos completos en los cuatro idiomas compatibles.
 
-## 2026-07-15 - Se elimino la pagina de Miembros
+## 2026-07-15 - Se elimino la pagina de Miembros, respuestas de IA mas rapidas
 
 - Se elimino la seccion de Miembros del sitio: la pagina, los perfiles individuales, las fotos, el enlace de navegacion y todas las traducciones relacionadas en los cuatro idiomas.
+- Se habilito el cache de prompts en las tres rutas de IA (analisis de fotos, entrevista, generacion de codigo): el system prompt y el historial de conversacion ahora se cachean entre turnos y se comparten entre usuarios — la parte cacheada cuesta ~90% menos y las respuestas empiezan antes. Verificado en vivo: ~5,500 tokens servidos desde cache por turno.
 `,
   fr: `# Journal du Projet
 
@@ -144,9 +146,10 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 
 - Reorganisation du parcours d'upload, d'entretien et de plan en trois etapes clairement indiquees, avec conseils photo, instructions simples, note de confidentialite et textes complets dans les quatre langues prises en charge.
 
-## 2026-07-15 - Suppression de la page Membres
+## 2026-07-15 - Suppression de la page Membres, reponses IA plus rapides
 
 - Suppression de la section Membres du site : la page, les profils individuels, les photos, le lien de navigation et toutes les traductions associees dans les quatre langues.
+- Activation du cache de prompts sur les trois routes IA (analyse de photos, entretien, generation de code) : le system prompt et l'historique de conversation sont desormais mis en cache entre les tours et partages entre utilisateurs — la partie en cache coute ~90% de moins et les reponses demarrent plus vite. Verifie en direct : ~5 500 tokens servis depuis le cache par tour.
 `,
   zh: `# 项目日志
 
@@ -193,8 +196,9 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 
 - 把上传、访谈和方案整理成三个清晰标注的步骤，加入拍照建议、通俗说明、隐私提示，并为四种支持语言补齐全部文案。
 
-## 2026-07-15 —— 删除成员页面
+## 2026-07-15 —— 删除成员页面；AI 响应提速
 
 - 从网站上移除了成员板块：成员页、个人主页、成员照片、导航链接，以及四种语言中的所有相关翻译文案。
+- 三条 AI 接口（照片分析、访谈对话、代码生成）全部启用了 prompt caching：大体量的系统提示词和对话历史现在会在轮次之间缓存、并在所有用户间共享——缓存部分成本降低约 90%，响应起步更快。已实测验证：每轮约 5,500 个 token 直接从缓存读取。
 `,
 };

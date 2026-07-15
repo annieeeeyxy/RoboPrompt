@@ -11,10 +11,26 @@ export function getAnthropicClient(): Anthropic {
   return client;
 }
 
+// The system prompt is identical for every user, so caching it (plus the tool
+// schema that renders before it) lets requests share a prefix cache across the
+// whole site. The volatile instruction (language policy, doc language) must
+// stay in a separate block AFTER the breakpoint — anything before it that
+// changes per request would invalidate the cache.
+export function buildSystemBlocks(
+  stablePrompt: string,
+  volatileInstruction: string
+): Anthropic.TextBlockParam[] {
+  return [
+    { type: "text", text: stablePrompt, cache_control: { type: "ephemeral" } },
+    { type: "text", text: volatileInstruction },
+  ];
+}
+
 export function toAnthropicMessages(
-  messages: ChatMessage[]
+  messages: ChatMessage[],
+  options?: { cacheLastBlock?: boolean }
 ): Anthropic.MessageParam[] {
-  return messages.map((message) => ({
+  const converted = messages.map((message) => ({
     role: message.role,
     content: message.content.map((block): Anthropic.ContentBlockParam => {
       switch (block.type) {
@@ -39,4 +55,18 @@ export function toAnthropicMessages(
       }
     }),
   }));
+
+  // Mark the newest content block so the next turn can reuse the whole
+  // conversation prefix from cache instead of re-processing it.
+  if (options?.cacheLastBlock) {
+    const lastBlocks = converted[converted.length - 1]?.content;
+    if (Array.isArray(lastBlocks) && lastBlocks.length > 0) {
+      const last = lastBlocks[lastBlocks.length - 1];
+      if (last.type !== "thinking" && last.type !== "redacted_thinking") {
+        last.cache_control = { type: "ephemeral" };
+      }
+    }
+  }
+
+  return converted;
 }

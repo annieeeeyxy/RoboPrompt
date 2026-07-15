@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getAnthropicClient, toAnthropicMessages } from "@/lib/anthropic";
+import { buildSystemBlocks, getAnthropicClient, toAnthropicMessages } from "@/lib/anthropic";
 import { getSystemPrompt } from "@/lib/systemPrompt";
 import { streamToSSEResponse } from "@/lib/sse";
 import { ASK_FORM_TOOL } from "@/lib/tools";
@@ -105,13 +105,12 @@ export async function POST(req: NextRequest) {
   const stream = client.messages.stream({
     model: INTERVIEW_MODEL_ID,
     max_tokens: MAX_TOKENS,
-    system: `${systemPrompt}\n\n${buildLanguagePolicyInstruction(
-      body.uiLanguage as UiLanguage,
-      responseLanguage,
-      latestUserText
-    )}`,
+    system: buildSystemBlocks(
+      systemPrompt,
+      buildLanguagePolicyInstruction(body.uiLanguage as UiLanguage, responseLanguage, latestUserText)
+    ),
     tools: [ASK_FORM_TOOL],
-    messages: toAnthropicMessages(messages),
+    messages: toAnthropicMessages(messages, { cacheLastBlock: true }),
   });
 
   return streamToSSEResponse(stream, { detectSentinel: true });

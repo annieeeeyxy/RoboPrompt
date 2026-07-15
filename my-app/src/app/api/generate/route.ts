@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getAnthropicClient, toAnthropicMessages } from "@/lib/anthropic";
+import { buildSystemBlocks, getAnthropicClient, toAnthropicMessages } from "@/lib/anthropic";
 import { getSystemPrompt } from "@/lib/systemPrompt";
 import { ChatMessageSchema } from "@/lib/chatSchema";
 import { enforceRateLimit } from "@/lib/rateLimit";
@@ -94,10 +94,15 @@ export async function POST(req: NextRequest) {
     const stream = client.messages.stream({
       model: GENERATE_MODEL_ID,
       max_tokens: GENERATE_MAX_TOKENS,
-      system: `${systemPrompt}\n\nDocumentation language: write README.md, SETUP-style docs, and the "notes" field in ${docLanguage}. Keep code, code comments, file paths, and protocol strings in English.`,
+      system: buildSystemBlocks(
+        systemPrompt,
+        `Documentation language: write README.md, SETUP-style docs, and the "notes" field in ${docLanguage}. Keep code, code comments, file paths, and protocol strings in English.`
+      ),
       tools: [GENERATE_FILES_TOOL],
       tool_choice: { type: "tool", name: GENERATE_FILES_TOOL_NAME },
-      messages: toAnthropicMessages(messages),
+      // cacheLastBlock: generation sometimes times out and gets retried —
+      // the retry then reads the whole interview history from cache.
+      messages: toAnthropicMessages(messages, { cacheLastBlock: true }),
     });
     message = await stream.finalMessage();
   } catch (err) {

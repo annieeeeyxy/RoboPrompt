@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAnthropicClient, toAnthropicMessages } from "@/lib/anthropic";
+import { buildSystemBlocks, getAnthropicClient, toAnthropicMessages } from "@/lib/anthropic";
 import { getSystemPrompt } from "@/lib/systemPrompt";
 import { streamToSSEResponse } from "@/lib/sse";
 import { processImage, UnsupportedImageError, ImageProcessingUnavailableError } from "@/lib/image";
@@ -168,12 +168,12 @@ export async function POST(req: NextRequest) {
   const stream = client.messages.stream({
     model: INTERVIEW_MODEL_ID,
     max_tokens: MAX_TOKENS,
-    system: `${systemPrompt}\n\n${buildLanguagePolicyInstruction(uiLanguage, uiLanguage)}`,
+    system: buildSystemBlocks(systemPrompt, buildLanguagePolicyInstruction(uiLanguage, uiLanguage)),
     tools: [ASK_FORM_TOOL],
     // The first turn is always questions, never a plan — forcing the tool
     // keeps faster models from drifting into prose (the form-less chat UX).
     tool_choice: { type: "tool", name: ASK_FORM_TOOL.name },
-    messages: toAnthropicMessages([initialMessage]),
+    messages: toAnthropicMessages([initialMessage], { cacheLastBlock: true }),
   });
 
   return streamToSSEResponse(stream, { detectSentinel: true });
