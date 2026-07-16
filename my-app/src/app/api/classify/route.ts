@@ -8,6 +8,7 @@ import { enforceRateLimit } from "@/lib/rateLimit";
 import { ASK_FORM_TOOL } from "@/lib/tools";
 import {
   buildLanguagePolicyInstruction,
+  resolveResponseLanguage,
   UI_LANGUAGES,
   type UiLanguage,
 } from "@/lib/languagePolicy";
@@ -138,11 +139,26 @@ export async function POST(req: NextRequest) {
     referenceBlocks.push(await processReferenceFile(refFiles[i], refDescriptions[i] ?? ""));
   }
 
+  // Free-form notes/instructions typed at upload time ("I already have
+  // firmware", "only ask about the gripper", …). Block order must stay in
+  // sync with the client-built history in src/app/try/page.tsx.
+  const rawExtraInfo = formData.get("extraInfo");
+  const extraInfo = typeof rawExtraInfo === "string" ? rawExtraInfo.trim().slice(0, 4000) : "";
+  const extraInfoBlocks: ChatContentBlock[] = extraInfo
+    ? [
+        {
+          type: "text",
+          text: `User's extra notes / instructions for this project:\n${extraInfo}`,
+        },
+      ]
+    : [];
+
   const initialMessage: ChatMessage = {
     role: "user",
     content: [
       ...imageBlocks,
       ...referenceBlocks,
+      ...extraInfoBlocks,
       {
         type: "text",
         text:
@@ -168,7 +184,16 @@ export async function POST(req: NextRequest) {
   const stream = client.messages.stream({
     model: INTERVIEW_MODEL_ID,
     max_tokens: MAX_TOKENS,
-    system: buildSystemBlocks(systemPrompt, buildLanguagePolicyInstruction(uiLanguage, uiLanguage)),
+    system: buildSystemBlocks(
+      systemPrompt,
+      // Notes typed in another language shift the response language, same as
+      // a typed message would mid-interview.
+      buildLanguagePolicyInstruction(
+        uiLanguage,
+        resolveResponseLanguage(uiLanguage, extraInfo),
+        extraInfo || undefined
+      )
+    ),
     tools: [ASK_FORM_TOOL],
     // The first turn is always questions, never a plan — forcing the tool
     // keeps faster models from drifting into prose (the form-less chat UX).

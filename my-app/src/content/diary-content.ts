@@ -51,6 +51,11 @@ A running log of what happened on RoboPrompt, day by day.
 - Removed the Members section from the site: the page, individual profile pages, member photos, the nav link, and all related translations in the four languages.
 - Enabled prompt caching on all three AI routes (photo analysis, interview chat, code generation): the large system prompt and the conversation history are now cached between turns and shared across users — the cached portion costs ~90% less and responses start faster. Verified live: ~5,500 tokens served from cache per turn.
 - Made code generation ~6x faster for the most common setup: the standard Arduino-USB-serial scaffold (firmware sketch + Web Serial control panel) now ships as a pre-built, tested template inside the app, and the AI only generates the small per-project files (pin/limit config, README). Verified live: 22.6 seconds and ~1,900 output tokens, down from 2-3 minutes and ~25,000. Non-standard setups (ESP32, ROS2, vendor SDKs) still get fully generated code.
+
+## 2026-07-16 - Notes and files at upload time
+
+- The upload step now has a free-text box for extra info or instructions ("I already have firmware", "only ask about the gripper") — it goes straight to the AI with the photo and also sets the response language.
+- The reference-file picker now advertises everything the backend already reads (JSON configs, code files like .ino/.py/.cpp, URDF, PDFs, zips), and the upload widget is translated in all four languages instead of English-only.
 `,
   es: `# Diario del Proyecto
 
@@ -102,6 +107,11 @@ Un registro continuo de lo que paso en RoboPrompt, dia por dia.
 - Se elimino la seccion de Miembros del sitio: la pagina, los perfiles individuales, las fotos, el enlace de navegacion y todas las traducciones relacionadas en los cuatro idiomas.
 - Se habilito el cache de prompts en las tres rutas de IA (analisis de fotos, entrevista, generacion de codigo): el system prompt y el historial de conversacion ahora se cachean entre turnos y se comparten entre usuarios — la parte cacheada cuesta ~90% menos y las respuestas empiezan antes. Verificado en vivo: ~5,500 tokens servidos desde cache por turno.
 - La generacion de codigo es ~6x mas rapida para el caso mas comun: el scaffold estandar Arduino-USB-serial (firmware + panel Web Serial) ahora viene como plantilla pre-construida y probada dentro de la app, y la IA solo genera los archivos pequenos por proyecto (config de pines/limites, README). Verificado en vivo: 22.6 segundos y ~1,900 tokens, frente a 2-3 minutos y ~25,000. Los montajes no estandar (ESP32, ROS2, SDKs de fabricante) siguen generandose por completo.
+
+## 2026-07-16 - Notas y archivos al subir la foto
+
+- El paso de subida ahora tiene un campo de texto libre para informacion o instrucciones adicionales ("ya tengo firmware", "pregunta solo por la pinza") — va directo a la IA junto con la foto y tambien define el idioma de respuesta.
+- El selector de archivos de referencia ahora anuncia todo lo que el backend ya sabe leer (configs JSON, codigo .ino/.py/.cpp, URDF, PDFs, zips), y el widget de subida esta traducido a los cuatro idiomas en vez de solo ingles.
 `,
   fr: `# Journal du Projet
 
@@ -153,6 +163,11 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 - Suppression de la section Membres du site : la page, les profils individuels, les photos, le lien de navigation et toutes les traductions associees dans les quatre langues.
 - Activation du cache de prompts sur les trois routes IA (analyse de photos, entretien, generation de code) : le system prompt et l'historique de conversation sont desormais mis en cache entre les tours et partages entre utilisateurs — la partie en cache coute ~90% de moins et les reponses demarrent plus vite. Verifie en direct : ~5 500 tokens servis depuis le cache par tour.
 - La generation de code est ~6x plus rapide pour le cas le plus courant : le scaffold standard Arduino-USB-serie (firmware + panneau Web Serial) est desormais une template pre-construite et testee integree a l'app, et l'IA ne genere que les petits fichiers propres au projet (config broches/limites, README). Verifie en direct : 22,6 secondes et ~1 900 tokens, contre 2-3 minutes et ~25 000. Les montages non standard (ESP32, ROS2, SDK constructeurs) restent entierement generes.
+
+## 2026-07-16 - Notes et fichiers au moment de l'upload
+
+- L'etape d'upload a desormais un champ libre pour des infos ou instructions supplementaires (« j'ai deja un firmware », « ne pose des questions que sur la pince ») — transmis directement a l'IA avec la photo, et il definit aussi la langue de reponse.
+- Le selecteur de fichiers de reference annonce maintenant tout ce que le backend sait deja lire (configs JSON, code .ino/.py/.cpp, URDF, PDF, zips), et le widget d'upload est traduit dans les quatre langues au lieu d'etre uniquement en anglais.
 `,
   zh: `# 项目日志
 
@@ -204,5 +219,10 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 - 从网站上移除了成员板块：成员页、个人主页、成员照片、导航链接，以及四种语言中的所有相关翻译文案。
 - 三条 AI 接口（照片分析、访谈对话、代码生成）全部启用了 prompt caching：大体量的系统提示词和对话历史现在会在轮次之间缓存、并在所有用户间共享——缓存部分成本降低约 90%，响应起步更快。已实测验证：每轮约 5,500 个 token 直接从缓存读取。
 - 最常见配置的代码生成提速约 6 倍：标准的 Arduino-USB 串口方案（固件 + Web Serial 控制面板）现在作为预置、已测试的模板内置在应用里，AI 只需生成项目专属的小文件（引脚/限位配置、README）。实测：22.6 秒、约 1,900 个输出 token，此前是 2-3 分钟、约 25,000 个。非标准配置（ESP32、ROS2、厂商 SDK）仍然完整生成。
+
+## 2026-07-16 —— 上传照片时可以附加说明和文件
+
+- 上传步骤新增自由文本框，可填写补充信息或指令（比如"固件已经能跑"、"只需要问夹爪相关的问题"）——会随照片直接交给 AI，同时决定回复语言。
+- 参考文件选择器现在明确列出后端本就支持读取的所有类型（JSON 配置、.ino/.py/.cpp 等代码文件、URDF、PDF、zip 包），上传组件的文案也从纯英文改成了四语翻译。
 `,
 };

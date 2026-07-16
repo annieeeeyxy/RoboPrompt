@@ -40,6 +40,7 @@ export default function TryPage() {
   const [selectedImages, setSelectedImages] = useState<Blob[]>([]);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
   const [refEntries, setRefEntries] = useState<ReferenceFileEntry[]>([]);
+  const [extraInfo, setExtraInfo] = useState("");
   const [isGeneratingCode, setIsGeneratingCode] = useState(false);
   const [generateError, setGenerateError] = useState<string | null>(null);
   const [revisionText, setRevisionText] = useState("");
@@ -152,6 +153,10 @@ export default function TryPage() {
       })
     );
 
+    const trimmedExtraInfo = extraInfo.trim();
+
+    // Mirrors the block order the server builds for the model, so the saved
+    // history matches what the model actually saw.
     const initialMessage: ChatMessage = {
       role: "user",
       content: [
@@ -163,6 +168,14 @@ export default function TryPage() {
           })
         ),
         ...referenceBlocks,
+        ...(trimmedExtraInfo
+          ? [
+              {
+                type: "text",
+                text: `User's extra notes / instructions for this project:\n${trimmedExtraInfo}`,
+              } as const,
+            ]
+          : []),
         {
           type: "text",
           text: blobs.length > 1 ? t("herePhotosOfArm") : t("herePhotoOfArm"),
@@ -176,6 +189,7 @@ export default function TryPage() {
       formData.append("refFile", entry.file, entry.file.name);
       formData.append("refDescription", entry.description);
     });
+    if (trimmedExtraInfo) formData.append("extraInfo", trimmedExtraInfo);
     formData.append("uiLanguage", language);
 
     try {
@@ -184,7 +198,7 @@ export default function TryPage() {
     } catch {
       // agent.error already holds the message
     }
-  }, [agent, applyResult, selectedImages, refEntries, language, t]);
+  }, [agent, applyResult, selectedImages, refEntries, extraInfo, language, t]);
 
   const submitFormAnswer = useCallback(
     async (values: Record<string, string>) => {
@@ -309,6 +323,7 @@ export default function TryPage() {
     imagePreviewUrls.forEach((url) => URL.revokeObjectURL(url));
     setImagePreviewUrls([]);
     setRefEntries([]);
+    setExtraInfo("");
     agent.resetPhase();
   }, [agent, imagePreviewUrls]);
 
@@ -359,6 +374,22 @@ export default function TryPage() {
                 onChange={setRefEntries}
                 disabled={agent.isStreaming}
               />
+
+              <div className="flex flex-col gap-2">
+                <label htmlFor="extra-info" className="text-sm font-medium">
+                  {t("extraInfoLabel")}
+                </label>
+                <textarea
+                  id="extra-info"
+                  value={extraInfo}
+                  onChange={(e) => setExtraInfo(e.target.value)}
+                  placeholder={t("extraInfoPlaceholder")}
+                  rows={3}
+                  maxLength={4000}
+                  disabled={agent.isStreaming}
+                  className="w-full resize-none rounded-xl border border-black/15 bg-background px-4 py-3 text-sm text-foreground outline-none focus:border-pink-500 disabled:opacity-50 dark:border-white/15"
+                />
+              </div>
 
               <section className="grid gap-3 rounded-2xl border border-pink-500/15 bg-pink-500/[0.04] px-5 py-4 sm:grid-cols-[1fr_auto] sm:items-center">
                 <div>
