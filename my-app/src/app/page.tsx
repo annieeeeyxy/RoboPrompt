@@ -94,6 +94,21 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="mx-auto w-full max-w-4xl px-4 py-8">
+        <Link
+          href="/agent"
+          className="group flex flex-col items-start gap-2 rounded-2xl border border-cyan-500/25 bg-cyan-500/[0.04] p-6 transition-colors hover:border-cyan-400/50 sm:flex-row sm:items-center sm:justify-between"
+        >
+          <div>
+            <h2 className="text-lg font-semibold">{t("visionCtaTitle")}</h2>
+            <p className="mt-1 text-sm text-black/60 dark:text-white/60">{t("visionCtaDesc")}</p>
+          </div>
+          <span className="shrink-0 rounded-full border border-cyan-500/40 px-5 py-2.5 text-sm font-medium text-cyan-600 transition-colors group-hover:bg-cyan-500/10 dark:text-cyan-300">
+            {t("visionCtaButton")} →
+          </span>
+        </Link>
+      </section>
+
       <section className="mx-auto w-full max-w-4xl px-4 py-16">
         <h2 className="text-center text-2xl font-semibold">{t("builtForAny")}</h2>
         <p className="mx-auto mt-2 max-w-xl text-center text-sm text-black/60 dark:text-white/60">

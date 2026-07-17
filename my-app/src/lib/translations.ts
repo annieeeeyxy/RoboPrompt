@@ -7,6 +7,10 @@ export const translations: Record<Language, Record<string, string>> = {
     about: "About",
     diary: "Diary",
     kinova: "Pick & Place",
+    robotAgent: "Robot Agent",
+    visionCtaTitle: "Control a Robot with Vision + Language",
+    visionCtaDesc: "Describe a task, identify the target, preview the motion, and execute it safely.",
+    visionCtaButton: "Robot Agent",
     tryIt: "Try it",
     language: "Language",
 
@@ -148,6 +152,10 @@ export const translations: Record<Language, Record<string, string>> = {
     about: "Acerca de",
     diary: "Diario",
     kinova: "Pick & Place",
+    robotAgent: "Robot Agent",
+    visionCtaTitle: "Controla un robot con vision + lenguaje",
+    visionCtaDesc: "Describe la tarea, identifica el objetivo, previsualiza el movimiento y ejecutalo con seguridad.",
+    visionCtaButton: "Robot Agent",
     tryIt: "Pruébalo",
     language: "Idioma",
 
@@ -289,6 +297,10 @@ export const translations: Record<Language, Record<string, string>> = {
     about: "À propos",
     diary: "Journal",
     kinova: "Pick & Place",
+    robotAgent: "Robot Agent",
+    visionCtaTitle: "Controlez un robot avec vision + langage",
+    visionCtaDesc: "Decrivez la tache, identifiez la cible, previsualisez le mouvement et executez en securite.",
+    visionCtaButton: "Robot Agent",
     tryIt: "Essayer",
     language: "Langue",
 
@@ -430,6 +442,10 @@ export const translations: Record<Language, Record<string, string>> = {
     about: "关于",
     diary: "日记",
     kinova: "抓放任务",
+    robotAgent: "视觉控制",
+    visionCtaTitle: "用视觉 + 语言控制机器人",
+    visionCtaDesc: "描述任务、锁定目标、预览动作，然后安全执行。",
+    visionCtaButton: "视觉控制",
     tryIt: "试试",
     language: "语言",
 

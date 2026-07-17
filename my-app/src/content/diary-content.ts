@@ -62,6 +62,12 @@ A running log of what happened on RoboPrompt, day by day.
 - New "Pick & Place" page: upload a Kortex sequence JSON that ran successfully on a real Kinova arm, and the app extracts a workspace profile from the demonstration — table height, safe travel height, tool orientation, gripper open/close, speed — each with its source action, reasoning, and confidence, and each requiring explicit confirmation before use.
 - From confirmed parameters plus new pick/place coordinates it plans the standard 9-step pick-and-place, shows a color-coded motion timeline and 2D path preview (top + side view against the demonstrated workspace), runs safety validation (below-table Z, clearance, out-of-demonstrated-range, gripper values), and generates a new Kortex JSON that clones the uploaded file's exact structure and metadata.
 - Everything runs in the browser; the tool never controls the arm, and every export carries "verify in Kortex before running". Verified end-to-end against a real Kortex export.
+
+## 2026-07-17 - Robot Agent: vision + language control
+
+- New "Robot Agent" page: point a camera (or upload a test image in clearly-labeled Demo Mode) at the workspace, type "Put the apple in the blue box", and the app detects objects with real AI vision (numbered when duplicated, never auto-guessing), parses the command into a structured task, asks follow-up questions when information is missing, and plans the 9-step pick-and-place on top of a confirmed Kortex skill template.
+- Coordinates stay honest: without a depth camera or calibration, pixels never become robot coordinates - pick/place positions are entered manually and confirmed. A local Python Robot Bridge (reference simulation included in the repo) executes plans only after Preview Plan and an explicit Confirm & Run, with pause/stop, live progress, and a hard rule that Demo Mode and any red safety item disable execution.
+- Adapter seams for the future: RobotAdapter (Kortex Python API / ROS 2 later) and PolicyAdapter (SmolVLA/OpenVLA later); today's control mode is honestly labeled "Verified Skill Template". 14 new tests (49 total).
 `,
   es: `# Diario del Proyecto
 
@@ -124,6 +130,12 @@ Un registro continuo de lo que paso en RoboPrompt, dia por dia.
 - Nueva pagina "Pick & Place": sube un JSON de secuencia Kortex que corrio con exito en un brazo Kinova real y la app extrae un perfil del espacio de trabajo de la demostracion — altura de mesa, altura segura, orientacion de la herramienta, apertura/cierre de pinza, velocidad — cada uno con su accion de origen, razonamiento y confianza, y cada uno requiere confirmacion explicita antes de usarse.
 - Con los parametros confirmados mas nuevas coordenadas de pick/place planifica el pick-and-place estandar de 9 pasos, muestra una linea de tiempo con colores y una vista previa 2D de la trayectoria, ejecuta validaciones de seguridad y genera un nuevo JSON Kortex que clona la estructura y metadatos exactos del archivo subido.
 - Todo corre en el navegador; la herramienta nunca controla el brazo, y cada exportacion lleva "verificar en Kortex antes de ejecutar". Verificado de extremo a extremo con un export Kortex real.
+
+## 2026-07-17 - Robot Agent: control por vision + lenguaje
+
+- Nueva pagina "Robot Agent": apunta una camara (o sube una imagen de prueba en Demo Mode claramente marcado) al espacio de trabajo, escribe "Put the apple in the blue box", y la app detecta objetos con vision de IA real (numerados si hay duplicados, nunca adivinando), convierte el comando en una tarea estructurada, hace preguntas de seguimiento si falta informacion y planifica el pick-and-place de 9 pasos sobre una plantilla Kortex confirmada.
+- Las coordenadas se mantienen honestas: sin camara de profundidad ni calibracion, los pixeles nunca se convierten en coordenadas de robot - las posiciones se ingresan manualmente y se confirman. Un Robot Bridge local en Python (simulacion de referencia incluida) ejecuta planes solo tras Preview Plan y un Confirm & Run explicito, con pausa/parada, progreso en vivo, y la regla de que Demo Mode o cualquier error rojo deshabilita la ejecucion.
+- Interfaces para el futuro: RobotAdapter (Kortex Python API / ROS 2) y PolicyAdapter (SmolVLA/OpenVLA); el modo actual se etiqueta honestamente como "Verified Skill Template". 14 tests nuevos (49 en total).
 `,
   fr: `# Journal du Projet
 
@@ -186,6 +198,12 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 - Nouvelle page « Pick & Place » : uploadez un JSON de sequence Kortex qui a tourne avec succes sur un vrai bras Kinova, et l'app extrait un profil d'espace de travail de la demonstration — hauteur de table, hauteur de deplacement sur, orientation de l'outil, ouverture/fermeture de la pince, vitesse — chacun avec son action source, son raisonnement et sa confiance, et chacun exigeant une confirmation explicite avant usage.
 - A partir des parametres confirmes et de nouvelles coordonnees pick/place, elle planifie le pick-and-place standard en 9 etapes, affiche une timeline coloree et un apercu 2D de la trajectoire, execute des validations de securite et genere un nouveau JSON Kortex qui clone la structure et les metadonnees exactes du fichier uploade.
 - Tout tourne dans le navigateur ; l'outil ne controle jamais le bras, et chaque export porte « verifier dans Kortex avant execution ». Verifie de bout en bout avec un export Kortex reel.
+
+## 2026-07-17 - Robot Agent : controle vision + langage
+
+- Nouvelle page « Robot Agent » : pointez une camera (ou uploadez une image de test en Demo Mode clairement indique) vers l'espace de travail, tapez « Put the apple in the blue box », et l'app detecte les objets avec une vraie vision IA (numerotes en cas de doublons, jamais devines), transforme la commande en tache structuree, pose des questions de suivi s'il manque des informations et planifie le pick-and-place en 9 etapes sur une template Kortex confirmee.
+- Les coordonnees restent honnetes : sans camera de profondeur ni calibration, les pixels ne deviennent jamais des coordonnees robot - les positions sont saisies manuellement et confirmees. Un Robot Bridge local en Python (simulation de reference incluse) n'execute les plans qu'apres Preview Plan et un Confirm & Run explicite, avec pause/arret, progression en direct, et la regle que le Demo Mode ou toute erreur rouge desactive l'execution.
+- Interfaces pour la suite : RobotAdapter (Kortex Python API / ROS 2) et PolicyAdapter (SmolVLA/OpenVLA) ; le mode actuel est honnetement etiquete « Verified Skill Template ». 14 nouveaux tests (49 au total).
 `,
   zh: `# 项目日志
 
@@ -248,5 +266,11 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 - 新增"抓放任务"页面：上传一份在真实 Kinova 机械臂上运行成功的 Kortex 序列 JSON，应用从这次示教中提取工作空间画像——桌面高度、安全行进高度、工具姿态、夹爪开合值、速度——每个参数都带来源动作、推导理由和置信度，且必须逐一确认后才能使用。
 - 基于已确认的参数加上新的抓取/放置坐标，规划标准的 9 步抓放动作，展示彩色动作时间线和 2D 路径预览（俯视 + 侧视，叠加示教范围），执行安全校验（低于桌面、安全余量、超出示教范围、夹爪值），并生成完全克隆上传文件结构和元数据的新 Kortex JSON。
 - 全部在浏览器内完成；工具永远不会直接控制机械臂，每次导出都附带"运行前请在 Kortex 中验证"。已用真实 Kortex 导出文件完成端到端验证。
+
+## 2026-07-17 —— Robot Agent：视觉 + 语言控制
+
+- 新增"视觉控制"页面：把摄像头（或在明确标注的 Demo Mode 下上传测试图片）对准工作区，输入"Put the apple in the blue box"，应用用真实 AI 视觉检测物体（重复物体自动编号、绝不擅自猜测）、把指令解析成结构化任务、信息不全时主动追问，然后在已确认的 Kortex 技能模板上规划 9 步抓放动作。
+- 坐标保持诚实：没有深度相机或标定时，像素永远不会变成机器人坐标——抓放位置必须手动输入并确认。本地 Python Robot Bridge（仓库内附参考模拟实现）只在 Preview Plan 加显式 Confirm & Run 之后才执行，支持暂停/急停、实时进度，Demo Mode 或任何红色安全项都会禁用执行。
+- 为未来预留接口：RobotAdapter（之后接 Kortex Python API / ROS 2）和 PolicyAdapter（之后接 SmolVLA/OpenVLA）；当前控制模式如实标注为"Verified Skill Template"。新增 14 个测试（共 49 个）。
 `,
 };

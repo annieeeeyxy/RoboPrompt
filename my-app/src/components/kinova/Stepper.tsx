@@ -1,8 +1,8 @@
 "use client";
 
-export type StepId = "identify" | "learn" | "create" | "validate" | "export";
+export type StepId = string;
 
-const STEPS: { id: StepId; label: string }[] = [
+const DEFAULT_STEPS: { id: StepId; label: string }[] = [
   { id: "identify", label: "Identify" },
   { id: "learn", label: "Learn" },
   { id: "create", label: "Create" },
@@ -10,7 +10,15 @@ const STEPS: { id: StepId; label: string }[] = [
   { id: "export", label: "Export" },
 ];
 
-export function Stepper({ done, active }: { done: Set<StepId>; active: StepId }) {
+export function Stepper({
+  done,
+  active,
+  steps: STEPS = DEFAULT_STEPS,
+}: {
+  done: Set<StepId>;
+  active: StepId;
+  steps?: { id: StepId; label: string }[];
+}) {
   return (
     <nav aria-label="Workflow steps" className="flex flex-wrap items-center gap-2">
       {STEPS.map((step, i) => {

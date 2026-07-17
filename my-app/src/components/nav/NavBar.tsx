@@ -14,6 +14,7 @@ export function NavBar() {
     { href: "/", label: t("home") },
     { href: "/about", label: t("about") },
     { href: "/kinova", label: t("kinova") },
+    { href: "/agent", label: t("robotAgent") },
     { href: "/diary", label: t("diary") },
     { href: "/try", label: t("tryIt") },
   ];

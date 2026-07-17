@@ -4,10 +4,10 @@ export type SegmentKey = "travel" | "descendPick" | "grip" | "carry" | "descendP
 
 export const SEGMENT_COLORS: Record<SegmentKey, string> = {
   travel: "#22d3ee", // cyan — empty move (dashed when drawn)
-  descendPick: "#f59e0b", // amber — descending to pick
+  descendPick: "#a78bfa", // purple — descending to pick
   grip: "#34d399", // green — gripper events
-  carry: "#38bdf8", // solid blue — carrying the object
-  descendPlace: "#a78bfa", // violet — descending to place
+  carry: "#34d399", // green — moving while holding the object
+  descendPlace: "#a78bfa", // purple — descending to place
   retreat: "#64748b", // slate — retreat to safe height
 };
 

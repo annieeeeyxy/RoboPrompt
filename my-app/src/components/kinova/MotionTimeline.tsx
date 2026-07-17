@@ -3,7 +3,15 @@
 import type { PlannedStep } from "@/lib/kortex/types";
 import { SEGMENT_COLORS, SEGMENT_LABELS, stepSegmentKey } from "./pathTheme";
 
-export function MotionTimeline({ plan }: { plan: PlannedStep[] }) {
+export function MotionTimeline({
+  plan,
+  selectedIndex,
+  onSelect,
+}: {
+  plan: PlannedStep[];
+  selectedIndex?: number | null;
+  onSelect?: (index: number) => void;
+}) {
   return (
     <ol className="flex flex-col gap-1.5">
       {plan.map((step, i) => {
@@ -11,7 +19,14 @@ export function MotionTimeline({ plan }: { plan: PlannedStep[] }) {
         return (
           <li
             key={`${step.type}-${i}`}
-            className="flex items-center gap-3 rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2"
+            onClick={onSelect ? () => onSelect(i) : undefined}
+            className={`flex items-center gap-3 rounded-lg border px-3 py-2 ${
+              onSelect ? "cursor-pointer" : ""
+            } ${
+              selectedIndex === i
+                ? "border-cyan-400/50 bg-cyan-400/[0.06]"
+                : "border-white/5 bg-white/[0.02] hover:border-white/15"
+            }`}
           >
             <span className="w-5 text-right font-mono text-xs text-white/35">{i + 1}</span>
             <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: SEGMENT_COLORS[key] }} />

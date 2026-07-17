@@ -19,7 +19,15 @@ function makeScale(min: number, max: number, outMin: number, outMax: number) {
  * the motion timeline; the demonstrated workspace is drawn as a faint box so
  * out-of-range targets are visually obvious.
  */
-export function PathPreview({ plan, bounds }: { plan: PlannedStep[]; bounds: Bounds }) {
+export function PathPreview({
+  plan,
+  bounds,
+  showRobotBase = false,
+}: {
+  plan: PlannedStep[];
+  bounds: Bounds;
+  showRobotBase?: boolean;
+}) {
   const posePoints = plan
     .map((step, i) => ({ step, i }))
     .filter((p): p is { step: PlannedStep & { pose: NonNullable<PlannedStep["pose"]> }; i: number } =>
@@ -27,8 +35,15 @@ export function PathPreview({ plan, bounds }: { plan: PlannedStep[]; bounds: Bou
     );
   if (posePoints.length < 2) return null;
 
-  const xs = posePoints.map((p) => p.step.pose.x).concat(bounds ? [bounds.minX, bounds.maxX] : []);
-  const ys = posePoints.map((p) => p.step.pose.y).concat(bounds ? [bounds.minY, bounds.maxY] : []);
+  const baseXs = showRobotBase ? [0] : [];
+  const xs = posePoints
+    .map((p) => p.step.pose.x)
+    .concat(bounds ? [bounds.minX, bounds.maxX] : [])
+    .concat(baseXs);
+  const ys = posePoints
+    .map((p) => p.step.pose.y)
+    .concat(bounds ? [bounds.minY, bounds.maxY] : [])
+    .concat(showRobotBase ? [0] : []);
   const zs = posePoints.map((p) => p.step.pose.z).concat(bounds ? [bounds.minZ, bounds.maxZ] : []);
   const margin = 0.03;
   const sxTop = makeScale(Math.min(...xs) - margin, Math.max(...xs) + margin, PAD, W - PAD);
@@ -48,7 +63,11 @@ export function PathPreview({ plan, bounds }: { plan: PlannedStep[]; bounds: Bou
     }
   });
 
-  function renderView(project: (p: { x: number; y: number; z: number }) => [number, number], axisLabels: [string, string]) {
+  function renderView(
+    project: (p: { x: number; y: number; z: number }) => [number, number],
+    axisLabels: [string, string],
+    withBase = false
+  ) {
     const segments: React.ReactNode[] = [];
     for (let i = 1; i < posePoints.length; i++) {
       const from = posePoints[i - 1].step.pose;
@@ -83,6 +102,18 @@ export function PathPreview({ plan, bounds }: { plan: PlannedStep[]; bounds: Bou
             strokeDasharray="3 3"
           />
         )}
+        {withBase &&
+          (() => {
+            const [bx, by] = project({ x: 0, y: 0, z: 0 });
+            return (
+              <g>
+                <rect x={bx - 7} y={by - 7} width={14} height={14} rx={3} fill="#0D1524" stroke="#e2e8f0" strokeWidth={1.5} />
+                <text x={bx + 11} y={by + 4} fontSize={9} fill="rgba(255,255,255,0.55)" fontFamily="monospace">
+                  BASE
+                </text>
+              </g>
+            );
+          })()}
         {segments}
         {posePoints.map(({ step }, i) => {
           const [cx, cy] = project(step.pose);
@@ -116,7 +147,7 @@ export function PathPreview({ plan, bounds }: { plan: PlannedStep[]; bounds: Bou
       <div className="grid gap-3 lg:grid-cols-2">
         <div>
           <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-white/40">Top view (X–Y)</p>
-          {renderView((p) => [sxTop(p.x), syTop(p.y)], ["x (m)", "y (m)"])}
+          {renderView((p) => [sxTop(p.x), syTop(p.y)], ["x (m)", "y (m)"], showRobotBase)}
         </div>
         <div>
           <p className="mb-1.5 text-xs font-medium uppercase tracking-wide text-white/40">Side view (X–Z)</p>
