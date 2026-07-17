@@ -79,10 +79,12 @@ describe("parseKortexFile", () => {
   });
 
   it("tolerates malformed tasks with warnings instead of failing", () => {
-    const mangled = structuredClone(SAMPLE_KORTEX_FILE) as Record<string, never>;
+    const mangled = structuredClone(SAMPLE_KORTEX_FILE);
     // strip targetPose from one task
-    // @ts-expect-error intentional mangle
-    delete mangled.sequences.sequence[0].tasks[1].action.reachPose.targetPose;
+    const action = mangled.sequences.sequence[0].tasks![1].action as {
+      reachPose: { targetPose?: unknown };
+    };
+    delete action.reachPose.targetPose;
     const result = parseKortexFile(JSON.stringify(mangled));
     if ("error" in result) throw new Error("should not hard-fail");
     expect(result.warnings.length).toBeGreaterThan(0);
