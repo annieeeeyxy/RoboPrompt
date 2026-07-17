@@ -6,6 +6,7 @@ export const translations: Record<Language, Record<string, string>> = {
     home: "Home",
     about: "About",
     diary: "Diary",
+    kinova: "Pick & Place",
     tryIt: "Try it",
     language: "Language",
 
@@ -146,6 +147,7 @@ export const translations: Record<Language, Record<string, string>> = {
     home: "Inicio",
     about: "Acerca de",
     diary: "Diario",
+    kinova: "Pick & Place",
     tryIt: "Pruébalo",
     language: "Idioma",
 
@@ -286,6 +288,7 @@ export const translations: Record<Language, Record<string, string>> = {
     home: "Accueil",
     about: "À propos",
     diary: "Journal",
+    kinova: "Pick & Place",
     tryIt: "Essayer",
     language: "Langue",
 
@@ -426,6 +429,7 @@ export const translations: Record<Language, Record<string, string>> = {
     home: "首页",
     about: "关于",
     diary: "日记",
+    kinova: "抓放任务",
     tryIt: "试试",
     language: "语言",
 

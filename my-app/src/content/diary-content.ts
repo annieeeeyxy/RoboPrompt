@@ -56,6 +56,12 @@ A running log of what happened on RoboPrompt, day by day.
 
 - The upload step now has a free-text box for extra info or instructions ("I already have firmware", "only ask about the gripper") — it goes straight to the AI with the photo and also sets the response language.
 - The reference-file picker now advertises everything the backend already reads (JSON configs, code files like .ino/.py/.cpp, URDF, PDFs, zips), and the upload widget is translated in all four languages instead of English-only.
+
+## 2026-07-16 - Kinova Pick-and-Place studio
+
+- New "Pick & Place" page: upload a Kortex sequence JSON that ran successfully on a real Kinova arm, and the app extracts a workspace profile from the demonstration — table height, safe travel height, tool orientation, gripper open/close, speed — each with its source action, reasoning, and confidence, and each requiring explicit confirmation before use.
+- From confirmed parameters plus new pick/place coordinates it plans the standard 9-step pick-and-place, shows a color-coded motion timeline and 2D path preview (top + side view against the demonstrated workspace), runs safety validation (below-table Z, clearance, out-of-demonstrated-range, gripper values), and generates a new Kortex JSON that clones the uploaded file's exact structure and metadata.
+- Everything runs in the browser; the tool never controls the arm, and every export carries "verify in Kortex before running". Verified end-to-end against a real Kortex export.
 `,
   es: `# Diario del Proyecto
 
@@ -112,6 +118,12 @@ Un registro continuo de lo que paso en RoboPrompt, dia por dia.
 
 - El paso de subida ahora tiene un campo de texto libre para informacion o instrucciones adicionales ("ya tengo firmware", "pregunta solo por la pinza") — va directo a la IA junto con la foto y tambien define el idioma de respuesta.
 - El selector de archivos de referencia ahora anuncia todo lo que el backend ya sabe leer (configs JSON, codigo .ino/.py/.cpp, URDF, PDFs, zips), y el widget de subida esta traducido a los cuatro idiomas en vez de solo ingles.
+
+## 2026-07-16 - Estudio Pick-and-Place para Kinova
+
+- Nueva pagina "Pick & Place": sube un JSON de secuencia Kortex que corrio con exito en un brazo Kinova real y la app extrae un perfil del espacio de trabajo de la demostracion — altura de mesa, altura segura, orientacion de la herramienta, apertura/cierre de pinza, velocidad — cada uno con su accion de origen, razonamiento y confianza, y cada uno requiere confirmacion explicita antes de usarse.
+- Con los parametros confirmados mas nuevas coordenadas de pick/place planifica el pick-and-place estandar de 9 pasos, muestra una linea de tiempo con colores y una vista previa 2D de la trayectoria, ejecuta validaciones de seguridad y genera un nuevo JSON Kortex que clona la estructura y metadatos exactos del archivo subido.
+- Todo corre en el navegador; la herramienta nunca controla el brazo, y cada exportacion lleva "verificar en Kortex antes de ejecutar". Verificado de extremo a extremo con un export Kortex real.
 `,
   fr: `# Journal du Projet
 
@@ -168,6 +180,12 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 
 - L'etape d'upload a desormais un champ libre pour des infos ou instructions supplementaires (« j'ai deja un firmware », « ne pose des questions que sur la pince ») — transmis directement a l'IA avec la photo, et il definit aussi la langue de reponse.
 - Le selecteur de fichiers de reference annonce maintenant tout ce que le backend sait deja lire (configs JSON, code .ino/.py/.cpp, URDF, PDF, zips), et le widget d'upload est traduit dans les quatre langues au lieu d'etre uniquement en anglais.
+
+## 2026-07-16 - Studio Pick-and-Place pour Kinova
+
+- Nouvelle page « Pick & Place » : uploadez un JSON de sequence Kortex qui a tourne avec succes sur un vrai bras Kinova, et l'app extrait un profil d'espace de travail de la demonstration — hauteur de table, hauteur de deplacement sur, orientation de l'outil, ouverture/fermeture de la pince, vitesse — chacun avec son action source, son raisonnement et sa confiance, et chacun exigeant une confirmation explicite avant usage.
+- A partir des parametres confirmes et de nouvelles coordonnees pick/place, elle planifie le pick-and-place standard en 9 etapes, affiche une timeline coloree et un apercu 2D de la trajectoire, execute des validations de securite et genere un nouveau JSON Kortex qui clone la structure et les metadonnees exactes du fichier uploade.
+- Tout tourne dans le navigateur ; l'outil ne controle jamais le bras, et chaque export porte « verifier dans Kortex avant execution ». Verifie de bout en bout avec un export Kortex reel.
 `,
   zh: `# 项目日志
 
@@ -224,5 +242,11 @@ Journal continu de ce qui s'est passe sur RoboPrompt, jour par jour.
 
 - 上传步骤新增自由文本框，可填写补充信息或指令（比如"固件已经能跑"、"只需要问夹爪相关的问题"）——会随照片直接交给 AI，同时决定回复语言。
 - 参考文件选择器现在明确列出后端本就支持读取的所有类型（JSON 配置、.ino/.py/.cpp 等代码文件、URDF、PDF、zip 包），上传组件的文案也从纯英文改成了四语翻译。
+
+## 2026-07-16 —— Kinova 抓放任务工作台
+
+- 新增"抓放任务"页面：上传一份在真实 Kinova 机械臂上运行成功的 Kortex 序列 JSON，应用从这次示教中提取工作空间画像——桌面高度、安全行进高度、工具姿态、夹爪开合值、速度——每个参数都带来源动作、推导理由和置信度，且必须逐一确认后才能使用。
+- 基于已确认的参数加上新的抓取/放置坐标，规划标准的 9 步抓放动作，展示彩色动作时间线和 2D 路径预览（俯视 + 侧视，叠加示教范围），执行安全校验（低于桌面、安全余量、超出示教范围、夹爪值），并生成完全克隆上传文件结构和元数据的新 Kortex JSON。
+- 全部在浏览器内完成；工具永远不会直接控制机械臂，每次导出都附带"运行前请在 Kortex 中验证"。已用真实 Kortex 导出文件完成端到端验证。
 `,
 };
