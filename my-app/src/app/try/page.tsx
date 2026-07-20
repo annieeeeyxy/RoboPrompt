@@ -17,6 +17,7 @@ import {
   saveSession,
 } from "@/lib/sessionPersistence";
 import type { ChatMessage } from "@/types/chat";
+import { withBasePath } from "@/lib/basePath";
 
 type Phase = "upload" | "interview" | "plan";
 
@@ -193,7 +194,7 @@ export default function TryPage() {
     formData.append("uiLanguage", language);
 
     try {
-      const result = await agent.send("/api/classify", { method: "POST", body: formData });
+      const result = await agent.send(withBasePath("/api/classify"), { method: "POST", body: formData });
       applyResult(result, [initialMessage]);
     } catch {
       // agent.error already holds the message
@@ -210,7 +211,7 @@ export default function TryPage() {
         ],
       };
       try {
-        const result = await agent.send("/api/chat", {
+        const result = await agent.send(withBasePath("/api/chat"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -231,7 +232,7 @@ export default function TryPage() {
     async (text: string) => {
       const userMessage: ChatMessage = { role: "user", content: [{ type: "text", text }] };
       try {
-        const result = await agent.send("/api/chat", {
+        const result = await agent.send(withBasePath("/api/chat"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ history, uiLanguage: language, message: text }),
@@ -257,7 +258,7 @@ export default function TryPage() {
       ],
     };
     try {
-      const result = await agent.send("/api/chat", {
+      const result = await agent.send(withBasePath("/api/chat"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -276,7 +277,7 @@ export default function TryPage() {
     setIsGeneratingCode(true);
     setGenerateError(null);
     try {
-      const res = await fetch("/api/generate", {
+      const res = await fetch(withBasePath("/api/generate"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ history, uiLanguage: language }),

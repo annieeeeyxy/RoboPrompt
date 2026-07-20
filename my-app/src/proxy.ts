@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AUTH_COOKIE_NAME, computeSessionToken, timingSafeEqualStr } from "@/lib/auth";
+import { BASE_PATH, withoutBasePath } from "@/lib/basePath";
 
 export async function proxy(req: NextRequest) {
   const sitePassword = process.env.SITE_PASSWORD;
@@ -23,11 +24,12 @@ export async function proxy(req: NextRequest) {
 }
 
 function blockedResponse(req: NextRequest) {
-  if (req.nextUrl.pathname.startsWith("/api/")) {
+  const appPathname = withoutBasePath(req.nextUrl.pathname);
+  if (appPathname.startsWith("/api/")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const loginUrl = new URL("/login", req.url);
-  loginUrl.searchParams.set("redirect", req.nextUrl.pathname);
+  const loginUrl = new URL(`${BASE_PATH}/login`, req.url);
+  loginUrl.searchParams.set("redirect", appPathname);
   return NextResponse.redirect(loginUrl);
 }
 

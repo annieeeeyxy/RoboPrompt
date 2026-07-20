@@ -14,7 +14,7 @@ pip install fastapi uvicorn
 uvicorn bridge_stub:app --port 8000
 ```
 
-Then open the Robot Agent page — the status bar shows **Robot Online** within
+Then open the Robot Agent page at `/prompt/agent` — the status bar shows **Robot Online** within
 a few seconds (bridge URL defaults to `http://localhost:8000`; configurable in
 the UI or via `NEXT_PUBLIC_ROBOT_BRIDGE_URL` at build time).
 

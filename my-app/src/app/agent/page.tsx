@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { withBasePath } from "@/lib/basePath";
 import { parseKortexFile } from "@/lib/kortex/parser";
 import { inferWorkspaceProfile } from "@/lib/kortex/inference";
 import { generateKortexFile } from "@/lib/kortex/generator";
@@ -133,7 +134,7 @@ export default function AgentPage() {
     try {
       const formData = new FormData();
       formData.append("frame", frame, "frame.jpg");
-      const res = await fetch("/api/agent/detect", { method: "POST", body: formData });
+      const res = await fetch(withBasePath("/api/agent/detect"), { method: "POST", body: formData });
       const body = await res.json();
       if (!res.ok) throw new Error(body?.error ?? `Detection failed (${res.status})`);
       setDetections(numberDuplicates(body.objects ?? []));
@@ -152,7 +153,7 @@ export default function AgentPage() {
       setParseError(null);
       invalidatePlan();
       try {
-        const res = await fetch("/api/agent/parse", {
+        const res = await fetch(withBasePath("/api/agent/parse"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ command: text }),

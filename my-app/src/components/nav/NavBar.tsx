@@ -28,6 +28,12 @@ export function NavBar() {
         </Link>
         <div className="flex items-center gap-2">
           <ul className="flex gap-1 text-sm">
+            <li>
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- cross-zone navigation must perform a full page load */}
+              <a href="/" className="rounded-full px-3 py-1.5 text-white/60 transition-colors hover:text-foreground">
+                RoboLab Hub
+              </a>
+            </li>
             {LINKS.map((link) => {
               const isActive =
                 link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);

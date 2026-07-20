@@ -31,7 +31,7 @@ pnpm install
 pnpm dev
 ```
 
-Open `http://localhost:3000`.
+Open `http://localhost:3000/prompt`.
 
 ## Scripts
 
@@ -66,5 +66,7 @@ Primary target: Vercel.
 1. Import the repository in Vercel.
 2. Set `ANTHROPIC_API_KEY` and `SITE_PASSWORD`.
 3. Deploy from `main`.
+
+Set `my-app` as the Vercel project Root Directory. This project uses the fixed `/prompt` base path; RoboLab Hub proxies `https://robo-labs.net/prompt/*` to this independent deployment.
 
 If deploying elsewhere, ensure support for Next.js App Router and Node.js runtime API routes.

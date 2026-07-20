@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { AUTH_COOKIE_NAME, computeSessionToken, timingSafeEqualStr } from "@/lib/auth";
 import { enforceRateLimit } from "@/lib/rateLimit";
+import { BASE_PATH } from "@/lib/basePath";
 
 export const runtime = "nodejs";
 
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
     secure: true,
     sameSite: "lax",
     maxAge: 60 * 60 * 24 * 30,
-    path: "/",
+    path: BASE_PATH,
   });
   return res;
 }
